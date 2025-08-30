@@ -1,5 +1,5 @@
 // アイコン
-import { LogOut } from 'lucide-react';
+import { LogOut, User } from 'lucide-react';
 // shadcn/ui
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
@@ -10,8 +10,11 @@ export default function UserProfileBar({ myProfile }: { myProfile: MyProfile }) 
   return (
     <div className="flex items-center gap-2">
       <Avatar>
-        <AvatarImage src={myProfile.imageUrl} />
-        <AvatarFallback>{myProfile.name.charAt(0)}</AvatarFallback>
+        <AvatarImage src={myProfile.imageUrl || ''} />
+        <AvatarFallback>
+          <User className="h-4 w-4 scale-125" />
+        </AvatarFallback>
+        {/* ユーザーアイコンが初期(null)の場合は名前の最初の文字を表示 */}
       </Avatar>
 
       <div className="flex-1 overflow-hidden">

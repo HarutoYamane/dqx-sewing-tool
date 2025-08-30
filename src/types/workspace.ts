@@ -1,3 +1,5 @@
+import { LucideIcon } from 'lucide-react';
+
 export interface Latest {
   id: number;
   name: string;
@@ -13,5 +15,12 @@ export interface Favorite {
 export interface MyProfile {
   name: string;
   email: string;
-  imageUrl: string;
+  imageUrl: string | null;
+}
+
+export interface Topics {
+  id: number;
+  icon: LucideIcon;
+  content: string;
+  createdAt: string;
 }
