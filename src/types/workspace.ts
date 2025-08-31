@@ -1,20 +1,10 @@
 import { LucideIcon } from 'lucide-react';
 
-export interface Latest {
+export interface UserProfile {
   id: number;
-  name: string;
-  imageUrl: string;
-}
-
-export interface Favorite {
-  id: number;
-  name: string;
-  imageUrl: string;
-}
-
-export interface MyProfile {
   name: string;
   email: string;
+  favoriteList: number[];
   imageUrl: string | null;
 }
 
