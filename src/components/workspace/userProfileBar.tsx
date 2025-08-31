@@ -4,13 +4,13 @@ import { LogOut, User } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 // 型
-import type { MyProfile } from '@/types/workspace';
+import type { UserProfile } from '@/types/workspace';
 
-export default function UserProfileBar({ myProfile }: { myProfile: MyProfile }) {
+export default function UserProfileBar({ userProfile }: { userProfile: UserProfile }) {
   return (
     <div className="flex items-center gap-2">
       <Avatar>
-        <AvatarImage src={myProfile.imageUrl || ''} />
+        <AvatarImage src={userProfile.imageUrl || ''} />
         <AvatarFallback>
           <User className="h-4 w-4 scale-125" />
         </AvatarFallback>
@@ -18,8 +18,8 @@ export default function UserProfileBar({ myProfile }: { myProfile: MyProfile }) 
       </Avatar>
 
       <div className="flex-1 overflow-hidden">
-        <p className="text-sm font-medium leading-none">{myProfile.name}</p>
-        <p className="text-xs text-muted-foreground">{myProfile.email}</p>
+        <p className="text-sm font-medium leading-none">{userProfile.name}</p>
+        <p className="text-xs text-muted-foreground">{userProfile.email}</p>
       </div>
 
       <Button variant="ghost" size="icon">
