@@ -16,7 +16,8 @@ import LatestList from '@/components/workspace/latestList';
 import FavoriteList from '@/components/workspace/favoriteList';
 import UserProfileBar from '@/components/workspace/userProfileBar';
 // データ
-import { latests, favorites, myProfile } from '@/data/workspace';
+import { users } from '@/data/workspace';
+import { armors, armorSeries } from '@/data/armor';
 
 export default function WorkspaceLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -40,14 +41,14 @@ export default function WorkspaceLayout({ children }: { children: React.ReactNod
             <Separator />
             <div className="flex-1">
               <div className="px-2 py-2">
-                <LatestList latests={latests} pathname={pathname} />
+                <LatestList armorSeries={armorSeries} armors={armors} pathname={pathname} />
                 <Separator className="my-2" />
-                <FavoriteList favorites={favorites} pathname={pathname} />
+                <FavoriteList armors={armors} pathname={pathname} />
               </div>
             </div>
             <Separator />
             <div className="p-4">
-              <UserProfileBar myProfile={myProfile} />
+              <UserProfileBar userProfile={users[0]} />
             </div>
           </SheetContent>
         </Sheet>
@@ -62,12 +63,12 @@ export default function WorkspaceLayout({ children }: { children: React.ReactNod
             <AppLogo />
           </div>
           <div className="px-2 flex-1">
-            <LatestList latests={latests} pathname={pathname} />
+            <LatestList armorSeries={armorSeries} armors={armors} pathname={pathname} />
             <Separator className="my-2" />
-            <FavoriteList favorites={favorites} pathname={pathname} />
+            <FavoriteList armors={armors} pathname={pathname} />
           </div>
           <div className="sticky bottom-0 border-t bg-background p-4">
-            <UserProfileBar myProfile={myProfile} />
+            <UserProfileBar userProfile={users[0]} />
           </div>
         </aside>
 

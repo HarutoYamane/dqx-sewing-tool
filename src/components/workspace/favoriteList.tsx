@@ -6,9 +6,12 @@ import { PlusCircle } from 'lucide-react';
 // shadcn/ui
 import { Button } from '@/components/ui/button';
 // データ型
-import type { Favorite } from '@/types/workspace';
+import { Armor } from '@/types/armor';
+import { getUser } from '@/data/workspace';
 
-export default function FavoriteList({ favorites, pathname }: { favorites: Favorite[]; pathname: string }) {
+const userFavoriteList = getUser(1).favoriteList;
+
+export default function FavoriteList({ armors, pathname }: { armors: Armor[]; pathname: string }) {
   return (
     <div className="px-4 py-2">
       <div className="flex items-center justify-between">
@@ -20,19 +23,21 @@ export default function FavoriteList({ favorites, pathname }: { favorites: Favor
       </div>
 
       <div className="space-y-1 mt-2">
-        {favorites.map((favorite) => (
-          <Button
-            key={favorite.id}
-            variant={pathname === `/workspace/channel/${favorite.id}` ? 'secondary' : 'ghost'}
-            className="w-full justify-start gap-2"
-            asChild
-          >
-            <Link href={`/workspace/channel/${favorite.id}`}>
-              <Image src={favorite.imageUrl} alt={favorite.name} width={20} height={20} />
-              {favorite.name}
-            </Link>
-          </Button>
-        ))}
+        {armors
+          .filter((armor) => userFavoriteList.includes(armor.id))
+          .map((armor) => (
+            <Button
+              key={armor.id}
+              variant={pathname === `/workspace/channel/${armor.id}` ? 'secondary' : 'ghost'}
+              className="w-full justify-start gap-2"
+              asChild
+            >
+              <Link href={`/workspace/channel/${armor.id}`}>
+                <Image src={armor.imageUrl} alt={armor.name} width={20} height={20} />
+                {armor.name}
+              </Link>
+            </Button>
+          ))}
       </div>
     </div>
   );

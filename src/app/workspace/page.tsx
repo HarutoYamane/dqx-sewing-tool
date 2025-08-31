@@ -7,15 +7,25 @@ import { Hash, MessageSquare, Users, Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 // データ
-import { latests, favorites, topics } from '@/data/workspace';
+import { topics } from '@/data/workspace';
+import { armors } from '@/data/armor';
+
+//人気商材ランキングのアイコンの色を返す
+const RankingColor = (index: number) => {
+  if (index > 2) return 'bg-primary/10';
+  else if (index === 2) return 'bg-amber-500'; // 銅色
+  else if (index === 1) return 'bg-gray-300'; // 銀色
+  else if (index === 0) return 'bg-yellow-300'; // 金色
+};
 
 export default function WorkSpacePage() {
   // TODO: これらのデータは、実際にはデータベースから取得する
-
-  // 自分が投稿したメッセージ数
-  const myMessageCount = '75%';
-  // ワークスペース全体のメンバー数
-  const workspaceMemberCount = 'A+';
+  // 裁縫回数
+  const Count = 100;
+  // 自分の大成功率
+  const mySuccessRate = '75%';
+  // 裁縫職人ランク
+  const Rank = 'A+';
 
   return (
     <div className="flex-1 space-y-4 p-4 md:p-8 pt-6">
@@ -41,7 +51,7 @@ export default function WorkSpacePage() {
             <Hash className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{latests.length + favorites.length}</div>
+            <div className="text-2xl font-bold">{Count}</div>
             <p className="text-xs text-muted-foreground">今までの裁縫回数の合計</p>
           </CardContent>
         </Card>
@@ -52,7 +62,7 @@ export default function WorkSpacePage() {
             <MessageSquare className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{myMessageCount}</div>
+            <div className="text-2xl font-bold">{mySuccessRate}</div>
             <p className="text-xs text-muted-foreground">今までの全商材の大成功率</p>
           </CardContent>
         </Card>
@@ -63,7 +73,7 @@ export default function WorkSpacePage() {
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{workspaceMemberCount}</div>
+            <div className="text-2xl font-bold">{Rank}</div>
             <p className="text-xs text-muted-foreground">裁縫職人ランク</p>
           </CardContent>
         </Card>
@@ -99,18 +109,18 @@ export default function WorkSpacePage() {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {favorites.map((favorite) => (
-                <div key={favorite.id} className="flex items-center">
-                  <div className="mr-4 flex h-9 w-9 items-center justify-center rounded-full bg-primary/10">
-                    <span className="font-medium text-primary">{favorite.id}</span>
+              {armors.map((armor, index) => (
+                <div key={armor.id} className="flex items-center">
+                  <div className={`mr-4 flex h-9 w-9 items-center justify-center rounded-full ${RankingColor(index)}`}>
+                    <span className="font-medium text-primary">{index + 1}</span>
                   </div>
                   <div className="space-y-1 flex-1">
                     <Link
-                      href={`/workspace/channel/${favorite.id}`}
+                      href={`/workspace/channel/${armor.id}`}
                       className="flex flex-row gap-3 items-center font-medium hover:underline"
                     >
-                      <Image src={favorite.imageUrl} alt={favorite.name} width={32} height={32} />
-                      {favorite.name}
+                      <Image src={armor.imageUrl} alt={armor.name} width={32} height={32} />
+                      {armor.name}
                     </Link>
                   </div>
                 </div>
