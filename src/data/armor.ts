@@ -9,7 +9,7 @@ export const armors: Armor[] = [
     series: 'トーテムシリーズ',
     Type: '再生布',
     strength: ['最強', '？', '弱い', '普通', '強い', '？'],
-    settingValue: [0, 200, 200, 200, 200, 0, 0, 0, 0],
+    settingValue: [0, 200, 0, 200, 200, 200, 0, 0, 0],
     imageUrl: '/images/armors/トーテムクラウン.png',
   },
   {
@@ -19,7 +19,7 @@ export const armors: Armor[] = [
     lv: 90,
     series: 'トーテムシリーズ',
     Type: '再生布',
-    strength: ['最強', '？', '弱い', '普通', '強い', '？'],
+    strength: ['最強', '？', '弱い', '普通', '強い', '？', '最強'],
     settingValue: [90, 75, 90, 75, 140, 75, 90, 75, 90],
     imageUrl: '/images/armors/トーテムケープ上.png',
   },
@@ -297,3 +297,7 @@ export const armorSeries: ArmorSeries[] = [
   { id: 5, name: 'ヴァンガードシリーズ', imageUrl: '/images/armors/ヴァンガードコート.png', latest: true },
   { id: 6, name: '賢哲シリーズ', imageUrl: '/images/armors/賢哲のころも上.png', latest: true },
 ];
+
+export const getChannel = (channelId: number) => {
+  return armors.find((armor) => armor.id === channelId);
+};
