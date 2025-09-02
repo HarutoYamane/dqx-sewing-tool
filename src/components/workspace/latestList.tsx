@@ -70,7 +70,7 @@ export default function LatestList({
                       {seriesArmors.map((armor) => (
                         <Link
                           key={armor.id}
-                          href={`/workspace/channel/${series.id}/armor/${armor.id}`}
+                          href={`/workspace/channel/${armor.id}`}
                           className="flex items-center gap-2 px-3 py-2 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-md transition-colors duration-200"
                         >
                           <Image src={armor.imageUrl} alt={armor.name} width={16} height={16} />
