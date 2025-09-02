@@ -60,7 +60,7 @@ export default function UserProfileBar({ userProfile }: { userProfile: UserProfi
           </DialogHeader>
           <div className="space-y-8 py-2">
             <div className="space-y-2">
-              <Label htmlFor="username">ユーザー名</Label>
+              <Label htmlFor="username">ユーザー名を変更</Label>
               <Input
                 id="username"
                 value={userName}
