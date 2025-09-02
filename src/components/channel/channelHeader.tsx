@@ -1,10 +1,11 @@
 // 画像
 import Image from 'next/image';
+import Link from 'next/link';
 // shadcn/ui
 import { Separator } from '@/components/ui/separator';
 import { Button } from '@/components/ui/button';
 // アイコン
-import { Heart } from 'lucide-react';
+import { Heart, Search } from 'lucide-react';
 // 型
 import { Armor } from '@/types/armor';
 
@@ -29,7 +30,13 @@ export default function ChannelHeader({ armor }: { armor: Armor }) {
         </div>
         <Separator orientation="vertical" className="h-6" />
         <p className="text-sm text-muted-foreground hidden md:block">{ClothDescription}</p>
-        <div className="ml-auto flex items-center gap-2">
+        <div className="ml-auto flex items-center gap-3">
+          <Link href="/workspace/search">
+            <Button variant="outline" size="sm">
+              <Search className="h-4 w-4" />
+              <span className="text-sm">防具検索</span>
+            </Button>
+          </Link>
           {/* お気に入りに追加する処理を実装予定 今は見た目のみ */}
           <Button variant="outline" size="sm">
             <Heart className="h-4 w-4" />
