@@ -33,10 +33,12 @@ export default function WorkSpacePage() {
       <div className="flex items-center justify-between">
         <h2 className="text-3xl font-bold tracking-tight">ダッシュボード</h2>
         <div className="flex items-center gap-4">
-          <Button variant="outline" size="default">
-            <Search className="mr-2 h-4 w-4" />
-            <p className="text-lg">商材を選ぶ</p>
-          </Button>
+          <Link href="/workspace/search">
+            <Button variant="outline" size="default">
+              <Search className="mr-2 h-4 w-4" />
+              <p className="text-lg">商材を選ぶ</p>
+            </Button>
+          </Link>
           <Button size="sm">
             <MessageSquare className="mr-2 h-4 w-4" />
             <p>不具合報告・改善要望</p>
@@ -80,12 +82,12 @@ export default function WorkSpacePage() {
       </div>
 
       <div className="grid gap-4 md:grid-cols-2">
-        <Card className="col-span-1">
+        <Card className="col-span-1 flex flex-col max-h-[450px]">
           <CardHeader>
             <CardTitle>トピックス</CardTitle>
             <CardDescription>更新・変更情報の一覧</CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="flex-1 overflow-auto">
             <div className="space-y-4">
               {topics.map((topic) => (
                 <div key={topic.id} className="flex items-center">
@@ -102,12 +104,12 @@ export default function WorkSpacePage() {
           </CardContent>
         </Card>
 
-        <Card className="col-span-1">
+        <Card className="col-span-1 flex flex-col max-h-[450px]">
           <CardHeader>
             <CardTitle>人気商材</CardTitle>
             <CardDescription>最近多く作成されている防具ランキング</CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="flex-1 overflow-auto">
             <div className="space-y-4">
               {armors.map((armor, index) => (
                 <div key={armor.id} className="flex items-center">
