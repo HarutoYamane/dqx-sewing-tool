@@ -290,12 +290,12 @@ export const armors: Armor[] = [
 ];
 
 export const armorSeries: ArmorSeries[] = [
-  { id: 1, name: 'トーテムシリーズ', imageUrl: '/images/armors/トーテムケープ上.png', latest: false },
-  { id: 2, name: '巨商シリーズ', imageUrl: '/images/armors/巨商のころも.png', latest: false },
-  { id: 3, name: 'フォーチュンシリーズ', imageUrl: '/images/armors/フォーチュンローブ.png', latest: false },
-  { id: 4, name: '武神シリーズ', imageUrl: '/images/armors/武神の道着上.png', latest: true },
-  { id: 5, name: 'ヴァンガードシリーズ', imageUrl: '/images/armors/ヴァンガードコート.png', latest: true },
-  { id: 6, name: '賢哲シリーズ', imageUrl: '/images/armors/賢哲のころも上.png', latest: true },
+  { id: 1, name: 'トーテムシリーズ', lv: 90, imageUrl: '/images/armors/トーテムケープ上.png', latest: false },
+  { id: 2, name: '巨商シリーズ', lv: 90, imageUrl: '/images/armors/巨商のころも.png', latest: false },
+  { id: 3, name: 'フォーチュンシリーズ', lv: 90, imageUrl: '/images/armors/フォーチュンローブ.png', latest: false },
+  { id: 4, name: '武神シリーズ', lv: 93, imageUrl: '/images/armors/武神の道着上.png', latest: true },
+  { id: 5, name: 'ヴァンガードシリーズ', lv: 93, imageUrl: '/images/armors/ヴァンガードコート.png', latest: true },
+  { id: 6, name: '賢哲シリーズ', lv: 93, imageUrl: '/images/armors/賢哲のころも上.png', latest: true },
 ];
 
 export const getChannel = (channelId: number) => {
