@@ -39,10 +39,12 @@ export default function WorkSpacePage() {
               <p className="text-lg">商材を選ぶ</p>
             </Button>
           </Link>
-          <Button size="sm">
-            <MessageSquare className="mr-2 h-4 w-4" />
-            <p>不具合報告・改善要望</p>
-          </Button>
+          <Link href="/workspace/contact">
+            <Button size="sm">
+              <MessageSquare className="mr-2 h-4 w-4" />
+              <p>不具合報告・改善要望</p>
+            </Button>
+          </Link>
         </div>
       </div>
 
