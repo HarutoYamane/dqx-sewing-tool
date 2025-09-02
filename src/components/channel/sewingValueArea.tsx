@@ -1,3 +1,5 @@
+'use client';
+
 import { sewingValues } from '@/data/sewingValue';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
