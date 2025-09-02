@@ -17,6 +17,7 @@ type Strengths = '弱い' | '普通' | '強い' | '最強' | '？';
 export interface ArmorSeries {
   id: number; //シリーズのID
   name: string; //シリーズの名前
+  lv: number; //シリーズのレベル
   imageUrl: string; //シリーズの画像URL（体上装備）
   latest: boolean; //最新装備かどうか
 }
