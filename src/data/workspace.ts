@@ -10,7 +10,7 @@ export const users: UserProfile[] = [
     name: 'ユーザー名',
     email: 'user@example.com',
     imageUrl: '/images/userIcons/ユーザーアイコン.jpeg',
-    favoriteList: [1, 2, 3],
+    favoriteList: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13],
   },
   {
     id: 2,
@@ -33,6 +33,8 @@ export const topics: Topics[] = [
   { id: 2, icon: TriangleAlert, content: 'メンテナンスに伴うサービス停止のお知らせ', createdAt: '2025-08-29' },
   { id: 3, icon: Send, content: '裁縫職人ランクが公開されました。', createdAt: '2025-08-28' },
   { id: 4, icon: Send, content: 'これからよろしくお願いします。', createdAt: '2025-08-27' },
+  { id: 5, icon: RotateCcw, content: 'Lv115防具を追加しました。', createdAt: '2025-08-25' },
+  { id: 6, icon: RotateCcw, content: 'Lv110防具を追加しました。', createdAt: '2025-08-24' },
 ];
 
 // ユーザーIDからユーザーを取得する関数
