@@ -1,3 +1,5 @@
+//役割: ページアクセス時にユーザーの認証状態を管理するためのミドルウェア
+
 import { createServerClient } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
 
