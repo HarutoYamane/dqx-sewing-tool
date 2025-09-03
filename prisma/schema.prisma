@@ -34,9 +34,11 @@ enum Strengths {
 }
 
 model User {
-  id        Int       @id @default(autoincrement())
+  id        String    @id @default(cuid())
   name      String
   email     String    @unique
+  imageUrl  String?
+  authId    String    @unique
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 
@@ -84,7 +86,7 @@ model Sewing {
 
 model Favorite {
   id        Int      @id @default(autoincrement())
-  userId    Int
+  userId    String
   armorId   Int
   createdAt DateTime @default(now())
 
@@ -98,7 +100,7 @@ model Favorite {
 
 model Result {
   id        Int      @id @default(autoincrement())
-  userId    Int
+  userId    String
   armorId   Int
   threeStar Int     @default(0)
   twoStar   Int     @default(0)
