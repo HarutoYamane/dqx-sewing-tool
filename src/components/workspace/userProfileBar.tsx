@@ -4,9 +4,14 @@
 import { LogOut, Settings, User } from 'lucide-react';
 // React
 import { useState } from 'react';
+// Next.js（テーマ管理）
+import { useTheme } from 'next-themes';
 // shadcn/ui
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
+import { Switch } from '@/components/ui/switch';
+import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from '@/components/ui/dialog';
 import {
   AlertDialog,
@@ -19,9 +24,6 @@ import {
   AlertDialogCancel,
   AlertDialogAction,
 } from '@/components/ui/alert-dialog';
-import { Label } from '@/components/ui/label';
-import { Input } from '@/components/ui/input';
-import { Checkbox } from '@/components/ui/checkbox';
 // 型
 import type { UserProfile } from '@/types/workspace';
 
@@ -29,6 +31,12 @@ export default function UserProfileBar({ userProfile }: { userProfile: UserProfi
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [userName, setUserName] = useState(userProfile.name);
   const [logoutOpen, setLogoutOpen] = useState(false);
+  const { theme, setTheme } = useTheme();
+
+  // ダークモードの切り替え
+  const toggleDarkMode = () => {
+    setTheme(theme === 'dark' ? 'light' : 'dark');
+  };
 
   return (
     <div className="flex items-center gap-2">
@@ -69,8 +77,10 @@ export default function UserProfileBar({ userProfile }: { userProfile: UserProfi
               />
             </div>
             <div className="flex items-center space-x-2">
-              <Checkbox id="DarkMode" />
-              <Label htmlFor="DarkMode">ダークモードを有効にする</Label>
+              <Switch id="DarkMode" checked={theme === 'dark'} onCheckedChange={toggleDarkMode} />
+              <Label htmlFor="DarkMode">
+                ダークモードを有効にする<span className="text-red-500">（β版）</span>
+              </Label>
             </div>
           </div>
           <DialogFooter>
