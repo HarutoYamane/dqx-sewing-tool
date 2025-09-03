@@ -7,11 +7,12 @@ import { PlusCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 // データ型
 import { Armor } from '@/types/armor';
-import { getUser } from '@/data/workspace';
-
-const userFavoriteList = getUser(1).favoriteList;
+// Zustandストア
+import { useFavoriteStore } from '@/store/favoriteStore';
 
 export default function FavoriteList({ armors, pathname }: { armors: Armor[]; pathname: string }) {
+  const { favorites } = useFavoriteStore();
+
   return (
     <div className="px-4 py-2">
       <div className="flex items-center justify-between">
@@ -24,7 +25,7 @@ export default function FavoriteList({ armors, pathname }: { armors: Armor[]; pa
 
       <div className="space-y-1 mt-2">
         {armors
-          .filter((armor) => userFavoriteList.includes(armor.id))
+          .filter((armor) => favorites.includes(armor.id))
           .map((armor) => (
             <Button
               key={armor.id}

@@ -8,8 +8,12 @@ import { Button } from '@/components/ui/button';
 import { Heart, Search } from 'lucide-react';
 // 型
 import { Armor } from '@/types/armor';
+// Zustandストア
+import { useFavoriteStore } from '@/store/favoriteStore';
 
 export default function ChannelHeader({ armor }: { armor: Armor }) {
+  const { favorites, addFavorite, removeFavorite } = useFavoriteStore();
+
   let ClothDescription = '';
   if (armor.Type === '再生布') ClothDescription = '布特性：再生布（4回毎に、1マスが12~16戻る）';
   else if (armor.Type === '虹布')
@@ -38,8 +42,20 @@ export default function ChannelHeader({ armor }: { armor: Armor }) {
             </Button>
           </Link>
           {/* お気に入りに追加する処理を実装予定 今は見た目のみ */}
-          <Button variant="outline" size="sm">
-            <Heart className="h-4 w-4" />
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => {
+              if (favorites.includes(armor.id)) {
+                removeFavorite(armor.id);
+              } else {
+                addFavorite(armor.id);
+              }
+            }}
+          >
+            <Heart
+              className={`h-4 w-4 ${favorites.includes(armor.id) ? 'text-red-500 fill-red-500' : 'text-gray-500'}`}
+            />
             <span className="text-sm">お気に入り</span>
           </Button>
         </div>
