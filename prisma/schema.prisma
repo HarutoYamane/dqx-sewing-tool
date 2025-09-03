@@ -1,0 +1,118 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// enumの定義
+enum ArmorParts {
+  HEAD       // 頭
+  BODY_UPPER // 体上
+  BODY_LOWER // 体下
+  ARMS       // 腕
+  LEGS       // 足
+}
+
+enum ClothTypes {
+  REBIRTH // 再生布
+  RAINBOW // 虹布
+  HEART // 会心布
+  DoubleHalve // 倍半布
+  NORMAL // 通常
+}
+
+enum Strengths {
+  STRONGEST // 最強
+  STRONGER // 強い
+  NORMAL // 普通
+  WEAK // 弱い
+  UNKNOWN // ？
+}
+
+model User {
+  id        Int       @id @default(autoincrement())
+  name      String
+  email     String    @unique
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  // リレーション
+  favorites Favorite[]
+  results   Result[]
+}
+
+model ArmorSeries {
+  id       Int     @id @default(autoincrement())
+  name     String  @unique
+  lv       Int
+  latest   Boolean @default(false)
+  imageUrl String
+
+  // リレーション
+  armors Armor[]
+}
+
+model Armor {
+  id            Int         @id @default(autoincrement())
+  name          String      @unique
+  parts         ArmorParts  // enumを使用
+  armorSeriesId Int
+  imageUrl      String
+  lv            Int
+
+  // リレーション
+  armorSeries ArmorSeries @relation(fields: [armorSeriesId], references: [id])
+  favorites    Favorite[]
+  sewing       Sewing?
+  results      Result[]
+}
+
+model Sewing {
+  id           Int      @id @default(autoincrement())
+  armorId      Int      @unique // 1対1の関係
+  clothType    ClothTypes
+  strength     Strengths[]
+  settingValue Int[]
+
+  // リレーション
+  armor Armor @relation(fields: [armorId], references: [id], onDelete: Cascade)
+}
+
+model Favorite {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  armorId   Int
+  createdAt DateTime @default(now())
+
+  // リレーション
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  armor Armor @relation(fields: [armorId], references: [id], onDelete: Cascade)
+
+  // 複合ユニーク制約
+  @@unique([userId, armorId])
+}
+
+model Result {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  armorId   Int
+  threeStar Int     @default(0)
+  twoStar   Int     @default(0)
+  oneStar   Int     @default(0)
+  zeroStar  Int     @default(0)
+  mistake   Int     @default(0)
+  total     Int     @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // リレーション
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  armor Armor @relation(fields: [armorId], references: [id], onDelete: Cascade)
+
+  // 複合ユニーク制約
+  @@unique([userId, armorId])
+}
