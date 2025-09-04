@@ -21,7 +21,6 @@ enum ClothTypes {
   REBIRTH // 再生布
   RAINBOW // 虹布
   HEART // 会心布
-  DoubleHalve // 倍半布
   NORMAL // 通常
 }
 
