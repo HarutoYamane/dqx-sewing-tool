@@ -1,9 +1,9 @@
 'use client';
 
 // React
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 // Next.js
-import { usePathname } from 'next/navigation';
+import { usePathname, notFound } from 'next/navigation';
 // アイコン
 import { Menu } from 'lucide-react';
 // shadcn/ui
@@ -15,13 +15,35 @@ import AppLogo from '@/components/workspace/appLogo';
 import LatestList from '@/components/workspace/latestList';
 import FavoriteList from '@/components/workspace/favoriteList';
 import UserProfileBar from '@/components/workspace/userProfileBar';
+import Loading from '@/app/loading';
+import Error from '@/app/error';
 // データ
 import { users } from '@/data/workspace';
 import { armors, armorSeries } from '@/data/armor';
+// ストア
+import { useUserStore } from '@/store/useUserStore';
 
 export default function WorkspaceLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const [open, setOpen] = useState<boolean>(false);
+
+  // ユーザーストアから状態とアクションを取得
+  const { user, isLoading, error, fetchCurrentUser } = useUserStore();
+  const [isInitialized, setIsInitialized] = useState(false);
+
+  // コンポーネントマウント時にユーザー情報を取得
+  useEffect(() => {
+    const initUser = async () => {
+      await fetchCurrentUser();
+      setIsInitialized(true);
+    };
+
+    initUser();
+  }, [fetchCurrentUser]);
+
+  if (!isInitialized || isLoading) return <Loading />;
+  if (error) return <Error />;
+  if (!user) return notFound();
 
   return (
     <div className="flex min-h-screen flex-col">
