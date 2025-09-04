@@ -24,16 +24,18 @@ import {
   AlertDialogCancel,
   AlertDialogAction,
 } from '@/components/ui/alert-dialog';
-// 型
 import type { UserProfile } from '@/types/workspace';
 // サーバーアクション
 import { logout } from '@/app/logout/actions';
+// ストア
+import { useUserStore } from '@/store/useUserStore';
 
 export default function UserProfileBar({ userProfile }: { userProfile: UserProfile }) {
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [userName, setUserName] = useState(userProfile.name);
   const [logoutOpen, setLogoutOpen] = useState(false);
   const { theme, setTheme } = useTheme();
+  const { clearUser } = useUserStore();
 
   // ダークモードの切り替え
   const toggleDarkMode = () => {
@@ -43,6 +45,9 @@ export default function UserProfileBar({ userProfile }: { userProfile: UserProfi
   // ログアウト処理
   const handleLogout = async () => {
     try {
+      // クライアント側のストア状態をクリア
+      clearUser();
+      // サーバー側でのログアウト処理
       await logout();
     } catch (error) {
       console.error('ログアウトエラー:', error);
