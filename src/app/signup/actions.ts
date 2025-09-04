@@ -18,24 +18,28 @@ export async function signup(formData: FormData) {
     options: { data: { name: formData.get('name') as string } },
   };
 
-  const { error } = await supabase.auth.signUp(data);
+  const { data: signUpData, error } = await supabase.auth.signUp(data);
 
   if (error) {
-    console.log(error);
+    console.log('Supabase認証エラー:', error);
     redirect('/error');
   }
 
-  // Supabase の認証後に、ユーザー情報を Prisma でデータベースの User テーブルに保存
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  console.log('signUpData:', signUpData); // デバッグ用
 
-  if (!user || !user.id) {
+  // signUpDataからユーザー情報を取得
+  if (!signUpData.user || !signUpData.user.id) {
     console.error('ユーザー情報が取得できませんでした');
     redirect('/error');
   }
 
-  await userOperations.createUser(user.id, data.email, data.options.data.name);
+  // Prismaでユーザーを作成
+  try {
+    await userOperations.createUser(signUpData.user.id, data.email, data.options.data.name);
+  } catch (dbError) {
+    console.error('データベースエラー:', dbError);
+    redirect('/error');
+  }
 
   revalidatePath('/', 'layout');
   redirect('/workspace');
