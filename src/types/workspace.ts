@@ -10,11 +10,14 @@ import { LucideIcon } from 'lucide-react';
 //   "createdAt": "2025-09-04T07:29:02.593Z",
 //   "updatedAt": "2025-09-04T07:29:02.593Z"
 export interface UserProfile {
-  id: number;
+  id: string; //cuid型
   name: string;
   email: string;
-  favoriteList: number[];
   imageUrl: string | null;
+  authId: string;
+  role: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface Topics {
