@@ -51,7 +51,11 @@ export default function LoginPage() {
       router.push('/workspace');
     } catch (err) {
       console.error('ログインエラー:', err);
-      setError('ログイン中にエラーが発生しました。メールアドレスとパスワードを確認してください。');
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError('ログイン中にエラーが発生しました。メールアドレスとパスワードを確認してください。');
+      }
     } finally {
       setIsLoading(false);
     }
