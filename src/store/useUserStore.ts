@@ -27,7 +27,7 @@ export const useUserStore = create<UserState>((set) => ({
       set({ isLoading: true, error: null });
 
       // API からユーザー情報を取得
-      const res = await fetch('/api/users/me');
+      const res = await fetch('/api/user');
 
       if (!res.ok) {
         const errorData = await res.json();
