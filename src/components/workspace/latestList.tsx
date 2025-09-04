@@ -10,6 +10,8 @@ import { Button } from '@/components/ui/button';
 import { ChevronDown, ChevronRight } from 'lucide-react';
 // データ型
 import type { ArmorSeries, Armor } from '@/types/armor';
+// データ
+import { MaxLv } from '@/data/workspace';
 
 export default function LatestList({
   armorSeries,

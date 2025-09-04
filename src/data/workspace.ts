@@ -45,3 +45,5 @@ export function getUser(id: number) {
   }
   return user;
 }
+
+export const MaxLv = 130;
