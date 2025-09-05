@@ -1,5 +1,4 @@
 import { createClient } from './client';
-
 /**
  * Supabaseストレージから画像の公開URLを取得する
  */
@@ -15,7 +14,7 @@ export function getImageUrl(bucket: string, path: string): string {
  */
 export function getUserAvatarUrl(fileName: string): string {
   if (!fileName) {
-    return '/images/Icons/UserIcon.jpeg'; // デフォルトアイコン
+    return ''; // 空文字を返す
   }
   return getImageUrl('avatars', fileName);
 }
@@ -25,9 +24,9 @@ export function getUserAvatarUrl(fileName: string): string {
  */
 export function getArmorImageUrl(fileName: string): string {
   if (!fileName) {
-    return '/images/armors/default-armor.png'; // デフォルト画像
+    return '/images/armors/default-Image.png'; // デフォルト画像
   }
-  return getImageUrl('armors', fileName);
+  return getImageUrl('Armor Image Bucket', fileName);
 }
 
 /**
