@@ -1,17 +1,43 @@
 // Next.js
 import Link from 'next/link';
 import Image from 'next/image';
+// react
+import { useEffect, useState, useCallback } from 'react';
 // アイコン
 import { PlusCircle } from 'lucide-react';
 // shadcn/ui
 import { Button } from '@/components/ui/button';
-// データ型
-import { Armor } from '@/types/armor';
+// 自作コンポーネント
+import Loading from '@/app/loading';
+import Error from '@/app/error';
 // Zustandストア
 import { useFavoriteStore } from '@/store/favoriteStore';
+// ストレージ
+import { getArmorImageUrl } from '@/utils/supabase/storage';
 
-export default function FavoriteList({ armors, pathname }: { armors: Armor[]; pathname: string }) {
-  const { favorites } = useFavoriteStore();
+export default function FavoriteList() {
+  const { favorites, isLoading, error, fetchFavorites } = useFavoriteStore();
+  const [isInitialized, setIsInitialized] = useState(false);
+
+  const initFavorites = useCallback(async () => {
+    await fetchFavorites();
+    setIsInitialized(true);
+  }, [fetchFavorites]);
+
+  useEffect(() => {
+    // 初回読み込み時のみ実行
+    initFavorites();
+  }, [initFavorites]);
+
+  // ローディング状態
+  if (!isInitialized || isLoading) {
+    return <Loading />;
+  }
+
+  // エラー状態
+  if (error) {
+    return <Error />;
+  }
 
   return (
     <div className="px-4 py-2">
@@ -24,21 +50,15 @@ export default function FavoriteList({ armors, pathname }: { armors: Armor[]; pa
       </div>
 
       <div className="space-y-1 mt-2">
-        {armors
-          .filter((armor) => favorites.includes(armor.id))
-          .map((armor) => (
-            <Button
-              key={armor.id}
-              variant={pathname === `/workspace/channel/${armor.id}` ? 'secondary' : 'ghost'}
-              className="w-full justify-start gap-2"
-              asChild
-            >
-              <Link href={`/workspace/channel/${armor.id}`}>
-                <Image src={armor.imageUrl} alt={armor.name} width={20} height={20} />
-                {armor.name}
-              </Link>
-            </Button>
-          ))}
+        {favorites?.length === 0 && <p className="text-sm text-gray-500">お気に入り無し</p>}
+        {favorites?.map((favorite, index) => (
+          <Button variant="ghost" size="sm" key={index} className="w-full justify-start gap-2" asChild>
+            <Link href={`/workspace/channel/${favorite.armorId}`}>
+              <Image src={getArmorImageUrl(favorite.armor.imageUrl)} alt={favorite.armor.name} width={24} height={24} />
+              {favorite.armor.name}
+            </Link>
+          </Button>
+        ))}
       </div>
     </div>
   );
