@@ -1,34 +1,63 @@
 'use client';
 
-import { useState } from 'react';
+// React
+import { useState, useEffect } from 'react';
+// shadcn/ui
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { Input } from '@/components/ui/input';
+// 自作コンポーネント
+import Loading from '@/app/loading';
+// アイコン
 import { RotateCcw, Check, X } from 'lucide-react';
-import { Armor } from '@/types/armor';
+// データ型
+import { Sewing } from '@/types/armor';
 
-export default function SewingArea({ armor }: { armor: Armor }) {
+export default function SewingArea({ channelId }: { channelId: number }) {
+  const [values, setValues] = useState<(number | null)[]>([...Array(9).fill(null)]);
+  const [sewingValue, setSewingValue] = useState<Sewing | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    const fetchArmor = async () => {
+      try {
+        setIsLoading(true);
+        const response = await fetch(`/api/Armor/Channel/Sewing?channelId=${channelId}`);
+        const data = await response.json();
+        setSewingValue(data);
+      } catch (error) {
+        console.error('防具毎の裁縫データ取得エラー:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchArmor();
+  }, [channelId]);
+
+  if (isLoading || !sewingValue) return <Loading />;
+
   let Tolerance = 0; //許容誤差
-  if (armor.parts === 'head') Tolerance = 4;
-  else if (armor.parts === 'bodyUpper') Tolerance = 8;
-  else if (armor.parts === 'bodyLower') Tolerance = 6;
-  else if (armor.parts === 'arms') Tolerance = 6;
-  else if (armor.parts === 'legs') Tolerance = 4;
+  if (sewingValue.armor.parts === 'HEAD') Tolerance = 4;
+  else if (sewingValue.armor.parts === 'BODY_UPPER') Tolerance = 8;
+  else if (sewingValue.armor.parts === 'BODY_LOWER') Tolerance = 6;
+  else if (sewingValue.armor.parts === 'ARMS') Tolerance = 6;
+  else if (sewingValue.armor.parts === 'LEGS') Tolerance = 4;
   else Tolerance = 0;
 
-  const StrengthColor = (strength: string) => {
-    //強さ表示のカラーリング関数
-    if (strength === '最強') return 'bg-red-500';
-    else if (strength === '強い') return 'bg-yellow-500';
-    else if (strength === '普通') return 'bg-green-500';
-    else if (strength === '弱い') return 'bg-blue-500';
-    else return 'bg-gray-500 pl-3 pr-3'; //？用（文字数的にボタンの長さが合わないので、パディングを増やしてる）
+  const strengthConfig = {
+    STRONGEST: { color: 'bg-red-500', text: '最強' },
+    STRONGER: { color: 'bg-yellow-500', text: '強い' },
+    NORMAL: { color: 'bg-green-500', text: '普通' },
+    WEAK: { color: 'bg-blue-500', text: '弱い' },
+    UNKNOWN: { color: 'bg-gray-500 pl-3 pr-3', text: '？' },
   };
 
-  const [values, setValues] = useState<(number | null)[]>([...Array(9).fill(null)]);
+  const getStrengthConfig = (strength: string) => {
+    return strengthConfig[strength as keyof typeof strengthConfig] || strengthConfig.UNKNOWN;
+  };
 
-  const TotalDeviation = armor.settingValue.reduce(
-    (sum, value, index) => sum + Math.abs(value - (values[index] ?? 0)),
+  const TotalDeviation = sewingValue.settingValue.reduce(
+    (sum: number, value: number, index: number) => sum + Math.abs(value - (values[index] ?? 0)),
     0
   ); //合計誤差
 
@@ -62,11 +91,14 @@ export default function SewingArea({ armor }: { armor: Armor }) {
     <div className="space-y-4 pt-3 pl-3">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          {armor.strength.map((strength, index) => (
-            <div key={index} className={`space-y-2`}>
-              <label className={`${StrengthColor(strength)} rounded-md p-2 text-xs text-white`}>{strength}</label>
-            </div>
-          ))}
+          {sewingValue.strength.map((strength: string, index: number) => {
+            const config = getStrengthConfig(strength);
+            return (
+              <div key={index} className={`space-y-2`}>
+                <label className={`${config.color} rounded-md p-2 text-xs text-white`}>{config.text}</label>
+              </div>
+            );
+          })}
         </div>
         <Button variant="outline" size="sm" onClick={handleReset}>
           <RotateCcw className="h-4 w-4 mr-2" />
@@ -75,7 +107,7 @@ export default function SewingArea({ armor }: { armor: Armor }) {
       </div>
 
       <div className="grid grid-cols-3 gap-4">
-        {armor.settingValue.map((value, index) => (
+        {sewingValue.settingValue.map((value: number, index: number) => (
           <div key={index} className="space-y-2">
             <label className="text-sm font-medium text-muted-foreground">残り値 {index + 1}</label>
             <Input
@@ -103,7 +135,7 @@ export default function SewingArea({ armor }: { armor: Armor }) {
               onChange={(e) => handleInputChange(index, e.target.value)}
               className="text-center"
               placeholder="0"
-              disabled={armor.settingValue[index] === 0} //使わないマスは無効化
+              disabled={sewingValue?.settingValue[index] === 0} //使わないマスは無効化
             />
           </div>
         ))}
