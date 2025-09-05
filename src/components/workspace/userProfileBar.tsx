@@ -29,6 +29,7 @@ import type { UserProfile } from '@/types/workspace';
 import { logout } from '@/app/logout/actions';
 // ストア
 import { useUserStore } from '@/store/useUserStore';
+import { useFavoriteStore } from '@/store/favoriteStore';
 
 export default function UserProfileBar({ userProfile }: { userProfile: UserProfile }) {
   const [settingsOpen, setSettingsOpen] = useState(false);
@@ -36,6 +37,7 @@ export default function UserProfileBar({ userProfile }: { userProfile: UserProfi
   const [logoutOpen, setLogoutOpen] = useState(false);
   const { theme, setTheme } = useTheme();
   const { clearUser } = useUserStore();
+  const { clearFavorites } = useFavoriteStore();
 
   // ダークモードの切り替え
   const toggleDarkMode = () => {
@@ -47,6 +49,7 @@ export default function UserProfileBar({ userProfile }: { userProfile: UserProfi
     try {
       // クライアント側のストア状態をクリア
       clearUser();
+      clearFavorites();
       // サーバー側でのログアウト処理
       await logout();
     } catch (error) {
@@ -61,7 +64,6 @@ export default function UserProfileBar({ userProfile }: { userProfile: UserProfi
         <AvatarFallback>
           <User className="h-4 w-4 scale-125" />
         </AvatarFallback>
-        {/* ユーザーアイコンが初期(null)の場合は名前の最初の文字を表示 */}
       </Avatar>
 
       <div className="flex-1 overflow-hidden">
