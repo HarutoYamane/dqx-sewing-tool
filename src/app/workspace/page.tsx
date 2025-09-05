@@ -1,6 +1,6 @@
 // Next.js
 import Link from 'next/link';
-import Image from 'next/image';
+// import Image from 'next/image';
 // アイコン
 import { Hash, MessageSquare, Users, Search } from 'lucide-react';
 // shadcn/ui
@@ -8,15 +8,15 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 // データ
 import { topics } from '@/data/workspace';
-import { armors } from '@/data/armor';
+// import { armors } from '@/data/armor';
 
 //人気商材ランキングのアイコンの色を返す
-const RankingColor = (index: number) => {
-  if (index > 2) return 'bg-primary/10';
-  else if (index === 2) return 'bg-amber-500'; // 銅色
-  else if (index === 1) return 'bg-gray-300'; // 銀色
-  else if (index === 0) return 'bg-yellow-300'; // 金色
-};
+// const RankingColor = (index: number) => {
+//   if (index > 2) return 'bg-primary/10';
+//   else if (index === 2) return 'bg-amber-500'; // 銅色
+//   else if (index === 1) return 'bg-gray-300'; // 銀色
+//   else if (index === 0) return 'bg-yellow-300'; // 金色
+// };
 
 export default function WorkSpacePage() {
   // TODO: これらのデータは、実際にはデータベースから取得する
@@ -112,7 +112,7 @@ export default function WorkSpacePage() {
             <CardDescription>最近多く作成されている防具ランキング</CardDescription>
           </CardHeader>
           <CardContent className="flex-1 overflow-auto">
-            <div className="space-y-4">
+            {/* <div className="space-y-4">
               {armors.map((armor, index) => (
                 <div key={armor.id} className="flex items-center">
                   <div className={`mr-4 flex h-9 w-9 items-center justify-center rounded-full ${RankingColor(index)}`}>
@@ -129,7 +129,7 @@ export default function WorkSpacePage() {
                   </div>
                 </div>
               ))}
-            </div>
+            </div> */}
           </CardContent>
         </Card>
       </div>
