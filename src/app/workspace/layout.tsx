@@ -3,7 +3,7 @@
 // React
 import { useState, useEffect } from 'react';
 // Next.js
-import { usePathname, notFound } from 'next/navigation';
+import { notFound } from 'next/navigation';
 // アイコン
 import { Menu } from 'lucide-react';
 // shadcn/ui
@@ -17,14 +17,10 @@ import FavoriteList from '@/components/workspace/favoriteList';
 import UserProfileBar from '@/components/workspace/userProfileBar';
 import Loading from '@/app/loading';
 import Error from '@/app/error';
-// データ
-import { users } from '@/data/workspace';
-import { armors, armorSeries } from '@/data/armor';
 // ストア
 import { useUserStore } from '@/store/useUserStore';
 
 export default function WorkspaceLayout({ children }: { children: React.ReactNode }) {
-  const pathname = usePathname();
   const [open, setOpen] = useState<boolean>(false);
 
   // ユーザーストアから状態とアクションを取得
@@ -39,7 +35,7 @@ export default function WorkspaceLayout({ children }: { children: React.ReactNod
     };
 
     initUser();
-  }, [fetchCurrentUser]);
+  }, [fetchCurrentUser]); //fetchCurrentUserが変更されることはないが、eslintの警告を回避するために追加
 
   if (!isInitialized || isLoading) return <Loading />;
   if (error) return <Error />;
@@ -63,14 +59,14 @@ export default function WorkspaceLayout({ children }: { children: React.ReactNod
             <Separator />
             <div className="flex-1">
               <div className="px-2 py-2">
-                <LatestList armorSeries={armorSeries} armors={armors} pathname={pathname} />
+                <LatestList />
                 <Separator className="my-2" />
-                <FavoriteList armors={armors} pathname={pathname} />
+                <FavoriteList />
               </div>
             </div>
             <Separator />
             <div className="p-4">
-              <UserProfileBar userProfile={users[0]} />
+              <UserProfileBar userProfile={user} />
             </div>
           </SheetContent>
         </Sheet>
@@ -85,12 +81,12 @@ export default function WorkspaceLayout({ children }: { children: React.ReactNod
             <AppLogo />
           </div>
           <div className="px-2 flex-1">
-            <LatestList armorSeries={armorSeries} armors={armors} pathname={pathname} />
+            <LatestList />
             <Separator className="my-2" />
-            <FavoriteList armors={armors} pathname={pathname} />
+            <FavoriteList />
           </div>
           <div className="sticky bottom-0 border-t bg-background p-4">
-            <UserProfileBar userProfile={users[0]} />
+            <UserProfileBar userProfile={user} />
           </div>
         </aside>
 
