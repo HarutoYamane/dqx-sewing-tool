@@ -1,3 +1,4 @@
+// 数値表の型（データベースとは連携していない）
 export interface SewingValue {
   id: number;
   name: string;
