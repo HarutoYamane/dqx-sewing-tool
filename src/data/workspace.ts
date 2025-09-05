@@ -1,7 +1,7 @@
 import type { Topics } from '@/types/workspace';
 import { RotateCcw, Send, TriangleAlert } from 'lucide-react';
 
-// TODO: これらのデータは、実際にはデータベースから取得する
+export const MaxLv: number = 130; //最新シリーズのレベル
 
 export const topics: Topics[] = [
   { id: 1, icon: RotateCcw, content: 'Lv120防具を追加しました。', createdAt: '2025-08-30' },
@@ -11,5 +11,3 @@ export const topics: Topics[] = [
   { id: 5, icon: RotateCcw, content: 'Lv115防具を追加しました。', createdAt: '2025-08-25' },
   { id: 6, icon: RotateCcw, content: 'Lv110防具を追加しました。', createdAt: '2025-08-24' },
 ];
-
-export const MaxLv = 130;
