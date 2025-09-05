@@ -6,6 +6,7 @@ export interface Armor {
   armorSeriesId: number;
   imageUrl: string;
   lv: number;
+  sewing: Sewing;
 }
 
 export interface ArmorSeries {
@@ -18,12 +19,15 @@ export interface ArmorSeries {
 
 type ClothType = 'REBIRTH' | 'RAINBOW' | 'HEART' | 'NORMAL'; //初期装備では布特性の無い装備もある
 type Strengths = 'WEAK' | 'NORMAL' | 'STRONGER' | 'STRONGEST' | 'UNKNOWN';
-export interface Swing {
+export interface Sewing {
   id: number;
   armorId: number;
   clothType: ClothType; //布特性(再生・虹・会心・通常)
   strength: Strengths[]; //強さローテーション
   settingValue: number[]; //防具毎の設定値
+  armor: {
+    parts: ArmorParts;
+  };
 }
 
 export interface Favorite {
