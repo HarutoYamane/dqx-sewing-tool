@@ -11,12 +11,14 @@ interface UserState {
   error: string | null;
   // 現在ログイン中のユーザー情報を取得する Action
   fetchCurrentUser: () => Promise<void>;
+  // ユーザー情報を更新する Action
+  updateUserName: (name: string) => Promise<void>;
   // ユーザー情報をクリアする Action
   clearUser: () => void;
 }
 
 // Zustand を使って UserState ストアを作成
-export const useUserStore = create<UserState>((set) => ({
+export const useUserStore = create<UserState>((set, get) => ({
   // 初期 State
   user: null,
   isLoading: false,
@@ -40,6 +42,35 @@ export const useUserStore = create<UserState>((set) => ({
       console.error('ユーザー情報の取得に失敗:', error);
       set({
         error: error instanceof Error ? error.message : 'ユーザー情報の取得に失敗しました',
+        isLoading: false,
+      });
+    }
+  },
+  updateUserName: async (name: string) => {
+    try {
+      set({ isLoading: true, error: null });
+      const currentUser = get().user;
+
+      if (!currentUser) throw new Error('ユーザーがログインしていません');
+
+      // API にユーザー名の更新をリクエスト
+      const res = await fetch('/api/user', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name }),
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.error || 'ユーザー名の更新に失敗しました');
+      }
+
+      const updatedUser = (await res.json()) as UserProfile;
+      set({ user: updatedUser, isLoading: false });
+    } catch (error) {
+      console.error('ユーザー名の更新に失敗:', error);
+      set({
+        error: error instanceof Error ? error.message : 'ユーザー名の更新に失敗しました',
         isLoading: false,
       });
     }
