@@ -66,6 +66,10 @@ export const PATCH = withAuth(async (request: NextRequest, _, user: UserProfile)
 
     // リクエストボディがある場合は更新
     const { isComplete } = JSON.parse(body);
+    // API側で入力値の検証
+    if (isComplete !== true && isComplete !== false) {
+      return NextResponse.json({ error: '無効なisComplete値' }, { status: 400 });
+    }
 
     // upsertで新規作成または更新
     const updatedResult = await prisma.result.upsert({
