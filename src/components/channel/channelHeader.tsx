@@ -15,11 +15,13 @@ import { Heart, Search } from 'lucide-react';
 import { Armor } from '@/types/armor';
 // Zustandストア
 import { useFavoriteStore } from '@/store/favoriteStore';
+import { useUserStore } from '@/store/useUserStore';
 // ストレージ
 import { getArmorImageUrl } from '@/utils/supabase/storage';
 
 export default function ChannelHeader({ channelId }: { channelId: number }) {
-  const { favorites, isLoading, error, fetchFavorites } = useFavoriteStore();
+  const { favorites, isLoading, error, fetchFavorites, addFavorite, deleteFavorite } = useFavoriteStore();
+  const { user } = useUserStore();
   const [isInitialized, setIsInitialized] = useState(false);
 
   const initFavorites = useCallback(async () => {
@@ -52,7 +54,7 @@ export default function ChannelHeader({ channelId }: { channelId: number }) {
   }, [channelId]);
 
   // ローディング状態
-  if (!isInitialized || isLoading || isLoadingArmor || !armor) {
+  if (!isInitialized || isLoading || isLoadingArmor || !armor || !favorites || !user) {
     return <Loading />;
   }
 
@@ -87,22 +89,32 @@ export default function ChannelHeader({ channelId }: { channelId: number }) {
             </Button>
           </Link>
           {/* お気に入りに追加する処理を実装予定 今は見た目のみ */}
-          {/* <Button
+          <Button
             variant="outline"
+            disabled={isLoading}
             size="sm"
             onClick={() => {
-              if (favorites.includes(armor.id)) {
-                removeFavorite(armor.id);
+              if (favorites.some((favorite) => favorite.armorId === armor.id)) {
+                //someの戻り値（boolean）
+                const favorite = favorites.find((f) => f.armorId === armor.id);
+                //該当するオブジェクト(Favorite型)を取得
+                if (favorite) {
+                  deleteFavorite(favorite.id); // //そのオブジェクトのIdを削除
+                }
               } else {
-                addFavorite(armor.id);
+                addFavorite(armor.id, new Date());
               }
             }}
           >
             <Heart
-              className={`h-4 w-4 ${favorites.includes(armor.id) ? 'text-red-500 fill-red-500' : 'text-gray-500'}`}
+              className={`h-4 w-4 ${
+                favorites.some((favorite) => favorite.armorId === armor.id)
+                  ? 'text-red-500 fill-red-500'
+                  : 'text-gray-500'
+              }`}
             />
             <span className="text-sm">お気に入り</span>
-          </Button> */}
+          </Button>
         </div>
       </div>
     </header>
