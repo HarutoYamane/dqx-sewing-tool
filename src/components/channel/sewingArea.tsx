@@ -95,7 +95,7 @@ export default function SewingArea({ channelId }: { channelId: number }) {
             const config = getStrengthConfig(strength);
             return (
               <div key={index} className={`space-y-2`}>
-                <label className={`${config.color} rounded-md p-2 text-xs text-white`}>{config.text}</label>
+                <div className={`${config.color} rounded-md p-2 text-xs text-white`}>{config.text}</div>
               </div>
             );
           })}
@@ -109,15 +109,20 @@ export default function SewingArea({ channelId }: { channelId: number }) {
       <div className="grid grid-cols-3 gap-4">
         {sewingValue.settingValue.map((value: number, index: number) => (
           <div key={index} className="space-y-2">
-            <label className="text-sm font-medium text-muted-foreground">残り値 {index + 1}</label>
+            <label htmlFor={`remaining-${index + 1}`} className="text-sm font-medium text-muted-foreground">
+              残り値 {index + 1}
+            </label>
             <Input
+              id={`remaining-${index + 1}`}
+              aria-label={`残り値 ${index + 1}`}
               type="number"
               min="0"
-              max="999"
+              max="9999"
+              readOnly //残り値は編集不可
               value={values[index] === null ? value : value - (values[index] ?? 0)}
               className="text-center"
               placeholder="0"
-              disabled={value === 0} //使わないマスは無効化
+              disabled={value === 0} //使わないマスは無効化（readOnlyだけでも良いがデザイン的に見やすい）
             />
           </div>
         ))}
@@ -126,11 +131,15 @@ export default function SewingArea({ channelId }: { channelId: number }) {
       <div className="grid grid-cols-3 gap-4">
         {values.map((value, index) => (
           <div key={index} className="space-y-2">
-            <label className="text-sm font-medium text-muted-foreground">現在値 {index + 1}</label>
+            <label htmlFor={`current-${index + 1}`} className="text-sm font-medium text-muted-foreground">
+              現在値 {index + 1}
+            </label>
             <Input
+              id={`current-${index + 1}`}
+              aria-label={`現在値 ${index + 1}`}
               type="number"
               min="0"
-              max="999"
+              max="9999"
               value={value ?? ''}
               onChange={(e) => handleInputChange(index, e.target.value)}
               className="text-center"
