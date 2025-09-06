@@ -9,7 +9,9 @@ import { Input } from '@/components/ui/input';
 // 自作コンポーネント
 import Loading from '@/app/loading';
 // アイコン
-import { RotateCcw, Check, X } from 'lucide-react';
+import { RotateCcw, Check, CircleCheckBig, X, CircleX } from 'lucide-react';
+// Zustandストア
+import { useResultStore } from '@/store/ResultStore';
 // データ型
 import { Sewing } from '@/types/armor';
 
@@ -17,6 +19,7 @@ export default function SewingArea({ channelId }: { channelId: number }) {
   const [values, setValues] = useState<(number | null)[]>([...Array(9).fill(null)]);
   const [sewingValue, setSewingValue] = useState<Sewing | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const { result, updateResult } = useResultStore();
 
   useEffect(() => {
     const fetchArmor = async () => {
@@ -61,7 +64,25 @@ export default function SewingArea({ channelId }: { channelId: number }) {
     0
   ); //合計誤差
 
-  const isComplete = TotalDeviation <= Tolerance;
+  const getIcon = (index: number) => {
+    const value = values[index];
+    if (sewingValue.settingValue[index] == 0) return null; //使わないマスには表示しないのでnull
+
+    const diff = Math.abs(value ? value - sewingValue.settingValue[index] : sewingValue.settingValue[index]);
+    if (diff === 0) {
+      return <CircleCheckBig className="h-4 w-4 mr-2 text-green-500" />;
+    } else if (diff >= 1 && diff <= 4) {
+      return <CircleCheckBig className="h-4 w-4 mr-2 text-yellow-500" />;
+    } else {
+      return <CircleX className="h-4 w-4 mr-2 text-red-500" />;
+    }
+  };
+
+  const isComplete: boolean =
+    TotalDeviation <= Tolerance && //合計誤差が許容誤差以内に収まっているか
+    values.every(
+      (value, index) => (value ? Math.abs(value - sewingValue.settingValue[index]) <= 4 : true) //差が4以内に収まっているか(空のマスは無関係なのでtrue)
+    );
   const completeButtonConfig = {
     colorAnime: isComplete
       ? 'bg-green-500 hover:bg-green-600 animate-[heartbeat_1.5s_ease-in-out_infinite]'
@@ -83,7 +104,7 @@ export default function SewingArea({ channelId }: { channelId: number }) {
   };
 
   const handleComplete = () => {
-    //後々データベースに移行したら、裁縫回数などに反映する処理を追加(今はリセットと同じ)
+    updateResult(channelId, isComplete);
     setValues([...Array(9).fill(null)]);
   };
 
@@ -109,9 +130,12 @@ export default function SewingArea({ channelId }: { channelId: number }) {
       <div className="grid grid-cols-3 gap-4">
         {sewingValue.settingValue.map((value: number, index: number) => (
           <div key={index} className="space-y-2">
-            <label htmlFor={`remaining-${index + 1}`} className="text-sm font-medium text-muted-foreground">
-              残り値 {index + 1}
-            </label>
+            <div className="flex justify-start items-center">
+              {getIcon(index)}
+              <label htmlFor={`remaining-${index + 1}`} className="text-sm font-medium text-muted-foreground">
+                残り値 {index + 1}
+              </label>
+            </div>
             <Input
               id={`remaining-${index + 1}`}
               aria-label={`残り値 ${index + 1}`}
