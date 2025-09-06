@@ -1,51 +1,29 @@
 'use client';
 // React
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 // shadcn/ui
 import { Button } from '@/components/ui/button';
 // 自作コンポーネント
 import Loading from '@/app/loading';
+import Error from '@/app/error';
 // アイコン
 import { RotateCcw } from 'lucide-react';
-// データ型
-import { Result } from '@/types/armor';
+// Zustandストア
+import { useResultStore } from '@/store/ResultStore';
 
 export default function ChannelFooter({ channelId }: { channelId: number }) {
-  const [result, setResult] = useState<Result | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const { result, isLoading, error, fetchResult, resetResult } = useResultStore();
 
   useEffect(() => {
-    const fetchResult = async () => {
-      setIsLoading(true);
-      try {
-        const response = await fetch(`/api/Armor/Channel/Result?channelId=${channelId}`);
-
-        if (!response.ok) {
-          // 404エラー（リザルトレコードが存在しない）の場合は正常な状態として扱う
-          if (response.status === 404) {
-            setResult(null);
-            return;
-          }
-          // その他のHTTPエラーはコンソールに出力
-          console.error(`HTTP error! status: ${response.status}`);
-          setResult(null);
-          return;
-        }
-
-        const data = await response.json();
-        setResult(data);
-      } catch (error) {
-        // ネットワークエラーやJSONパースエラーなど
-        console.error('防具毎の裁縫結果取得エラー:', error);
-        setResult(null);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchResult();
-  }, [channelId]);
+    fetchResult(channelId);
+  }, [channelId, fetchResult]);
 
   if (isLoading) return <Loading />;
+  if (error) return <Error />;
+
+  const handleReset = (channelId: number) => {
+    resetResult(channelId);
+  };
 
   return (
     <footer className="border-b bg-background z-10">
@@ -54,9 +32,10 @@ export default function ChannelFooter({ channelId }: { channelId: number }) {
           <p className="text-sm">裁縫回数：{result !== null ? result.total : 0}回</p>
           <p className="text-sm">大成功回数：{result !== null ? result.threeStar : 0}回</p>
           <p className="text-sm text-muted-foreground">
-            大成功確率：{result !== null ? result.threeStar / result.total : '-'}%
+            大成功確率：
+            {result !== null && result.total > 0 ? ((result.threeStar / result.total) * 100).toFixed(1) : '-'}%
           </p>
-          <Button variant="outline" size="sm">
+          <Button variant="outline" size="sm" onClick={() => handleReset(channelId)}>
             <RotateCcw className="h-4 w-4" />
             裁縫回数をリセット
           </Button>
