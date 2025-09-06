@@ -51,8 +51,8 @@ export default function ChannelFooter({ channelId }: { channelId: number }) {
     <footer className="border-b bg-background z-10">
       <div className="h-14 flex items-center gap-4 px-4">
         <div className="flex items-center gap-2">
-          <p>トータル裁縫回数：{result !== null ? result.total : 0}回</p>
-          <p>大成功回数：{result !== null ? result.threeStar : 0}回</p>
+          <p className="text-sm">裁縫回数：{result !== null ? result.total : 0}回</p>
+          <p className="text-sm">大成功回数：{result !== null ? result.threeStar : 0}回</p>
           <p className="text-sm text-muted-foreground">
             大成功確率：{result !== null ? result.threeStar / result.total : '-'}%
           </p>
