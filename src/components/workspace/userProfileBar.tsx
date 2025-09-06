@@ -38,6 +38,7 @@ import { logout } from '@/app/logout/actions';
 // ストア
 import { useUserStore } from '@/store/useUserStore';
 import { useFavoriteStore } from '@/store/favoriteStore';
+import { useResultStore } from '@/store/ResultStore';
 
 export default function UserProfileBar({ userProfile }: { userProfile: UserProfile }) {
   const [settingsOpen, setSettingsOpen] = useState(false);
@@ -47,6 +48,7 @@ export default function UserProfileBar({ userProfile }: { userProfile: UserProfi
   const { theme, setTheme } = useTheme();
   const { clearUser, updateUserName } = useUserStore();
   const { clearFavorites } = useFavoriteStore();
+  const { clearResult } = useResultStore();
 
   // ダークモードの切り替え
   const toggleDarkMode = () => {
@@ -67,6 +69,7 @@ export default function UserProfileBar({ userProfile }: { userProfile: UserProfi
       // クライアント側のストア状態をクリア
       clearUser();
       clearFavorites();
+      clearResult();
       // ページリロードでリダイレクト（確実な方法）
       window.location.href = '/';
     } catch (error) {
