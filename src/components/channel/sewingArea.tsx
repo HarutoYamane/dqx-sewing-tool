@@ -19,7 +19,7 @@ export default function SewingArea({ channelId }: { channelId: number }) {
   const [values, setValues] = useState<(number | null)[]>([...Array(9).fill(null)]);
   const [sewingValue, setSewingValue] = useState<Sewing | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const { result, updateResult } = useResultStore();
+  const { updateResult } = useResultStore();
 
   useEffect(() => {
     const fetchArmor = async () => {
