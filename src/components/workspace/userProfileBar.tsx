@@ -12,7 +12,15 @@ import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from '@/components/ui/dialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogTrigger,
+  DialogFooter,
+} from '@/components/ui/dialog';
 import {
   AlertDialog,
   AlertDialogContent,
@@ -130,6 +138,7 @@ export default function UserProfileBar({ userProfile }: { userProfile: UserProfi
         <DialogContent>
           <DialogHeader>
             <DialogTitle>環境設定</DialogTitle>
+            <DialogDescription>ユーザー名の変更やダークモードの設定を行えます。</DialogDescription>
           </DialogHeader>
           <div className="space-y-8 py-2">
             <div className="space-y-2">
