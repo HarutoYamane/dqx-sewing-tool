@@ -112,6 +112,7 @@ export default function WorkSpacePage() {
             <CardDescription>最近多く作成されている防具ランキング</CardDescription>
           </CardHeader>
           <CardContent className="flex-1 overflow-auto">
+            <p>近日実装予定（データ収集中）</p>
             {/* <div className="space-y-4">
               {armors.map((armor, index) => (
                 <div key={armor.id} className="flex items-center">
