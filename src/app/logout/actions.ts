@@ -1,7 +1,6 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
-import { redirect } from 'next/navigation';
 
 import { createClient } from '@/utils/supabase/server';
 
@@ -12,9 +11,9 @@ export async function logout() {
 
   if (error) {
     console.log(error);
-    redirect('/error');
+    throw new Error('ログアウトに失敗しました');
   }
 
   revalidatePath('/', 'layout');
-  redirect('/');
+  return { success: true };
 }
