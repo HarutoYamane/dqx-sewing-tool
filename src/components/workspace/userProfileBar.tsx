@@ -3,7 +3,7 @@
 // アイコン
 import { LogOut, Settings, User } from 'lucide-react';
 // React
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 // Next.js（テーマ管理）
 import { useTheme } from 'next-themes';
 // shadcn/ui
@@ -35,8 +35,9 @@ export default function UserProfileBar({ userProfile }: { userProfile: UserProfi
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [userName, setUserName] = useState(userProfile.name);
   const [logoutOpen, setLogoutOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const { theme, setTheme } = useTheme();
-  const { clearUser } = useUserStore();
+  const { clearUser, updateUserName } = useUserStore();
   const { clearFavorites } = useFavoriteStore();
 
   // ダークモードの切り替え
@@ -44,16 +45,62 @@ export default function UserProfileBar({ userProfile }: { userProfile: UserProfi
     setTheme(theme === 'dark' ? 'light' : 'dark');
   };
 
+  useEffect(() => {
+    // ユーザー名の初期化
+    setUserName(userProfile.name);
+  }, [settingsOpen, userProfile.name]);
+
   // ログアウト処理
   const handleLogout = async () => {
     try {
+      setIsLoading(true);
+      // サーバー側でのログアウト処理
+      await logout();
       // クライアント側のストア状態をクリア
       clearUser();
       clearFavorites();
-      // サーバー側でのログアウト処理
-      await logout();
+      // ページリロードでリダイレクト（確実な方法）
+      window.location.href = '/';
     } catch (error) {
       console.error('ログアウトエラー:', error);
+      setIsLoading(false);
+    }
+  };
+
+  // フロントエンド側のバリデーション関数
+  const validateUserName = (name: string): string | null => {
+    if (!name || name.trim() === '') {
+      return 'ユーザー名は必須です';
+    }
+    if (name.length > 20) {
+      return 'ユーザー名は20文字以内である必要があります';
+    }
+    return null; // バリデーション成功
+  };
+
+  // ユーザー名更新処理
+  const handleUpdateUserName = async () => {
+    try {
+      if (userName === userProfile.name) {
+        setSettingsOpen(false);
+        return;
+      }
+
+      // フロントエンド側でバリデーション
+      const validationError = validateUserName(userName);
+      if (validationError) {
+        alert(validationError); // または適切なエラー表示方法
+        return;
+      }
+
+      await updateUserName(userName);
+      setSettingsOpen(false);
+    } catch (error) {
+      console.error('ユーザー名更新エラー:', error);
+      // サーバー側のバリデーションエラーも表示
+      if (error instanceof Error) {
+        alert(error.message);
+      }
     }
   };
 
@@ -102,7 +149,7 @@ export default function UserProfileBar({ userProfile }: { userProfile: UserProfi
             </div>
           </div>
           <DialogFooter>
-            <Button onClick={() => setSettingsOpen(false)}>保存</Button>
+            <Button onClick={() => handleUpdateUserName()}>保存</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
@@ -123,7 +170,19 @@ export default function UserProfileBar({ userProfile }: { userProfile: UserProfi
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>キャンセル</AlertDialogCancel>
-            <AlertDialogAction onClick={handleLogout}>ログアウト</AlertDialogAction>
+            <AlertDialogAction disabled={isLoading} onClick={handleLogout}>
+              {isLoading && (
+                <svg className="mr-2 h-4 w-4 animate-spin" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  ></path>
+                </svg>
+              )}
+              ログアウト
+            </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
