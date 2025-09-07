@@ -25,11 +25,17 @@ function Spinner({ className, size = 'md', ...props }: SpinnerProps) {
   );
 }
 
-export default function Loading() {
+export default function Loading({
+  size = 'lg',
+  text = 'visible',
+}: {
+  size?: 'sm' | 'md' | 'lg'; // スピナーのサイズ（デフォルトはlg）
+  text?: 'hidden' | 'visible'; // テキストの表示/非表示（デフォルトは表示）
+}) {
   return (
     <div className="flex h-[calc(100vh-4rem)] flex-col items-center justify-center">
-      <Spinner size="lg" className="mb-4" />
-      <p className="text-lg font-medium text-muted-foreground">データを読み込んでいます...</p>
+      <Spinner size={size} className="mb-4" />
+      <p className={`text-lg font-medium text-muted-foreground ${text}`}>データを読み込んでいます...</p>
     </div>
   );
 }
