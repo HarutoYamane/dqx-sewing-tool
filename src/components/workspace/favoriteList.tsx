@@ -16,7 +16,7 @@ import { useFavoriteStore } from '@/store/favoriteStore';
 import { getArmorImageUrl } from '@/utils/supabase/storage';
 
 export default function FavoriteList() {
-  const { favorites, isLoading, error, fetchFavorites } = useFavoriteStore();
+  const { favorites, isLoading, isUpdateLoading, error, fetchFavorites } = useFavoriteStore();
   const [isInitialized, setIsInitialized] = useState(false);
 
   const initFavorites = useCallback(async () => {
@@ -30,8 +30,8 @@ export default function FavoriteList() {
   }, [initFavorites]);
 
   // ローディング状態
-  if (!isInitialized || isLoading) {
-    return <Loading />;
+  if (!isInitialized || isLoading || isUpdateLoading) {
+    return <Loading text="hidden" />;
   }
 
   // エラー状態

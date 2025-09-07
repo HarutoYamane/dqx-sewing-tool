@@ -7,6 +7,8 @@ interface FavoriteState {
   favorites: Favorite[] | null;
   // ローディング状態
   isLoading: boolean;
+  // 更新ローディング状態（追加・削除）
+  isUpdateLoading?: boolean;
   // エラー情報
   error: string | null;
   // 現在ログイン中のユーザー情報のお気に入りリストを取得する Action
@@ -51,12 +53,12 @@ export const useFavoriteStore = create<FavoriteState>((set) => ({
 
   addFavorite: async (armorId: number, createdAt: Date) => {
     try {
-      set({ isLoading: true, error: null });
+      set({ isUpdateLoading: true, error: null });
 
       // 重複チェック(基本は起こり得ないが、万一のために追加)
       const currentState = useFavoriteStore.getState();
       if (currentState.favorites?.some((favorite) => favorite.armorId === armorId)) {
-        set({ isLoading: false });
+        set({ isUpdateLoading: false });
         return; // 既に存在する場合は追加しない
       }
 
@@ -73,20 +75,20 @@ export const useFavoriteStore = create<FavoriteState>((set) => ({
       const newFavorite = (await res.json()) as Favorite;
       set((state) => ({
         favorites: state.favorites ? [...state.favorites, newFavorite] : [newFavorite],
-        isLoading: false,
+        isUpdateLoading: false,
       }));
     } catch (error) {
       console.error('ユーザーのお気に入りリストの追加に失敗:', error);
       set({
         error: error instanceof Error ? error.message : 'ユーザーのお気に入りリストの追加に失敗しました',
-        isLoading: false,
+        isUpdateLoading: false,
       });
     }
   },
 
   deleteFavorite: async (favoriteId: number) => {
     try {
-      set({ isLoading: true, error: null });
+      set({ isUpdateLoading: true, error: null });
       const res = await fetch(`/api/favorite`, {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
@@ -101,13 +103,13 @@ export const useFavoriteStore = create<FavoriteState>((set) => ({
       set((state) => ({
         // お気に入りが空の場合はnullを返す
         favorites: state.favorites?.filter((favorite) => favorite.id !== favoriteId) || null,
-        isLoading: false,
+        isUpdateLoading: false,
       }));
     } catch (error) {
       console.error('ユーザーのお気に入りリストの削除に失敗:', error);
       set({
         error: error instanceof Error ? error.message : 'ユーザーのお気に入りリストの削除に失敗しました',
-        isLoading: false,
+        isUpdateLoading: false,
       });
     }
   },

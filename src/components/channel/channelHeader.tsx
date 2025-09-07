@@ -20,7 +20,8 @@ import { useUserStore } from '@/store/useUserStore';
 import { getArmorImageUrl } from '@/utils/supabase/storage';
 
 export default function ChannelHeader({ channelId }: { channelId: number }) {
-  const { favorites, isLoading, error, fetchFavorites, addFavorite, deleteFavorite } = useFavoriteStore();
+  const { favorites, isLoading, isUpdateLoading, error, fetchFavorites, addFavorite, deleteFavorite } =
+    useFavoriteStore();
   const { user } = useUserStore();
   const [isInitialized, setIsInitialized] = useState(false);
 
@@ -91,7 +92,7 @@ export default function ChannelHeader({ channelId }: { channelId: number }) {
           {/* お気に入りに追加する処理を実装予定 今は見た目のみ */}
           <Button
             variant="outline"
-            disabled={isLoading}
+            disabled={isLoading || isUpdateLoading} // 読込み中または更新中は押せない
             size="sm"
             onClick={() => {
               if (favorites.some((favorite) => favorite.armorId === armor.id)) {
@@ -106,13 +107,18 @@ export default function ChannelHeader({ channelId }: { channelId: number }) {
               }
             }}
           >
-            <Heart
-              className={`h-4 w-4 ${
-                favorites.some((favorite) => favorite.armorId === armor.id)
-                  ? 'text-red-500 fill-red-500'
-                  : 'text-gray-500'
-              }`}
-            />
+            {isUpdateLoading && (
+              <div className="h-4 w-4 animate-spin rounded-full border-2 border-solid border-current border-r-transparent" />
+            )}
+            {!isUpdateLoading && (
+              <Heart
+                className={`h-4 w-4 ${
+                  favorites.some((favorite) => favorite.armorId === armor.id)
+                    ? 'text-red-500 fill-red-500'
+                    : 'text-gray-500'
+                }`}
+              />
+            )}
             <span className="text-sm">お気に入り</span>
           </Button>
         </div>
