@@ -19,7 +19,7 @@ export default function SewingArea({ channelId }: { channelId: number }) {
   const [values, setValues] = useState<(number | null)[]>([...Array(9).fill(null)]);
   const [sewingValue, setSewingValue] = useState<Sewing | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const { updateResult } = useResultStore();
+  const { isUpdateLoading, isResetLoading, updateResult } = useResultStore();
 
   useEffect(() => {
     const fetchArmor = async () => {
@@ -181,7 +181,16 @@ export default function SewingArea({ channelId }: { channelId: number }) {
             {/* レイアウトズレの防止で、固定幅を設けている(桁数変動時に動いちゃう) */}
             <p className="w-[14ch]">許容誤差: {Tolerance}</p>
           </div>
-          <Button variant="default" size="lg" onClick={handleComplete} className={completeButtonConfig.colorAnime}>
+          <Button
+            disabled={isUpdateLoading || isResetLoading} // 更新中またはリセット中は押せない
+            variant="default"
+            size="lg"
+            onClick={handleComplete}
+            className={completeButtonConfig.colorAnime}
+          >
+            {isUpdateLoading && (
+              <div className="h-4 w-4 animate-spin rounded-full border-2 border-solid border-current border-r-transparent mr-2" />
+            )}
             {completeButtonConfig.icon}
             {completeButtonConfig.text}
           </Button>

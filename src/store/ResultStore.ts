@@ -7,6 +7,10 @@ interface ResultState {
   result: Result | null;
   // ローディング状態
   isLoading: boolean;
+  // 更新ローディング状態
+  isUpdateLoading?: boolean;
+  // リセットローディング状態
+  isResetLoading?: boolean;
   // エラー情報
   error: string | null;
   // 現在ログイン中のユーザー情報の防具毎の裁縫結果を取得する Action
@@ -46,7 +50,7 @@ export const useResultStore = create<ResultState>((set) => ({
   },
   updateResult: async (channelId: number, isComplete: boolean) => {
     try {
-      set({ isLoading: true, error: null });
+      set({ isUpdateLoading: true, error: null });
       const response = await fetch(`/api/Armor/Channel/Result?channelId=${channelId}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
@@ -56,30 +60,30 @@ export const useResultStore = create<ResultState>((set) => ({
         throw new Error('ユーザーの防具毎の裁縫結果の更新に失敗しました');
       }
 
-      set({ result: (await response.json()) as Result, isLoading: false });
+      set({ result: (await response.json()) as Result, isUpdateLoading: false });
     } catch (error) {
       console.error('ユーザーの防具毎の裁縫結果の更新に失敗しました:', error);
       set({
         error: error instanceof Error ? error.message : 'ユーザーの防具毎の裁縫結果の更新に失敗しました',
-        isLoading: false,
+        isUpdateLoading: false,
       });
     }
   },
   resetResult: async (channelId: number) => {
     try {
-      set({ isLoading: true, error: null });
+      set({ isResetLoading: true, error: null });
       const response = await fetch(`/api/Armor/Channel/Result?channelId=${channelId}`, {
         method: 'PATCH',
       });
       if (!response.ok) {
         throw new Error('ユーザーの防具毎の裁縫結果のリセットに失敗しました');
       }
-      set({ result: (await response.json()) as Result, isLoading: false });
+      set({ result: (await response.json()) as Result, isResetLoading: false });
     } catch (error) {
       console.error('ユーザーの防具毎の裁縫結果のリセットに失敗しました:', error);
       set({
         error: error instanceof Error ? error.message : 'ユーザーの防具毎の裁縫結果のリセットに失敗しました',
-        isLoading: false,
+        isResetLoading: false,
       });
     }
   },
