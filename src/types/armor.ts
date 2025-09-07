@@ -1,4 +1,4 @@
-type ArmorParts = 'HEAD' | 'BODY_UPPER' | 'BODY_LOWER' | 'ARMS' | 'LEGS';
+export type ArmorParts = 'HEAD' | 'BODY_UPPER' | 'BODY_LOWER' | 'ARMS' | 'LEGS';
 export interface Armor {
   id: number;
   name: string;
@@ -17,8 +17,8 @@ export interface ArmorSeries {
   armors?: Armor[]; // 関連する防具（オプショナル）
 }
 
-type ClothType = 'REBIRTH' | 'RAINBOW' | 'HEART' | 'NORMAL'; //初期装備では布特性の無い装備もある
-type Strengths = 'WEAK' | 'NORMAL' | 'STRONGER' | 'STRONGEST' | 'UNKNOWN';
+export type ClothType = 'REBIRTH' | 'RAINBOW' | 'HEART' | 'NORMAL'; //初期装備では布特性の無い装備もある
+export type Strengths = 'WEAK' | 'NORMAL' | 'STRONGER' | 'STRONGEST' | 'UNKNOWN';
 export interface Sewing {
   id: number;
   armorId: number;
