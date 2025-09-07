@@ -1,13 +1,17 @@
+'use client';
+
 // Next.js
 import Link from 'next/link';
 // import Image from 'next/image';
 // アイコン
-import { Hash, MessageSquare, Users, Search } from 'lucide-react';
+import { Hash, MessageSquare, Users, Search, Sword } from 'lucide-react';
 // shadcn/ui
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 // データ
 import { topics } from '@/data/workspace';
+// Zustandストア
+import { useUserStore } from '@/store/useUserStore';
 // import { armors } from '@/data/armor';
 
 //人気商材ランキングのアイコンの色を返す
@@ -19,6 +23,7 @@ import { topics } from '@/data/workspace';
 // };
 
 export default function WorkSpacePage() {
+  const { user } = useUserStore();
   // TODO: これらのデータは、実際にはデータベースから取得する
   // 裁縫回数
   const Count = 100;
@@ -33,6 +38,14 @@ export default function WorkSpacePage() {
       <div className="flex items-center justify-between">
         <h2 className="text-3xl font-bold tracking-tight">ダッシュボード</h2>
         <div className="flex items-center gap-4">
+          {user?.role === 'ADMIN' && (
+            <Link href="/workspace/systemAdmin">
+              <Button variant="default" size="default" className="bg-green-500 hover:bg-green-600">
+                <Sword className=" h-4 w-4 fill-white" />
+                <p className="text-lg">防具を追加する</p>
+              </Button>
+            </Link>
+          )}
           <Link href="/workspace/search">
             <Button variant="outline" size="default">
               <Search className="mr-2 h-4 w-4" />
