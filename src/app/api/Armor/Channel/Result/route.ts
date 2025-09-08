@@ -59,6 +59,7 @@ export const PATCH = withAuth(async (request: NextRequest, _, user: UserProfile)
           total: 0,
           threeStar: 0,
           mistake: 0,
+          successRate: 0,
         },
       });
       return NextResponse.json(resetResult);
@@ -93,8 +94,23 @@ export const PATCH = withAuth(async (request: NextRequest, _, user: UserProfile)
         total: 1,
         threeStar: isComplete ? 1 : 0,
         mistake: isComplete ? 0 : 1,
+        successRate: isComplete ? 1 : 0, // 大成功確率
         createdAt: new Date(),
         updatedAt: new Date(),
+      },
+    });
+
+    // 大成功確率を計算して更新
+    const newSuccessRate = updatedResult.threeStar / updatedResult.total;
+    await prisma.result.update({
+      where: {
+        userId_armorId: {
+          userId: user.id,
+          armorId: parseInt(ChannelId),
+        },
+      },
+      data: {
+        successRate: newSuccessRate,
       },
     });
 
