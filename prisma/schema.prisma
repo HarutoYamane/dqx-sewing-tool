@@ -48,8 +48,9 @@ model User {
   updatedAt DateTime  @updatedAt
 
   // リレーション
-  favorites Favorite[]
-  results   Result[]
+  favorites        Favorite[]
+  results          Result[]
+  weeklyArmorStats WeeklyArmorStats[]
 }
 
 model ArmorSeries {
@@ -71,10 +72,11 @@ model Armor {
   lv            Int
 
   // リレーション
-  armorSeries ArmorSeries @relation(fields: [armorSeriesId], references: [id])
-  favorites    Favorite[]
-  sewing       Sewing?
-  results      Result[]
+  armorSeries     ArmorSeries      @relation(fields: [armorSeriesId], references: [id])
+  favorites       Favorite[]
+  sewing          Sewing?
+  results         Result[]
+  weeklyArmorStats WeeklyArmorStats[]
 }
 
 model Sewing {
@@ -107,9 +109,6 @@ model Result {
   userId    String
   armorId   Int
   threeStar Int     @default(0)
-  twoStar   Int     @default(0)
-  oneStar   Int     @default(0)
-  zeroStar  Int     @default(0)
   mistake   Int     @default(0)
   total     Int     @default(0)
   createdAt DateTime @default(now())
@@ -121,4 +120,21 @@ model Result {
 
   // 複合ユニーク制約
   @@unique([userId, armorId])
+}
+
+model WeeklyArmorStats {
+  id        Int      @id @default(autoincrement())
+  userId    String
+  armorId   Int
+  createdAt DateTime @default(now())
+
+  // リレーション
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  armor Armor @relation(fields: [armorId], references: [id], onDelete: Cascade)
+
+  // 複合ユニーク制約（同じユーザーが同じ防具を複数回作成することを防ぐ）
+  @@unique([userId, armorId])
+
+  // インデックス（防具IDでの検索を高速化）
+  @@index([armorId])
 }
