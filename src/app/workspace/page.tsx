@@ -2,27 +2,62 @@
 
 // Next.js
 import Link from 'next/link';
-// import Image from 'next/image';
+import Image from 'next/image';
+// React
+import { useEffect, useState } from 'react';
 // アイコン
 import { Hash, MessageSquare, Users, Search, Sword } from 'lucide-react';
 // shadcn/ui
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+// 自作コンポーネント
+import Loading from '@/app/loading';
 // データ
 import { topics } from '@/data/workspace';
 // Zustandストア
 import { useUserStore } from '@/store/useUserStore';
-// import { armors } from '@/data/armor';
+// ストレージ
+import { getArmorImageUrl } from '@/utils/supabase/storage';
 
-//人気商材ランキングのアイコンの色を返す
-// const RankingColor = (index: number) => {
-//   if (index > 2) return 'bg-primary/10';
-//   else if (index === 2) return 'bg-amber-500'; // 銅色
-//   else if (index === 1) return 'bg-gray-300'; // 銀色
-//   else if (index === 0) return 'bg-yellow-300'; // 金色
-// };
+// 人気商材ランキングのアイコンの色を返す
+const RankingColor = (index: number) => {
+  if (index > 2) return 'bg-primary/10';
+  else if (index === 2) return 'bg-amber-500'; // 銅色
+  else if (index === 1) return 'bg-gray-300'; // 銀色
+  else if (index === 0) return 'bg-yellow-300'; // 金色
+};
+
+interface RankingItem {
+  armorId: number;
+  count: number;
+  armorName: string;
+  imageUrl: string;
+}
 
 export default function WorkSpacePage() {
+  const [rankingData, setRankingData] = useState<RankingItem[]>([]);
+  const [isRankingLoading, setIsRankingLoading] = useState(false);
+
+  // 初回マウント時に人気商材ランキングを取得
+  useEffect(() => {
+    const fetchRanking = async () => {
+      try {
+        setIsRankingLoading(true);
+        const res = await fetch('/api/Armor/ranking');
+        if (!res.ok) {
+          throw new Error('人気商材ランキングの取得に失敗しました');
+        }
+        const data = await res.json();
+        setRankingData(data);
+      } catch (error) {
+        console.error('人気商材ランキングの取得に失敗しました:', error);
+      } finally {
+        setIsRankingLoading(false);
+      }
+    };
+    fetchRanking();
+  }, []);
+
   const { user } = useUserStore();
   // TODO: これらのデータは、実際にはデータベースから取得する
   // 裁縫回数
@@ -39,7 +74,7 @@ export default function WorkSpacePage() {
         <h2 className="text-3xl font-bold tracking-tight">ダッシュボード</h2>
         <div className="flex items-center gap-4">
           {user?.role === 'ADMIN' && (
-            <Link href="/workspace/systemAdmin">
+            <Link href="/workspace/systemAdmin/addArmor">
               <Button variant="default" size="default" className="bg-green-500 hover:bg-green-600">
                 <Sword className=" h-4 w-4 fill-white" />
                 <p className="text-lg">防具を追加する</p>
@@ -99,8 +134,20 @@ export default function WorkSpacePage() {
       <div className="grid gap-4 md:grid-cols-2">
         <Card className="col-span-1 flex flex-col max-h-[450px]">
           <CardHeader>
-            <CardTitle>トピックス</CardTitle>
-            <CardDescription>更新・変更情報の一覧</CardDescription>
+            <div className="flex flex-row items-center justify-between">
+              <div className="flex flex-col gap-1">
+                <CardTitle>トピックス</CardTitle>
+                <CardDescription>更新・変更情報の一覧</CardDescription>
+              </div>
+              {user?.role === 'ADMIN' && (
+                <Link href="/workspace/systemAdmin/topicsManager">
+                  <Button variant="default" size="sm" className="bg-green-500 hover:bg-green-600">
+                    <Sword className=" h-4 w-4 fill-white" />
+                    管理画面へ
+                  </Button>
+                </Link>
+              )}
+            </div>
           </CardHeader>
           <CardContent className="flex-1 overflow-auto">
             <div className="space-y-4">
@@ -124,27 +171,38 @@ export default function WorkSpacePage() {
             <CardTitle>人気商材</CardTitle>
             <CardDescription>最近多く作成されている防具ランキング</CardDescription>
           </CardHeader>
-          <CardContent className="flex-1 overflow-auto">
-            <p>近日実装予定（データ収集中）</p>
-            {/* <div className="space-y-4">
-              {armors.map((armor, index) => (
-                <div key={armor.id} className="flex items-center">
-                  <div className={`mr-4 flex h-9 w-9 items-center justify-center rounded-full ${RankingColor(index)}`}>
-                    <span className="font-medium text-primary">{index + 1}</span>
-                  </div>
-                  <div className="space-y-1 flex-1">
-                    <Link
-                      href={`/workspace/channel/${armor.id}`}
-                      className="flex flex-row gap-3 items-center font-medium hover:underline"
-                    >
-                      <Image src={armor.imageUrl} alt={armor.name} width={32} height={32} />
-                      {armor.name}
-                    </Link>
-                  </div>
+          {isRankingLoading ? (
+            <CardContent className="flex-1 overflow-auto">
+              <Loading text="hidden" />
+            </CardContent>
+          ) : (
+            <CardContent className="flex-1 overflow-auto">
+              {rankingData.length === 0 ? (
+                <p>ランキングデータが存在しません</p>
+              ) : (
+                <div className="space-y-4">
+                  {rankingData.map((armor, index) => (
+                    <div key={armor.armorId} className="flex items-center">
+                      <div
+                        className={`mr-4 flex h-9 w-9 items-center justify-center rounded-full ${RankingColor(index)}`}
+                      >
+                        <span className="font-medium text-primary">{index + 1}</span>
+                      </div>
+                      <div className="space-y-1 flex-1">
+                        <Link
+                          href={`/workspace/channel/${armor.armorId}`}
+                          className="flex flex-row gap-3 items-center font-medium hover:underline"
+                        >
+                          <Image src={getArmorImageUrl(armor.imageUrl)} alt={armor.armorName} width={32} height={32} />
+                          {armor.armorName}
+                        </Link>
+                      </div>
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div> */}
-          </CardContent>
+              )}
+            </CardContent>
+          )}
         </Card>
       </div>
     </div>
