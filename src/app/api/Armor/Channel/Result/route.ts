@@ -80,6 +80,7 @@ export const PATCH = withAuth(async (request: NextRequest, _, user: UserProfile)
         },
       },
       update: {
+        totalCount: { increment: 1 },
         total: { increment: 1 },
         threeStar: isComplete ? { increment: 1 } : undefined,
         mistake: !isComplete ? { increment: 1 } : undefined,
@@ -88,6 +89,7 @@ export const PATCH = withAuth(async (request: NextRequest, _, user: UserProfile)
       create: {
         userId: user.id,
         armorId: parseInt(ChannelId),
+        totalCount: 1,
         total: 1,
         threeStar: isComplete ? 1 : 0,
         mistake: isComplete ? 0 : 1,
