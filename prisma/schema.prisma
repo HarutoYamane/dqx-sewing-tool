@@ -111,6 +111,7 @@ model Result {
   threeStar Int     @default(0)
   mistake   Int     @default(0)
   total     Int     @default(0)
+  totalCount Int     @default(0) // 累積裁縫回数の合計（リセットなし）
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
