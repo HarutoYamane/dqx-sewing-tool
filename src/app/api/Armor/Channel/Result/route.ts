@@ -90,14 +90,27 @@ export const PATCH = withAuth(async (request: NextRequest, _, user: UserProfile)
         armorId: parseInt(ChannelId),
         total: 1,
         threeStar: isComplete ? 1 : 0,
-        twoStar: 0,
-        oneStar: 0,
-        zeroStar: 0,
         mistake: isComplete ? 0 : 1,
         createdAt: new Date(),
         updatedAt: new Date(),
       },
     });
+
+    // WeeklyArmorStatsを作成（重複は無視）
+    try {
+      await prisma.weeklyArmorStats.create({
+        data: {
+          userId: user.id,
+          armorId: parseInt(ChannelId),
+          createdAt: new Date(),
+        },
+      });
+    } catch (error) {
+      // ユニーク制約エラー（重複）の場合は無視
+      if (error && typeof error === 'object' && 'code' in error && error.code !== 'P2002') {
+        console.error('WeeklyArmorStats作成エラー:', error);
+      }
+    }
 
     return NextResponse.json(updatedResult);
   } catch (error) {
