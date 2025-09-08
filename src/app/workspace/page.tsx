@@ -27,6 +27,46 @@ const RankingColor = (index: number) => {
   else if (index === 0) return 'bg-yellow-300'; // 金色
 };
 
+interface TotalSewingCount {
+  _sum: {
+    totalCount: number;
+  };
+}
+
+interface MaxSuccessRate {
+  id: number;
+  userId: string;
+  armorId: number;
+  threeStar: number;
+  mistake: number;
+  total: number;
+  totalCount: number;
+  successRate: number;
+  createdAt: string;
+  updatedAt: string;
+  armor: {
+    name: string;
+    imageUrl: string;
+  };
+}
+
+interface LatestPlayed {
+  id: number;
+  userId: string;
+  armorId: number;
+  threeStar: number;
+  mistake: number;
+  total: number;
+  totalCount: number;
+  successRate: number;
+  createdAt: string;
+  updatedAt: string;
+  armor: {
+    name: string;
+    imageUrl: string;
+  };
+}
+
 interface RankingItem {
   armorId: number;
   count: number;
@@ -35,11 +75,40 @@ interface RankingItem {
 }
 
 export default function WorkSpacePage() {
-  const [rankingData, setRankingData] = useState<RankingItem[]>([]);
-  const [isRankingLoading, setIsRankingLoading] = useState(false);
+  const [totalSewingCount, setTotalSewingCount] = useState<TotalSewingCount | null>(null); // ユーザーの裁縫合計回数データ
+  const [maxSuccessRate, setMaxSuccessRate] = useState<MaxSuccessRate | null>(null); // ユーザーの最も大成功確率が高い商材
+  const [latestPlayed, setLatestPlayed] = useState<LatestPlayed | null>(null); // ユーザーの最も最近プレイした商材
+  const [rankingData, setRankingData] = useState<RankingItem[]>([]); // 人気商材ランキングのAPIから取得するデータ
+  const [isSewingStatsLoading, setIsSewingStatsLoading] = useState(false); // ユーザーの裁縫統計データのローディングフラグ
+  const [isRankingLoading, setIsRankingLoading] = useState(false); // 人気商材ランキングのローディングフラグ
+  const [isInitialized, setIsInitialized] = useState(false); // 初期化フラグ
 
-  // 初回マウント時に人気商材ランキングを取得
+  const { user } = useUserStore();
+
+  // 初回マウント時にユーザーの裁縫統計データと人気商材ランキングを取得
   useEffect(() => {
+    const fetchSewingStats = async () => {
+      try {
+        setIsSewingStatsLoading(true);
+        const res = await fetch('/api/user/sewingStats', {
+          method: 'POST',
+          body: JSON.stringify({
+            user: user,
+          }),
+        });
+        if (!res.ok) {
+          throw new Error('ユーザーの裁縫統計データの取得に失敗しました');
+        }
+        const { totalSewingCount, maxSuccessRate, latestPlayed } = await res.json();
+        setTotalSewingCount(totalSewingCount);
+        setMaxSuccessRate(maxSuccessRate);
+        setLatestPlayed(latestPlayed);
+      } catch (error) {
+        console.error('ユーザーの裁縫統計データの取得に失敗しました:', error);
+      } finally {
+        setIsSewingStatsLoading(false);
+      }
+    };
     const fetchRanking = async () => {
       try {
         setIsRankingLoading(true);
@@ -55,17 +124,13 @@ export default function WorkSpacePage() {
         setIsRankingLoading(false);
       }
     };
-    fetchRanking();
-  }, []);
+    Promise.all([fetchSewingStats(), fetchRanking()]);
+    setIsInitialized(true);
+  }, [user]);
 
-  const { user } = useUserStore();
-  // TODO: これらのデータは、実際にはデータベースから取得する
-  // 裁縫回数
-  const Count = 100;
-  // 自分の大成功率
-  const mySuccessRate = '75%';
-  // 裁縫職人ランク
-  const Rank = 'A+';
+  if (isSewingStatsLoading || isRankingLoading) {
+    return <Loading />;
+  }
 
   return (
     <div className="flex-1 space-y-4 p-4 md:p-8 pt-6">
@@ -103,30 +168,67 @@ export default function WorkSpacePage() {
             <Hash className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{Count}</div>
+            <div className="text-2xl font-bold">{totalSewingCount === null ? 0 : totalSewingCount._sum.totalCount}</div>
             <p className="text-xs text-muted-foreground">今までの裁縫回数の合計</p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">大成功率</CardTitle>
+            <CardTitle className="text-sm font-medium">最も大成功率が高い</CardTitle>
             <MessageSquare className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{mySuccessRate}</div>
-            <p className="text-xs text-muted-foreground">今までの全商材の大成功率</p>
+            {maxSuccessRate !== null ? (
+              <>
+                <Link href={`/workspace/channel/${maxSuccessRate.armorId}`}>
+                  <div className="flex flex-row items-center gap-2">
+                    <Image
+                      src={getArmorImageUrl(maxSuccessRate.armor.imageUrl)}
+                      alt={maxSuccessRate.armor.name}
+                      width={32}
+                      height={32}
+                    />
+                    <div className="text-lg font-bold hover:underline">{maxSuccessRate.armor.name}</div>
+                  </div>
+                </Link>
+                <p className="text-xs text-muted-foreground">
+                  大成功率：{(maxSuccessRate.successRate * 100).toFixed(1)} %
+                </p>
+              </>
+            ) : (
+              <div className="text-2xl font-bold text-muted-foreground">データなし</div>
+            )}
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">職人ランク</CardTitle>
+            <CardTitle className="text-sm font-medium">最も最近プレイ</CardTitle>
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{Rank}</div>
-            <p className="text-xs text-muted-foreground">裁縫職人ランク</p>
+            {latestPlayed !== null ? (
+              <>
+                <Link href={`/workspace/channel/${latestPlayed.armorId}`}>
+                  <div className="flex flex-row items-center gap-2">
+                    <Image
+                      src={getArmorImageUrl(latestPlayed.armor.imageUrl)}
+                      alt={latestPlayed.armor.name}
+                      width={32}
+                      height={32}
+                    />
+                    <div className="text-lg font-bold hover:underline">{latestPlayed.armor.name}</div>
+                  </div>
+                </Link>
+                <p className="text-xs text-muted-foreground">
+                  プレイ日時：
+                  {new Date(latestPlayed.updatedAt).toLocaleDateString()}
+                </p>
+              </>
+            ) : (
+              <div className="text-2xl font-bold text-muted-foreground">データなし</div>
+            )}
           </CardContent>
         </Card>
       </div>
@@ -171,7 +273,7 @@ export default function WorkSpacePage() {
             <CardTitle>人気商材</CardTitle>
             <CardDescription>最近多く作成されている防具ランキング</CardDescription>
           </CardHeader>
-          {isRankingLoading ? (
+          {isRankingLoading || !isInitialized ? (
             <CardContent className="flex-1 overflow-auto">
               <Loading text="hidden" />
             </CardContent>
