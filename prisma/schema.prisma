@@ -140,3 +140,15 @@ model WeeklyArmorStats {
   // インデックス（防具IDでの検索を高速化）
   @@index([armorId])
 }
+
+model Topics{
+  id        Int      @id @default(autoincrement())
+  icon      String // アイコン
+  title     String // タイトル（一覧表示用）
+  content   String // 内容（補助説明等）
+  body      String // 本文（詳細表示用）
+  link      String // リンク
+  published Boolean @default(false) // 公開/非公開
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
