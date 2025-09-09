@@ -9,6 +9,8 @@ import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Label } from '@/components/ui/label';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 // Zod と React Hook Form
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -21,17 +23,19 @@ import { login } from './actions';
 const formSchema = z.object({
   email: z.string().email({ message: '有効なメールアドレスを入力してください' }),
   password: z.string().min(1, { message: 'パスワードは必須です' }),
+  adminPassword: z.string().optional(),
 });
 
 export default function LoginPage() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const [isAdminUser, setIsAdminUser] = useState<boolean>(false);
   const router = useRouter();
 
   // フォームの設定
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: { email: '', password: '' },
+    defaultValues: { email: '', password: '', adminPassword: '' },
   });
 
   const handleSubmit = async (values: z.infer<typeof formSchema>) => {
@@ -43,6 +47,11 @@ export default function LoginPage() {
       const formData = new FormData();
       formData.append('email', values.email);
       formData.append('password', values.password);
+
+      // 管理者パスワードがある場合は追加
+      if (values.adminPassword) {
+        formData.append('adminPassword', values.adminPassword);
+      }
 
       // サーバーアクションを呼び出し
       await login(formData);
@@ -74,7 +83,17 @@ export default function LoginPage() {
         </div>
         <Card>
           <CardHeader>
-            <CardTitle>ログイン</CardTitle>
+            <div className="flex items-center justify-between">
+              <CardTitle>ログイン</CardTitle>
+              <div className="flex items-center justify-end gap-2">
+                <Label htmlFor="isAdminUser">管理者</Label>
+                <Checkbox
+                  checked={isAdminUser}
+                  onCheckedChange={(checked) => setIsAdminUser(!!checked)}
+                  id="isAdminUser"
+                />
+              </div>
+            </div>
           </CardHeader>
 
           <CardContent className="grid gap-4">
@@ -121,6 +140,30 @@ export default function LoginPage() {
                     </FormItem>
                   )}
                 />
+
+                {/* 管理者パスワードフィールド */}
+                {isAdminUser && (
+                  <FormField
+                    control={form.control}
+                    name="adminPassword"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>管理者パスワード</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="管理者パスワードを入力してください"
+                            type="password"
+                            autoCapitalize="none"
+                            autoCorrect="off"
+                            disabled={isLoading}
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                )}
 
                 {error && <div className="text-sm font-medium text-destructive">{error}</div>}
 
