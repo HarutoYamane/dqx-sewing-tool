@@ -78,7 +78,7 @@ export default function SearchPage() {
               variant="outline"
               size="default"
               onClick={() => setPage(page + 1)}
-              disabled={page === Math.ceil(total / 20)}
+              disabled={page === Math.ceil(total / 15)}
             >
               <ChevronRight className="h-4 w-4" />
               <p className="text-lg">次のページ</p>
@@ -86,7 +86,7 @@ export default function SearchPage() {
           </div>
           <div className="flex flex-col items-end gap-2">
             <p>
-              {page} / {Math.ceil(total / 20)}ページ目
+              {page} / {Math.ceil(total / 15)}ページ目
             </p>
             <p>表示件数: {armorSeries.length}件</p>
           </div>

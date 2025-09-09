@@ -22,8 +22,9 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(latestSeries);
   }
   if (page) {
-    // ページネーション(1ページ20件分まで取得)
+    // ページネーション(1ページ15件分まで取得)
     const pageNumber = parseInt(request.nextUrl.searchParams.get('page') || '1');
+    const limit = 15;
 
     const armorSerieses = await prisma.armorSeries.findMany({
       orderBy: { lv: 'desc' },
@@ -34,8 +35,8 @@ export async function GET(request: NextRequest) {
           ],
         },
       },
-      take: 20,
-      skip: (pageNumber - 1) * 20,
+      take: limit,
+      skip: (pageNumber - 1) * limit,
     });
 
     // skipTotalがtrueの場合はtotalを取得しない
