@@ -11,10 +11,10 @@ import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Separator } from '@/components/ui/separator';
 // 自作コンポーネント
-import AppLogo from '@/components/workspace/appLogo';
-import LatestList from '@/components/workspace/latestList';
-import FavoriteList from '@/components/workspace/favoriteList';
-import UserProfileBar from '@/components/workspace/userProfileBar';
+import AppLogo from '@/components/workspace/rootLayout/appLogo';
+import LatestList from '@/components/workspace/rootLayout/latestList';
+import FavoriteList from '@/components/workspace/rootLayout/favoriteList';
+import UserProfileBar from '@/components/workspace/rootLayout/userProfileBar';
 import Loading from '@/app/loading';
 import Error from '@/app/error';
 // ストア
