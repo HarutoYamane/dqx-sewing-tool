@@ -4,7 +4,7 @@ interface SpinnerProps extends React.HTMLAttributes<HTMLDivElement> {
   size?: 'sm' | 'md' | 'lg';
 }
 
-function Spinner({ className, size = 'md', ...props }: SpinnerProps) {
+export function Spinner({ className, size = 'md', ...props }: SpinnerProps) {
   return (
     <div
       className={cn(
