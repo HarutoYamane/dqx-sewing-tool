@@ -37,6 +37,15 @@ enum Strengths {
   UNKNOWN // ？
 }
 
+enum TopicsIcons {
+  Send // 送信
+  TriangleAlert // 三角警告
+  Info // 情報
+  Star // 星
+  Bell // ベル
+  Shield // 盾
+}
+
 model User {
   id        String    @id @default(cuid())
   name      String
@@ -143,7 +152,7 @@ model WeeklyArmorStats {
 
 model Topics{
   id        Int      @id @default(autoincrement())
-  icon      String // アイコン
+  icon      TopicsIcons // アイコン
   title     String // タイトル（一覧表示用）
   content   String // 内容（補助説明等）
   body      String // 本文（詳細表示用）
