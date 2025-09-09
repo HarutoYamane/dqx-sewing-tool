@@ -10,6 +10,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { useUserStore } from '@/store/useUserStore';
 
 const needFieldsIndex: { parts: ArmorParts; index: number[] }[] = [
   {
@@ -35,6 +36,7 @@ const needFieldsIndex: { parts: ArmorParts; index: number[] }[] = [
 ];
 
 export default function SystemAdminPage() {
+  const { user } = useUserStore();
   const [armorSeriesData, setArmorSeriesData] = useState<ArmorSeriesData>({ name: '', lv: 0, imageUrl: '' });
   const [armorData, setArmorData] = useState<ArmorData[]>([
     {
@@ -146,6 +148,10 @@ export default function SystemAdminPage() {
     const errors = validateData();
     if (errors.length > 0) {
       alert('入力エラー:\n' + errors.join('\n'));
+      return;
+    }
+    if (user?.role !== 'ADMIN') {
+      alert('管理者権限が必要です');
       return;
     }
 
