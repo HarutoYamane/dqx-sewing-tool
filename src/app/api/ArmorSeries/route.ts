@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { MaxLv } from '@/data/workspace';
+import { MaxLv } from '@/data/maxLv';
 
 export async function GET(request: NextRequest) {
   const latest = request.nextUrl.searchParams.get('latest');
