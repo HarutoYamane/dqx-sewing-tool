@@ -6,8 +6,9 @@ import Link from 'next/link';
 import { ArrowLeft, Calendar, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Spinner } from '@/app/loading';
+import Loading from '@/app/loading';
 import { getIcon } from '@/utils/TopicIconMapper';
+import { useUserStore } from '@/store/useUserStore';
 
 interface Topic {
   id: number;
@@ -20,16 +21,20 @@ interface Topic {
 }
 
 export default function TopicPage() {
+  const { user } = useUserStore();
   const { topicId } = useParams<{ topicId: string }>();
   const [topic, setTopic] = useState<Topic | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchTopic = async () => {
       try {
-        setLoading(true);
-        const res = await fetch(`/api/topic/${topicId}`);
+        setIsLoading(true);
+        const res =
+          user?.role === 'ADMIN'
+            ? await fetch(`/api/topic/${topicId}?admin=true`)
+            : await fetch(`/api/topic/${topicId}`);
 
         if (!res.ok) {
           if (res.status === 404) {
@@ -45,22 +50,16 @@ export default function TopicPage() {
         console.error('トピックスの取得に失敗しました:', err);
         setError('トピックスの取得に失敗しました');
       } finally {
-        setLoading(false);
+        setIsLoading(false);
       }
     };
 
     if (topicId) {
       fetchTopic();
     }
-  }, [topicId]);
+  }, [topicId, user?.role]);
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <Spinner size="lg" />
-      </div>
-    );
-  }
+  if (isLoading) return <Loading />;
 
   if (error || !topic) {
     return (
