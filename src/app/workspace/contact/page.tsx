@@ -2,58 +2,74 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { ArrowLeft } from 'lucide-react';
+// shadcn/ui
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { toast } from '@/hooks/use-toast';
+// 自作コンポーネント
+import { LoadingSpinner } from '@/app/loading';
+import { ArrowLeft, Send, Check } from 'lucide-react';
+// Zod と React Hook Form
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+
+// フォームデータの型
+export interface FormData {
+  type: string;
+  title: string;
+  description: string;
+  contact?: string;
+}
+
+// バリデーションスキーマ
+const formSchema = z.object({
+  type: z.string().min(1, { message: '報告タイプは必須です' }),
+  title: z.string().min(1, { message: 'タイトルは必須です' }),
+  description: z.string().min(1, { message: '詳細説明は必須です' }),
+  contact: z.string().optional(),
+});
 
 export default function ContactPage() {
-  const [formData, setFormData] = useState({
-    type: '',
-    title: '',
-    description: '',
-    contact: '',
-  });
+  const [isLoading, setIsLoading] = useState<boolean>(false); //ローディングフラグ（送信中）
+  const [Sent, setSent] = useState<boolean>(false); //送信完了フラグ（送信完了時にtrueになる）
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-
-    // バリデーション
-    if (!formData.type || !formData.title || !formData.description) {
-      toast({
-        title: 'エラー',
-        description: '必須項目を入力してください。',
-        variant: 'destructive',
-      });
-      return;
-    }
-
-    // ここで実際の送信処理を行う（例：API呼び出し）
-    console.log('送信データ:', formData);
-
-    toast({
-      title: '送信完了',
-      description: 'ご報告ありがとうございます。内容を確認次第、対応いたします。',
-    });
-
-    // フォームをリセット
-    setFormData({
+  // フォームの設定
+  const form = useForm<FormData>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
       type: '',
       title: '',
       description: '',
       contact: '',
-    });
-  };
+    },
+  });
 
-  const handleInputChange = (field: string, value: string) => {
-    setFormData((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
+  const onSubmit = async (data: FormData) => {
+    try {
+      setIsLoading(true);
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (!response.ok) {
+        throw new Error('送信に失敗しました');
+      }
+      setSent(true); //送信完了フラグを立てる
+      form.reset();
+    } catch (error) {
+      console.error('送信中にエラーが発生しました', error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -75,75 +91,103 @@ export default function ContactPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-6">
-            {/* 報告タイプ */}
-            <div className="space-y-2">
-              <Label className="text-base font-medium">報告タイプ *</Label>
-              <RadioGroup
-                value={formData.type}
-                onValueChange={(value) => handleInputChange('type', value)}
-                className="flex flex-col space-y-1"
-              >
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="bug" id="bug" />
-                  <Label htmlFor="bug">不具合報告</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="feature" id="feature" />
-                  <Label htmlFor="feature">改善要望</Label>
-                </div>
-              </RadioGroup>
-            </div>
-
-            {/* タイトル */}
-            <div className="space-y-2">
-              <Label htmlFor="title" className="text-base font-medium">
-                タイトル *
-              </Label>
-              <Input
-                id="title"
-                value={formData.title}
-                onChange={(e) => handleInputChange('title', e.target.value)}
-                placeholder="簡潔なタイトルを入力してください"
-                className="w-full"
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+              {/* 報告タイプ */}
+              <FormField
+                control={form.control}
+                name="type"
+                render={({ field }) => (
+                  <FormItem>
+                    <Label className="text-base font-medium">報告タイプ *</Label>
+                    <FormControl>
+                      <RadioGroup
+                        className="flex flex-col space-y-1"
+                        value={field.value}
+                        onValueChange={field.onChange}
+                        name="type"
+                      >
+                        <div className="flex items-center space-x-2">
+                          <RadioGroupItem value="bug" />
+                          <span>不具合報告</span>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <RadioGroupItem value="feature" />
+                          <span>改善要望</span>
+                        </div>
+                      </RadioGroup>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-            </div>
 
-            {/* 詳細説明 */}
-            <div className="space-y-2">
-              <Label htmlFor="description" className="text-base font-medium">
-                詳細説明 *
-              </Label>
-              <Textarea
-                id="description"
-                value={formData.description}
-                onChange={(e) => handleInputChange('description', e.target.value)}
-                placeholder="不具合の詳細や改善要望の内容を具体的に記述してください"
-                className="min-h-[120px]"
+              {/* タイトル */}
+              <FormField
+                control={form.control}
+                name="title"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-base font-medium">タイトル *</FormLabel>
+                    <FormControl>
+                      <Input {...field} placeholder="簡潔なタイトルを入力してください" className="w-full" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-            </div>
 
-            {/* 連絡先 */}
-            <div className="space-y-2">
-              <Label htmlFor="contact" className="text-base font-medium">
-                連絡先（任意）
-              </Label>
-              <Input
-                id="contact"
-                value={formData.contact}
-                onChange={(e) => handleInputChange('contact', e.target.value)}
-                placeholder="メールアドレスやユーザー名など"
-                className="w-full"
+              {/* 詳細説明 */}
+              <FormField
+                control={form.control}
+                name="description"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-base font-medium">詳細説明 *</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        {...field}
+                        placeholder="不具合の詳細や改善要望の内容を具体的に記述してください"
+                        className="min-h-[120px]"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-            </div>
 
-            {/* 送信ボタン */}
-            <div className="flex justify-end">
-              <Button type="submit" className="w-full sm:w-auto">
-                送信する
-              </Button>
-            </div>
-          </form>
+              {/* 連絡先 */}
+              <FormField
+                control={form.control}
+                name="contact"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-base font-medium">連絡先（任意）</FormLabel>
+                    <FormControl>
+                      <Input {...field} placeholder="メールアドレスやユーザー名など" className="w-full" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              {/* 送信ボタン */}
+              <div className="flex justify-end">
+                {Sent ? (
+                  <Button type="submit" className="w-full sm:w-auto bg-green-500 hover:bg-green-500" disabled>
+                    <Check className="h-4 w-4 mr-1" />
+                    送信完了
+                  </Button>
+                ) : (
+                  <Button type="submit" className="w-full sm:w-auto" disabled={isLoading}>
+                    {isLoading && <LoadingSpinner />}
+                    <Send className="h-4 w-4 mr-1" />
+                    送信する
+                  </Button>
+                )}
+              </div>
+            </form>
+          </Form>
         </CardContent>
       </Card>
     </div>
