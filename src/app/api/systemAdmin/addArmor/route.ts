@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { ArmorSeriesData, ArmorData } from '@/app/workspace/systemAdmin/addArmor/types';
+import { ArmorSeriesData, ArmorData } from '@/app/workspace/addArmor/types';
 import { createClient } from '@/utils/supabase/server';
 
 export async function POST(request: NextRequest) {
