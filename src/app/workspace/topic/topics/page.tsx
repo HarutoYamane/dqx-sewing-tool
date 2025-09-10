@@ -182,15 +182,17 @@ export default function TopicsPage() {
         <div className="flex items-center justify-between p-4 md:p-8 pt-6">
           <h2 className="text-2xl font-bold">トピックス一覧</h2>
           <div className="flex items-center gap-2">
-            <Button
-              variant="outline"
-              size="default"
-              onClick={() => setCreateOpen(true)}
-              className="bg-green-500 hover:bg-green-600 text-white"
-            >
-              <Sword className="mr-2 h-4 w-4 fill-white" />
-              <p className="text-lg">トピックを作成</p>
-            </Button>
+            {user?.role === 'ADMIN' && (
+              <Button
+                variant="outline"
+                size="default"
+                onClick={() => setCreateOpen(true)}
+                className="bg-green-500 hover:bg-green-600 text-white"
+              >
+                <Sword className="mr-2 h-4 w-4 fill-white" />
+                <p className="text-lg">トピックを作成</p>
+              </Button>
+            )}
             <Link href="/workspace">
               <Button variant="outline" size="default">
                 <Home className="mr-2 h-4 w-4" />
