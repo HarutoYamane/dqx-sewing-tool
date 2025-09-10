@@ -3,10 +3,11 @@ import { prisma } from '@/lib/prisma';
 
 export async function POST(req: NextRequest) {
   const { user } = await req.json();
-  const totalSewingCount = await prisma.result.aggregate({
+  const totalSewingCountResult = await prisma.result.aggregate({
     where: { userId: user.id },
     _sum: { totalCount: true },
   });
+  const totalSewingCount = totalSewingCountResult._sum.totalCount || 0;
 
   const maxSuccessRate = await prisma.result.findFirst({
     where: { userId: user.id },

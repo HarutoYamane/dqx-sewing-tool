@@ -7,11 +7,7 @@ import { LoadingSpinner } from '@/app/loading';
 import { getArmorImageUrl } from '@/utils/supabase/storage';
 import { UserProfile } from '@/types/workspace';
 
-interface TotalSewingCount {
-  _sum: {
-    totalCount: number;
-  };
-}
+type TotalSewingCount = number;
 
 interface MaxSuccessRate {
   id: number;
@@ -48,7 +44,7 @@ interface LatestPlayed {
 }
 
 export default function StatsCard({ user }: { user: UserProfile }) {
-  const [totalSewingCount, setTotalSewingCount] = useState<TotalSewingCount | null>(null); // ユーザーの裁縫合計回数データ
+  const [totalSewingCount, setTotalSewingCount] = useState<TotalSewingCount>(0); // ユーザーの裁縫合計回数データ
   const [maxSuccessRate, setMaxSuccessRate] = useState<MaxSuccessRate | null>(null); // ユーザーの最も大成功確率が高い商材
   const [latestPlayed, setLatestPlayed] = useState<LatestPlayed | null>(null); // ユーザーの最も最近プレイした商材
   const [isSewingStatsLoading, setIsSewingStatsLoading] = useState(false); // ユーザーの裁縫統計データのローディングフラグ
@@ -69,6 +65,7 @@ export default function StatsCard({ user }: { user: UserProfile }) {
           throw new Error('ユーザーの裁縫統計データの取得に失敗しました');
         }
         const { totalSewingCount, maxSuccessRate, latestPlayed } = await res.json();
+        console.log('totalSewingCount:', totalSewingCount);
         setTotalSewingCount(totalSewingCount);
         setMaxSuccessRate(maxSuccessRate);
         setLatestPlayed(latestPlayed);
@@ -95,7 +92,7 @@ export default function StatsCard({ user }: { user: UserProfile }) {
           </CardContent>
         ) : (
           <CardContent>
-            <div className="text-2xl font-bold">{totalSewingCount === null ? 0 : totalSewingCount._sum.totalCount}</div>
+            <div className="text-2xl font-bold">{totalSewingCount}</div>
             <p className="text-xs text-muted-foreground">今までの裁縫回数の合計</p>
           </CardContent>
         )}
