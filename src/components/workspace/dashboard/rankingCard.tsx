@@ -3,7 +3,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/com
 import Link from 'next/link';
 import Image from 'next/image';
 import { getArmorImageUrl } from '@/utils/supabase/storage';
-import { Spinner } from '@/app/loading';
+import { LoadingSpinner } from '@/app/loading';
 
 // 人気商材ランキングのアイコンの色を返す
 const RankingColor = (index: number) => {
@@ -54,7 +54,7 @@ export default function RankingCard() {
       </CardHeader>
       {isRankingLoading || !isInitialized ? (
         <CardContent className="flex-1 overflow-auto">
-          <Spinner size="md" />
+          <LoadingSpinner />
         </CardContent>
       ) : (
         <CardContent className="flex-1 overflow-auto">

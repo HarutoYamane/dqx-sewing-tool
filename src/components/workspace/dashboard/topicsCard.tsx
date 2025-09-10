@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { Sword } from 'lucide-react';
 // アイコンは utils/iconMapper.ts から取得
-import { Spinner } from '@/app/loading';
+import { LoadingSpinner } from '@/app/loading';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { UserProfile } from '@/types/workspace';
@@ -69,7 +69,7 @@ export default function TopicsCard({ user }: { user: UserProfile }) {
       </CardHeader>
       {isTopicsLoading || !isInitialized ? (
         <CardContent className="flex-1 overflow-auto">
-          <Spinner size="md" />
+          <LoadingSpinner />
         </CardContent>
       ) : topics.length === 0 ? (
         <p className="pl-6">トピックスデータが存在しません</p>

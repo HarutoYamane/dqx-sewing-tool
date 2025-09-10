@@ -3,7 +3,7 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Hash, ThumbsUp, Activity } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Spinner } from '@/app/loading';
+import { LoadingSpinner } from '@/app/loading';
 import { getArmorImageUrl } from '@/utils/supabase/storage';
 import { UserProfile } from '@/types/workspace';
 
@@ -91,7 +91,7 @@ export default function StatsCard({ user }: { user: UserProfile }) {
         </CardHeader>
         {isSewingStatsLoading || !isInitialized ? (
           <CardContent className="flex-1 overflow-auto">
-            <Spinner size="sm" />
+            <LoadingSpinner />
           </CardContent>
         ) : (
           <CardContent>
@@ -108,7 +108,7 @@ export default function StatsCard({ user }: { user: UserProfile }) {
         </CardHeader>
         {isSewingStatsLoading || !isInitialized ? (
           <CardContent className="flex-1 overflow-auto">
-            <Spinner size="sm" />
+            <LoadingSpinner />
           </CardContent>
         ) : (
           <CardContent>
@@ -144,7 +144,7 @@ export default function StatsCard({ user }: { user: UserProfile }) {
         </CardHeader>
         {isSewingStatsLoading || !isInitialized ? (
           <CardContent className="flex-1 overflow-auto">
-            <Spinner size="sm" />
+            <LoadingSpinner />
           </CardContent>
         ) : (
           <CardContent>
