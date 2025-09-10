@@ -10,12 +10,6 @@ const nextConfig = {
       },
     ],
   },
-  // systemAdminページとAPIをビルド対象外にする
-  experimental: {
-    outputFileTracingExcludes: {
-      '*': ['./src/app/workspace/systemAdmin/**/*', './src/app/api/systemAdmin/**/*'],
-    },
-  },
 };
 
 export default nextConfig;
