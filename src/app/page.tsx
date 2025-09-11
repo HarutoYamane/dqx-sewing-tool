@@ -20,7 +20,12 @@ export default function TopPage() {
           </div>
           <div className="flex items-center gap-4">
             <div className="hidden md:block">
-              <Link href="https://x.com/Hoppe_1559" className="flex items-center gap-2">
+              <Link
+                href="https://x.com/Hoppe_1559"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2"
+              >
                 <svg
                   className="h-5 w-5 fill-current text-gray-600 hover:text-gray-800 transition-colors"
                   viewBox="0 0 24 24"
@@ -129,12 +134,12 @@ export default function TopPage() {
           <p className="text-center text-sm leading-loose text-muted-foreground md:text-left">
             © 2025 DQX - 裁縫職人ツール. All rights reserved.
           </p>
-          <Link href="https://www.dqx.jp/online/">
+          <Link href="https://www.dqx.jp/online/" target="_blank" rel="noopener noreferrer">
             <p className="text-center text-sm text-blue-500 hover:underline leading-loose md:text-left">
               ドラゴンクエストX オンライン - 公式サイト
             </p>
           </Link>
-          <Link href="https://hiroba.dqx.jp/sc/home/">
+          <Link href="https://hiroba.dqx.jp/sc/home/" target="_blank" rel="noopener noreferrer">
             <p className="text-center text-sm text-blue-500 hover:underline leading-loose md:text-left">
               ドラゴンクエストX 冒険者の広場 - 公式サイト
             </p>
