@@ -30,7 +30,7 @@ export async function GET(request: NextRequest) {
     }
 
     // 初回のみtotalを取得
-    const total = await prisma.armorSeries.count();
+    const total = await prisma.topics.count();
 
     return NextResponse.json({
       data: topics,
