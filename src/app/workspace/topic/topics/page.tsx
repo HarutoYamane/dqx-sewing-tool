@@ -194,7 +194,7 @@ export default function TopicsPage() {
               </Button>
             )}
             <Link href="/workspace" className="w-full md:w-auto">
-              <Button variant="outline" size="default" className="w-full md:w-auto">
+              <Button variant="outline" size="default" className="w-full md:w-auto shadow-md">
                 <Home className="mr-2 h-4 w-4" />
                 <p className="text-lg">ダッシュボードに戻る</p>
               </Button>
@@ -203,13 +203,20 @@ export default function TopicsPage() {
         </div>
         <div className="flex flex-col md:flex-row md:items-center justify-between p-4 gap-2">
           <div className="flex flex-row items-center gap-2">
-            <Button variant="outline" size="sm" onClick={() => setPage(page - 1)} disabled={page === 1}>
+            <Button
+              variant="outline"
+              size="sm"
+              className="shadow-md"
+              onClick={() => setPage(page - 1)}
+              disabled={page === 1}
+            >
               <ChevronLeft className="h-4 w-4" />
               <p className="text-lg">前のページ</p>
             </Button>
             <Button
               variant="outline"
               size="sm"
+              className="shadow-md"
               onClick={() => setPage(page + 1)}
               disabled={page === Math.ceil(total / 15)}
             >

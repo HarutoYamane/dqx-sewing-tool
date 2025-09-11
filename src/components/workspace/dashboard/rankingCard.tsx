@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
+import { Trophy } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { getArmorImageUrl } from '@/utils/supabase/storage';
@@ -49,8 +50,13 @@ export default function RankingCard() {
   return (
     <Card className="col-span-1 flex flex-col max-h-[450px]">
       <CardHeader>
-        <CardTitle>人気商材</CardTitle>
-        <CardDescription>最近多く作成されている防具ランキング</CardDescription>
+        <div className="flex flex-row items-center justify-between">
+          <div className="flex flex-col gap-1">
+            <CardTitle>人気商材</CardTitle>
+            <CardDescription>最近多く作成されている防具ランキング</CardDescription>
+          </div>
+          <Trophy className="h-6 w-6  text-yellow-500" />
+        </div>
       </CardHeader>
       {isRankingLoading || !isInitialized ? (
         <CardContent className="flex-1 overflow-auto">

@@ -31,13 +31,13 @@ export default function WorkSpacePage() {
             </Link>
           )}
           <Link href="/workspace/search">
-            <Button variant="outline" size="default">
+            <Button variant="outline" size="default" className="shadow-md border-2 border-yellow-400 animate-heartbeat">
               <Search className="mr-2 h-4 w-4" />
               <p className="text-lg">商材を選ぶ</p>
             </Button>
           </Link>
           <Link href="/workspace/contact">
-            <Button size="sm">
+            <Button size="sm" className="shadow-md">
               <MessageSquare className="mr-2 h-4 w-4" />
               <p>不具合報告・改善要望</p>
             </Button>

@@ -85,7 +85,7 @@ export default function SignupPage() {
                       <FormLabel>名前</FormLabel>
                       <FormControl>
                         <Input
-                          placeholder="山田 太郎"
+                          placeholder="ホッペ（DQXの名前など）"
                           autoCapitalize="none"
                           autoCorrect="off"
                           disabled={isLoading}
@@ -140,7 +140,7 @@ export default function SignupPage() {
 
                 {error && <div className="text-sm font-medium text-destructive">{error}</div>}
 
-                <Button type="submit" disabled={isLoading} className="w-full">
+                <Button type="submit" disabled={isLoading} className="w-full bg-green-500 hover:bg-green-600">
                   {isLoading && (
                     <svg className="mr-2 h-4 w-4 animate-spin" viewBox="0 0 24 24">
                       <circle
@@ -167,7 +167,7 @@ export default function SignupPage() {
           <CardFooter>
             <p className="text-center text-sm text-muted-foreground w-full">
               アカウントをお持ちの場合は{' '}
-              <Link href="/login" className="underline underline-offset-4 hover:text-primary">
+              <Link href="/login" className="underline underline-offset-4 hover:text-blue-500">
                 ログイン
               </Link>
               してください

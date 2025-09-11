@@ -183,7 +183,7 @@ export default function SewingArea({ channelId }: { channelId: number }) {
             variant="default"
             size="sm"
             onClick={handleComplete}
-            className={`${completeButtonConfig.colorAnime} md:h-10 md:px-8 md:text-lg`}
+            className={`${completeButtonConfig.colorAnime} md:h-10 md:px-8 md:text-lg shadow-md`}
           >
             {isUpdateLoading && (
               <div className="h-4 w-4 animate-spin rounded-full border-2 border-solid border-current border-r-transparent mr-2" />
@@ -191,7 +191,7 @@ export default function SewingArea({ channelId }: { channelId: number }) {
             {completeButtonConfig.icon}
             {completeButtonConfig.text}
           </Button>
-          <Button variant="outline" size="sm" onClick={handleReset}>
+          <Button variant="outline" size="sm" className="shadow-md" onClick={handleReset}>
             <RotateCcw className="h-4 w-4 mr-2" />
             リセット
           </Button>

@@ -167,7 +167,7 @@ export default function LoginPage() {
 
                 {error && <div className="text-sm font-medium text-destructive">{error}</div>}
 
-                <Button type="submit" disabled={isLoading} className="w-full">
+                <Button type="submit" disabled={isLoading} className="w-full bg-green-500 hover:bg-green-600">
                   {isLoading && (
                     <svg className="mr-2 h-4 w-4 animate-spin" viewBox="0 0 24 24">
                       <circle
@@ -194,7 +194,7 @@ export default function LoginPage() {
           <CardFooter>
             <p className="text-center text-sm text-muted-foreground w-full">
               アカウントをお持ちでない場合は{' '}
-              <Link href="/signup" className="underline underline-offset-4 hover:text-primary">
+              <Link href="/signup" className="underline underline-offset-4 hover:text-blue-500">
                 新規登録
               </Link>
               してください

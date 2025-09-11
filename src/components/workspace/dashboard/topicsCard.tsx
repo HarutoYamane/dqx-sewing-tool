@@ -60,7 +60,7 @@ export default function TopicsCard({ user }: { user: UserProfile }) {
             </Link>
           ) : (
             <Link href="/workspace/topic/topics">
-              <Button variant="outline" size="sm">
+              <Button variant="outline" size="sm" className="shadow-md">
                 すべて見る
               </Button>
             </Link>

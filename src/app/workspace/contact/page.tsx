@@ -174,12 +174,12 @@ export default function ContactPage() {
               {/* 送信ボタン */}
               <div className="flex justify-end">
                 {Sent ? (
-                  <Button type="submit" className="w-full sm:w-auto bg-green-500 hover:bg-green-500" disabled>
+                  <Button type="submit" className="w-full sm:w-auto shadow-md bg-green-500 hover:bg-green-500" disabled>
                     <Check className="h-4 w-4 mr-1" />
                     送信完了
                   </Button>
                 ) : (
-                  <Button type="submit" className="w-full sm:w-auto" disabled={isLoading}>
+                  <Button type="submit" className="w-full sm:w-auto shadow-md" disabled={isLoading}>
                     {isLoading && <LoadingSpinner />}
                     <Send className="h-4 w-4 mr-1" />
                     送信する

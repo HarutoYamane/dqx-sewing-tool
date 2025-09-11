@@ -84,16 +84,17 @@ export default function ChannelHeader({ channelId }: { channelId: number }) {
         <p className="text-sm text-muted-foreground hidden md:block">{ClothDescription}</p>
         <div className="ml-auto flex items-center gap-3">
           <Link href="/workspace/search">
-            <Button variant="outline" size="sm">
+            <Button variant="outline" size="sm" className="shadow-md">
               <Search className="h-4 w-4" />
               <span className="text-sm">防具検索</span>
             </Button>
           </Link>
-          {/* お気に入りに追加する処理を実装予定 今は見た目のみ */}
+
           <Button
             variant="outline"
             disabled={isLoading || isUpdateLoading} // 読込み中または更新中は押せない
             size="sm"
+            className="shadow-md"
             onClick={() => {
               if (favorites.some((favorite) => favorite.armorId === armor.id)) {
                 //someの戻り値（boolean）

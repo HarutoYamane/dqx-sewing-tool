@@ -50,6 +50,7 @@ export default function ChannelFooter({ channelId }: { channelId: number }) {
             disabled={isUpdateLoading || isResetLoading}
             variant="outline"
             size="sm"
+            className="shadow-md"
             onClick={() => handleReset(channelId)}
           >
             <RotateCcw className="h-4 w-4" />

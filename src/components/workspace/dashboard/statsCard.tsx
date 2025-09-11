@@ -101,7 +101,7 @@ export default function StatsCard({ user }: { user: UserProfile }) {
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium">最も大成功率が高い</CardTitle>
-          <ThumbsUp className="h-4 w-4 text-muted-foreground" />
+          <ThumbsUp className="h-4 w-4  text-green-500" />
         </CardHeader>
         {isSewingStatsLoading || !isInitialized ? (
           <CardContent className="flex-1 overflow-auto">
