@@ -124,7 +124,7 @@ export default function StatsCard({ user }: { user: UserProfile }) {
                 </Link>
                 <p className="text-xs text-muted-foreground">
                   大成功率：{(maxSuccessRate.successRate * 100).toFixed(1)} %（{maxSuccessRate.threeStar}回/
-                  {maxSuccessRate.totalCount}回）
+                  {maxSuccessRate.total}回）
                 </p>
               </>
             ) : (
