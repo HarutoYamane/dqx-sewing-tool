@@ -67,7 +67,7 @@ export default function TopicPage() {
         <div className="max-w-4xl mx-auto text-center">
           <h1 className="text-2xl font-bold text-red-600 mb-4">エラー</h1>
           <p className="text-muted-foreground mb-6">{error || 'トピックスが見つかりません'}</p>
-          <div className="flex items-center gap-4">
+          <div className="flex flex-col md:flex-row md:items-center gap-4">
             <Link href="/workspace">
               <Button>
                 <ArrowLeft className="mr-2 h-4 w-4" />
@@ -94,7 +94,7 @@ export default function TopicPage() {
       <div className="max-w-4xl mx-auto">
         {/* 戻るボタン */}
         <div className="mb-6">
-          <div className="flex items-center gap-4">
+          <div className="flex flex-col md:flex-row md:items-center gap-4">
             <Link href="/workspace">
               <Button variant="outline">
                 <ArrowLeft className="mr-2 h-4 w-4" />

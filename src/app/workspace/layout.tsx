@@ -8,7 +8,7 @@ import { notFound } from 'next/navigation';
 import { Menu } from 'lucide-react';
 // shadcn/ui
 import { Button } from '@/components/ui/button';
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { Sheet, SheetContent, SheetTrigger, SheetTitle, SheetDescription } from '@/components/ui/sheet';
 import { Separator } from '@/components/ui/separator';
 // 自作コンポーネント
 import AppLogo from '@/components/workspace/rootLayout/appLogo';
@@ -53,6 +53,10 @@ export default function WorkspaceLayout({ children }: { children: React.ReactNod
             </Button>
           </SheetTrigger>
           <SheetContent side="left" className="flex flex-col p-0">
+            <SheetTitle className="sr-only">ナビゲーションメニュー</SheetTitle>
+            <SheetDescription className="sr-only">
+              アプリのロゴ、最新のトピック、お気に入り、ユーザープロフィールにアクセスできます
+            </SheetDescription>
             <div className="px-6 py-4">
               <AppLogo />
             </div>
@@ -74,24 +78,24 @@ export default function WorkspaceLayout({ children }: { children: React.ReactNod
       </header>
 
       {/* デスクトップレイアウト */}
-      <div className="flex-1 items-start lg:grid lg:grid-cols-[280px_1fr]">
+      <div className="flex-1 lg:flex">
         {/* サイドバー (デスクトップのみ表示) */}
-        <aside className="hidden border-r bg-background lg:flex lg:flex-col lg:justify-between lg:h-full">
+        <aside className="hidden border-r bg-background lg:flex lg:flex-col lg:w-[290px] lg:fixed lg:left-0 lg:top-0 lg:h-screen lg:z-40">
           <div className="flex h-14 items-center border-b px-6">
             <AppLogo />
           </div>
-          <div className="px-2 flex-1">
+          <div className="px-2 flex-1 overflow-y-auto">
             <LatestList />
             <Separator className="my-2" />
             <FavoriteList />
           </div>
-          <div className="sticky bottom-0 border-t bg-background p-4">
+          <div className="border-t bg-background p-4">
             <UserProfileBar userProfile={user} />
           </div>
         </aside>
 
         {/* メインコンテンツ */}
-        <main className="flex flex-col h-screen">{children}</main>
+        <main className="flex flex-col flex-1 lg:ml-[290px]">{children}</main>
       </div>
     </div>
   );

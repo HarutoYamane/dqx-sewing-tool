@@ -68,15 +68,15 @@ export default function SearchPage() {
             </Button>
           </Link>
         </div>
-        <div className="flex flex-row items-center justify-between p-4 gap-2">
+        <div className="flex flex-col md:flex-row md:items-center justify-between p-4 gap-2">
           <div className="flex flex-row items-center gap-2">
-            <Button variant="outline" size="default" onClick={() => setPage(page - 1)} disabled={page === 1}>
+            <Button variant="outline" size="sm" onClick={() => setPage(page - 1)} disabled={page === 1}>
               <ChevronLeft className="h-4 w-4" />
               <p className="text-lg">前のページ</p>
             </Button>
             <Button
               variant="outline"
-              size="default"
+              size="sm"
               onClick={() => setPage(page + 1)}
               disabled={page === Math.ceil(total / 15)}
             >
@@ -84,7 +84,7 @@ export default function SearchPage() {
               <p className="text-lg">次のページ</p>
             </Button>
           </div>
-          <div className="flex flex-col items-end gap-2">
+          <div className="flex flex-col md:items-end gap-2 pl-3">
             <p>
               {page} / {Math.ceil(total / 15)}ページ目
             </p>

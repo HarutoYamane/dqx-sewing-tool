@@ -179,37 +179,37 @@ export default function TopicsPage() {
   return (
     <div className="flex flex-col h-full">
       <header className="sticky top-0 border-b bg-background z-50">
-        <div className="flex items-center justify-between p-4 md:p-8 pt-6">
+        <div className="flex flex-col gap-2 md:flex-row md:items-center justify-between p-4 md:p-8 pt-6">
           <h2 className="text-2xl font-bold">トピックス一覧</h2>
-          <div className="flex items-center gap-2">
+          <div className="flex flex-col md:flex-row md:items-center gap-2">
             {user?.role === 'ADMIN' && (
               <Button
                 variant="outline"
                 size="default"
                 onClick={() => setCreateOpen(true)}
-                className="bg-green-500 hover:bg-green-600 text-white"
+                className="bg-green-500 hover:bg-green-600 text-white w-full md:w-auto"
               >
                 <Sword className="mr-2 h-4 w-4 fill-white" />
                 <p className="text-lg">トピックを作成</p>
               </Button>
             )}
-            <Link href="/workspace">
-              <Button variant="outline" size="default">
+            <Link href="/workspace" className="w-full md:w-auto">
+              <Button variant="outline" size="default" className="w-full md:w-auto">
                 <Home className="mr-2 h-4 w-4" />
                 <p className="text-lg">ダッシュボードに戻る</p>
               </Button>
             </Link>
           </div>
         </div>
-        <div className="flex flex-row items-center justify-between p-4 gap-2">
+        <div className="flex flex-col md:flex-row md:items-center justify-between p-4 gap-2">
           <div className="flex flex-row items-center gap-2">
-            <Button variant="outline" size="default" onClick={() => setPage(page - 1)} disabled={page === 1}>
+            <Button variant="outline" size="sm" onClick={() => setPage(page - 1)} disabled={page === 1}>
               <ChevronLeft className="h-4 w-4" />
               <p className="text-lg">前のページ</p>
             </Button>
             <Button
               variant="outline"
-              size="default"
+              size="sm"
               onClick={() => setPage(page + 1)}
               disabled={page === Math.ceil(total / 15)}
             >
@@ -217,7 +217,7 @@ export default function TopicsPage() {
               <p className="text-lg">次のページ</p>
             </Button>
           </div>
-          <div className="flex flex-col items-end gap-2">
+          <div className="flex flex-row md:flex-col md:items-end gap-2 pl-3">
             <p>
               {page} / {Math.ceil(total / 15)}ページ目
             </p>

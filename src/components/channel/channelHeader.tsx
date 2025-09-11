@@ -80,7 +80,7 @@ export default function ChannelHeader({ channelId }: { channelId: number }) {
           <Image src={getArmorImageUrl(armor.imageUrl)} alt={armor.name} width={32} height={32} />
           <h1 className="font-semibold">{armor.name}</h1>
         </div>
-        <Separator orientation="vertical" className="h-6" />
+        <Separator orientation="vertical" className="h-6 hidden md:block" />
         <p className="text-sm text-muted-foreground hidden md:block">{ClothDescription}</p>
         <div className="ml-auto flex items-center gap-3">
           <Link href="/workspace/search">
@@ -119,7 +119,7 @@ export default function ChannelHeader({ channelId }: { channelId: number }) {
                 }`}
               />
             )}
-            <span className="text-sm">お気に入り</span>
+            <span className="text-sm hidden md:block">お気に入り</span>
           </Button>
         </div>
       </div>

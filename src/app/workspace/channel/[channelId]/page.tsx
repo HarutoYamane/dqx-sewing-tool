@@ -18,16 +18,17 @@ export default function ArmorPage() {
   if (isNaN(channelIdNumber)) return notFound();
 
   return (
-    <div className="flex flex-col h-full">
-      <div className="sticky top-0 bg-background z-50 border-b">
+    <div className="flex flex-col h-full lg:h-screen">
+      <div className="sticky top-0 bg-background z-50 border-b pl-3 pr-3 lg:pl-0 lg:pr-0">
         <ChannelHeader channelId={channelIdNumber} />
       </div>
-      <div className="flex flex-row gap-4 flex-1 overflow-hidden">
-        <div className="flex-1 overflow-auto">
+      <div className="flex flex-col lg:flex-row gap-4 flex-1 overflow-hidden p-2">
+        <div className="flex-1 overflow-auto min-h-0 lg:pl-3">
           <SewingArea channelId={channelIdNumber} />
         </div>
-        <Separator orientation="vertical" className="h-full" />
-        <div className="flex-1 overflow-auto">
+        <Separator orientation="horizontal" className="lg:hidden w-full" />
+        <Separator orientation="vertical" className="hidden lg:block h-full" />
+        <div className="flex-1 overflow-auto min-h-0">
           <SewingValueArea />
         </div>
       </div>

@@ -52,7 +52,7 @@ export default function SewingArea({ channelId }: { channelId: number }) {
     STRONGER: { color: 'bg-yellow-500', text: '強い' },
     NORMAL: { color: 'bg-green-500', text: '普通' },
     WEAK: { color: 'bg-blue-500', text: '弱い' },
-    UNKNOWN: { color: 'bg-gray-500 pl-3 pr-3', text: '？' },
+    UNKNOWN: { color: 'bg-gray-500 pl-2 pr-2 md:pl-3 md:pr-3', text: '？' },
   };
 
   const getStrengthConfig = (strength: string) => {
@@ -103,28 +103,25 @@ export default function SewingArea({ channelId }: { channelId: number }) {
     setValues([...Array(9).fill(null)]);
   };
 
-  const handleComplete = () => {
-    updateResult(channelId, isComplete);
+  const handleComplete = async () => {
+    await updateResult(channelId, isComplete);
     setValues([...Array(9).fill(null)]);
   };
 
   return (
-    <div className="space-y-4 pt-3 pl-3">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          {sewingValue.strength.map((strength: string, index: number) => {
-            const config = getStrengthConfig(strength);
-            return (
-              <div key={index} className={`space-y-2`}>
-                <div className={`${config.color} rounded-md p-2 text-xs text-white`}>{config.text}</div>
+    <div className="space-y-4  pt-3">
+      <div className="flex items-center justify-start gap-3">
+        {sewingValue.strength.map((strength: string, index: number) => {
+          const config = getStrengthConfig(strength);
+          return (
+            <div key={index} className={`space-y-2`}>
+              <div className={`${config.color} rounded-md p-2 text-xs text-white`}>
+                <span className="block md:hidden">{config.text.charAt(0)}</span>
+                <span className="hidden md:block">{config.text}</span>
               </div>
-            );
-          })}
-        </div>
-        <Button variant="outline" size="sm" onClick={handleReset}>
-          <RotateCcw className="h-4 w-4 mr-2" />
-          リセット
-        </Button>
+            </div>
+          );
+        })}
       </div>
 
       <div className="grid grid-cols-3 gap-4">
@@ -184,15 +181,19 @@ export default function SewingArea({ channelId }: { channelId: number }) {
           <Button
             disabled={isUpdateLoading || isResetLoading} // 更新中またはリセット中は押せない
             variant="default"
-            size="lg"
+            size="sm"
             onClick={handleComplete}
-            className={completeButtonConfig.colorAnime}
+            className={`${completeButtonConfig.colorAnime} md:h-10 md:px-8 md:text-lg`}
           >
             {isUpdateLoading && (
               <div className="h-4 w-4 animate-spin rounded-full border-2 border-solid border-current border-r-transparent mr-2" />
             )}
             {completeButtonConfig.icon}
             {completeButtonConfig.text}
+          </Button>
+          <Button variant="outline" size="sm" onClick={handleReset}>
+            <RotateCcw className="h-4 w-4 mr-2" />
+            リセット
           </Button>
         </div>
       </div>
