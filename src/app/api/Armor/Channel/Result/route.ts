@@ -3,6 +3,8 @@ import { withAuth } from '@/utils/auth';
 import { UserProfile } from '@/types/workspace';
 import { prisma } from '@/lib/prisma';
 
+export const dynamic = 'force-dynamic';
+
 /**
  * [GET] /api/Armor/Result: ログイン中のユーザーの防具毎の裁縫結果を取得
  */
