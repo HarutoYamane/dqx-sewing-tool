@@ -132,18 +132,31 @@ export default function TopPage() {
       <footer className="border-t p-6">
         <div className="container mx-auto flex flex-col gap-4 px-4 md:px-6">
           <p className="text-center text-sm leading-loose text-muted-foreground md:text-left">
-            © 2025 DQX - 裁縫職人ツール. All rights reserved.
+            ・このページで利用している株式会社スクウェア・エニックスを代表とする共同著作者が権利を所有する画像の転載・配布は禁止いたします。
+            (C) ARMOR PROJECT/BIRD STUDIO/SQUARE ENIX All Rights Reserved.
+            <br />
+            <Link
+              href="https://support.jp.square-enix.com/rule.php?id=2620&la=0&tag=transmission"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-500 hover:underline"
+            >
+              『ドラゴンクエストX オンライン』動画・生配信・画像投稿に関するガイドライン
+            </Link>
           </p>
           <Link href="https://www.dqx.jp/online/" target="_blank" rel="noopener noreferrer">
             <p className="text-center text-sm text-blue-500 hover:underline leading-loose md:text-left">
-              ドラゴンクエストX オンライン - 公式サイト
+              ・ドラゴンクエストX オンライン - 公式サイト
             </p>
           </Link>
           <Link href="https://hiroba.dqx.jp/sc/home/" target="_blank" rel="noopener noreferrer">
             <p className="text-center text-sm text-blue-500 hover:underline leading-loose md:text-left">
-              ドラゴンクエストX 冒険者の広場 - 公式サイト
+              ・ドラゴンクエストX 冒険者の広場 - 公式サイト
             </p>
           </Link>
+          <p className="text-center text-sm leading-loose text-muted-foreground md:text-left">
+            © 2025 DQX - 裁縫職人ツール. All rights reserved.
+          </p>
         </div>
       </footer>
     </div>
