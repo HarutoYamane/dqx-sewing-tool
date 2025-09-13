@@ -15,7 +15,7 @@ import { useFavoriteStore } from '@/store/favoriteStore';
 // ストレージ
 import { getArmorImageUrl } from '@/utils/supabase/storage';
 
-export default function FavoriteList() {
+export default function FavoriteList({ SheetOpenChange }: { SheetOpenChange?: (open: boolean) => void }) {
   const { favorites, isLoading, isUpdateLoading, error, fetchFavorites } = useFavoriteStore();
   const [isInitialized, setIsInitialized] = useState(false);
 
@@ -23,6 +23,15 @@ export default function FavoriteList() {
     await fetchFavorites();
     setIsInitialized(true);
   }, [fetchFavorites]);
+
+  const handleLogoClick = () => {
+    if (SheetOpenChange) {
+      // アニメーション完了後にSheetを閉じる（duration-300 + 少し余裕を持たせる）
+      setTimeout(() => {
+        SheetOpenChange(false);
+      }, 350);
+    }
+  };
 
   useEffect(() => {
     // 初回読み込み時のみ実行
@@ -52,7 +61,14 @@ export default function FavoriteList() {
       <div className="space-y-1 mt-2">
         {favorites?.length === 0 && <p className="text-sm text-gray-500">お気に入り無し</p>}
         {favorites?.map((favorite, index) => (
-          <Button variant="ghost" size="sm" key={index} className="w-full justify-start gap-2" asChild>
+          <Button
+            variant="ghost"
+            size="sm"
+            key={index}
+            className="w-full justify-start gap-2"
+            asChild
+            onClick={handleLogoClick} // 商材を選んだら、モバイル時のナビゲーションシートを閉じる
+          >
             <Link href={`/workspace/channel/${favorite.armorId}`}>
               <Image src={getArmorImageUrl(favorite.armor.imageUrl)} alt={favorite.armor.name} width={24} height={24} />
               {favorite.armor.name}

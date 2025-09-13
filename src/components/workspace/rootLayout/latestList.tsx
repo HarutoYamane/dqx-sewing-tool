@@ -13,7 +13,7 @@ import type { ArmorSeries } from '@/types/armor';
 // ストレージ
 import { getArmorImageUrl } from '@/utils/supabase/storage';
 
-export default function LatestList() {
+export default function LatestList({ SheetOpenChange }: { SheetOpenChange?: (open: boolean) => void }) {
   const [openSeries, setOpenSeries] = useState<Set<number>>(new Set());
   const [latestSeries, setLatestSeries] = useState<ArmorSeries[]>([]);
 
@@ -35,6 +35,15 @@ export default function LatestList() {
       newOpenSeries.add(seriesId);
     }
     setOpenSeries(newOpenSeries);
+  };
+
+  const handleLogoClick = () => {
+    if (SheetOpenChange) {
+      // アニメーション完了後にSheetを閉じる（duration-300 + 少し余裕を持たせる）
+      setTimeout(() => {
+        SheetOpenChange(false);
+      }, 350);
+    }
   };
 
   return (
@@ -74,6 +83,7 @@ export default function LatestList() {
                         key={armor.id}
                         href={`/workspace/channel/${armor.id}`}
                         className="flex items-center gap-2 px-3 py-2 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-md transition-colors duration-200"
+                        onClick={handleLogoClick} // 防具を選んだら、モバイル時のナビゲーションシートを閉じる
                       >
                         <Image src={getArmorImageUrl(armor.imageUrl)} alt={armor.name} width={20} height={20} />
                         {armor.name}

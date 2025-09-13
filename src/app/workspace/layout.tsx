@@ -22,6 +22,7 @@ import { useUserStore } from '@/store/useUserStore';
 
 export default function WorkspaceLayout({ children }: { children: React.ReactNode }) {
   const [open, setOpen] = useState<boolean>(false);
+  const [isAnimating, setIsAnimating] = useState<boolean>(false);
 
   // ユーザーストアから状態とアクションを取得
   const { user, isLoading, error, fetchCurrentUser } = useUserStore();
@@ -45,7 +46,24 @@ export default function WorkspaceLayout({ children }: { children: React.ReactNod
     <div className="flex min-h-screen flex-col">
       {/* モバイルナビゲーション */}
       <header className="sticky top-0 z-50 flex h-14 items-center gap-4 border-b bg-background px-4 lg:hidden">
-        <Sheet open={open} onOpenChange={setOpen}>
+        <Sheet
+          open={open}
+          onOpenChange={(newOpen) => {
+            if (!newOpen && isAnimating) {
+              // アニメーション中は状態変更を無視
+              return;
+            }
+            setOpen(newOpen);
+            if (newOpen) {
+              setIsAnimating(true);
+              // アニメーション完了後にフラグをリセット
+              setTimeout(() => setIsAnimating(false), 500);
+            } else {
+              setIsAnimating(true);
+              setTimeout(() => setIsAnimating(false), 300);
+            }
+          }}
+        >
           <SheetTrigger asChild>
             <Button variant="outline" size="icon" className="lg:hidden">
               <Menu className="h-5 w-5" />
@@ -58,14 +76,14 @@ export default function WorkspaceLayout({ children }: { children: React.ReactNod
               アプリのロゴ、最新のトピック、お気に入り、ユーザープロフィールにアクセスできます
             </SheetDescription>
             <div className="px-6 py-4">
-              <AppLogo />
+              <AppLogo SheetOpenChange={setOpen} />
             </div>
             <Separator />
             <div className="flex-1">
               <div className="px-2 py-2">
-                <LatestList />
+                <LatestList SheetOpenChange={setOpen} />
                 <Separator className="my-2" />
-                <FavoriteList />
+                <FavoriteList SheetOpenChange={setOpen} />
               </div>
             </div>
             <Separator />
