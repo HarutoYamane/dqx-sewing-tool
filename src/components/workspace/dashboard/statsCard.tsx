@@ -65,7 +65,6 @@ export default function StatsCard({ user }: { user: UserProfile }) {
           throw new Error('ユーザーの裁縫統計データの取得に失敗しました');
         }
         const { totalSewingCount, maxSuccessRate, latestPlayed } = await res.json();
-        console.log('totalSewingCount:', totalSewingCount);
         setTotalSewingCount(totalSewingCount);
         setMaxSuccessRate(maxSuccessRate);
         setLatestPlayed(latestPlayed);
