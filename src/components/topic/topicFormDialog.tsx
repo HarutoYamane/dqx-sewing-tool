@@ -131,7 +131,9 @@ export default function TopicFormDialog({ isOpen, onClose, mode, onSubmit, topic
               name="icon"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-sm font-medium">アイコン</FormLabel>
+                  <FormLabel htmlFor="topic-icon" className="text-sm font-medium">
+                    アイコン
+                  </FormLabel>
                   <FormControl>
                     <div className="flex items-center gap-2">
                       <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 flex-shrink-0">
@@ -169,7 +171,9 @@ export default function TopicFormDialog({ isOpen, onClose, mode, onSubmit, topic
               name="title"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-sm font-medium">タイトル</FormLabel>
+                  <FormLabel htmlFor="topic-title" className="text-sm font-medium">
+                    タイトル
+                  </FormLabel>
                   <FormControl>
                     <Input
                       {...field}
@@ -190,7 +194,9 @@ export default function TopicFormDialog({ isOpen, onClose, mode, onSubmit, topic
               name="content"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-sm font-medium">短い説明</FormLabel>
+                  <FormLabel htmlFor="topic-content" className="text-sm font-medium">
+                    短い説明
+                  </FormLabel>
                   <FormControl>
                     <Textarea
                       {...field}
@@ -211,7 +217,9 @@ export default function TopicFormDialog({ isOpen, onClose, mode, onSubmit, topic
               name="body"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-sm font-medium">詳細内容</FormLabel>
+                  <FormLabel htmlFor="topic-body" className="text-sm font-medium">
+                    詳細内容
+                  </FormLabel>
                   <FormControl>
                     <Textarea
                       {...field}
@@ -232,7 +240,9 @@ export default function TopicFormDialog({ isOpen, onClose, mode, onSubmit, topic
               name="published"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-sm font-medium">公開状態</FormLabel>
+                  <FormLabel htmlFor="topic-published" className="text-sm font-medium">
+                    公開状態
+                  </FormLabel>
                   <FormControl>
                     <select
                       {...field}
