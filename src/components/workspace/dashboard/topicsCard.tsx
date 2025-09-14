@@ -23,7 +23,7 @@ export default function TopicsCard({ user }: { user: UserProfile }) {
   const [isTopicsLoading, setIsTopicsLoading] = useState(false); // トピックスデータのローディングフラグ
   const [isInitialized, setIsInitialized] = useState(false); // 初期化フラグ
 
-  // 初回マウント時にユーザーの裁縫統計データを取得
+  // 初回マウント時にユーザーのトピックスデータを取得
   useEffect(() => {
     const fetchTopics = async () => {
       try {

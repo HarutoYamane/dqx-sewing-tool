@@ -43,7 +43,7 @@ interface LatestPlayed {
   };
 }
 
-export default function StatsCard({ user }: { user: UserProfile }) {
+export default function StatsCard({ user, isGuest }: { user: UserProfile; isGuest: boolean }) {
   const [totalSewingCount, setTotalSewingCount] = useState<TotalSewingCount>(0); // ユーザーの裁縫合計回数データ
   const [maxSuccessRate, setMaxSuccessRate] = useState<MaxSuccessRate | null>(null); // ユーザーの最も大成功確率が高い商材
   const [latestPlayed, setLatestPlayed] = useState<LatestPlayed | null>(null); // ユーザーの最も最近プレイした商材
@@ -74,9 +74,9 @@ export default function StatsCard({ user }: { user: UserProfile }) {
         setIsSewingStatsLoading(false);
       }
     };
-    fetchSewingStats();
+    if (!isGuest || !user) fetchSewingStats(); //ゲストユーザーは裁縫統計データを取得する必要がない、ユーザーが存在しない場合は裁縫統計データを取得する必要がない
     setIsInitialized(true);
-  }, [user]);
+  }, [user, isGuest]);
 
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
@@ -85,7 +85,11 @@ export default function StatsCard({ user }: { user: UserProfile }) {
           <CardTitle className="text-sm font-medium">裁縫回数</CardTitle>
           <Hash className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
-        {isSewingStatsLoading || !isInitialized ? (
+        {isGuest ? (
+          <CardContent className="flex-1 flex items-center justify-center bg-gray-500">
+            <p className="text-white font-medium">ログインが必要です</p>
+          </CardContent>
+        ) : isSewingStatsLoading || !isInitialized ? (
           <CardContent className="flex-1 overflow-auto">
             <LoadingSpinner />
           </CardContent>
@@ -102,7 +106,11 @@ export default function StatsCard({ user }: { user: UserProfile }) {
           <CardTitle className="text-sm font-medium">最も大成功率が高い</CardTitle>
           <ThumbsUp className="h-4 w-4  text-green-500" />
         </CardHeader>
-        {isSewingStatsLoading || !isInitialized ? (
+        {isGuest ? (
+          <CardContent className="flex-1 flex items-center justify-center bg-gray-500">
+            <p className="text-white font-medium">ログインが必要です</p>
+          </CardContent>
+        ) : isSewingStatsLoading || !isInitialized ? (
           <CardContent className="flex-1 overflow-auto">
             <LoadingSpinner />
           </CardContent>
@@ -138,7 +146,11 @@ export default function StatsCard({ user }: { user: UserProfile }) {
           <CardTitle className="text-sm font-medium">最も最近プレイ</CardTitle>
           <Activity className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
-        {isSewingStatsLoading || !isInitialized ? (
+        {isGuest ? (
+          <CardContent className="flex-1 flex items-center justify-center bg-gray-500">
+            <p className="text-white font-medium">ログインが必要です</p>
+          </CardContent>
+        ) : isSewingStatsLoading || !isInitialized ? (
           <CardContent className="flex-1 overflow-auto">
             <LoadingSpinner />
           </CardContent>

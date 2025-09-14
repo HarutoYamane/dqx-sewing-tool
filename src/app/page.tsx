@@ -1,3 +1,5 @@
+'use client';
+
 // Next.js
 import Link from 'next/link';
 import Image from 'next/image';
@@ -5,8 +7,11 @@ import Image from 'next/image';
 import { ArrowRight, ThumbsUp, Heart, Trophy } from 'lucide-react';
 // shadcn/ui
 import { Button } from '@/components/ui/button';
+import { useUserStore } from '@/store/useUserStore';
 
 export default function TopPage() {
+  const { clearUser } = useUserStore();
+
   return (
     <div className="flex min-h-screen flex-col">
       {/* ヘッダー */}
@@ -64,9 +69,13 @@ export default function TopPage() {
                   </p>
                 </div>
                 <div className="flex flex-col gap-2 min-[400px]:flex-row">
-                  <Link href="/signup">
-                    <Button size="lg" className="gap-1.5 bg-green-500 hover:bg-green-600 animate-heartbeat">
-                      無料で始める
+                  <Link href="/workspace">
+                    <Button
+                      size="lg"
+                      className="gap-1.5 bg-green-500 hover:bg-green-600 animate-heartbeat"
+                      onClick={clearUser}
+                    >
+                      ゲストユーザーで始める（アカウント不要）
                       <ArrowRight className="h-4 w-4" />
                     </Button>
                   </Link>
@@ -101,6 +110,7 @@ export default function TopPage() {
                   <ThumbsUp className="fill-green-500 text-green-500" />
                 </div>
                 <h3 className="text-xl font-bold">裁縫支援機能</h3>
+                <p className="text-center text-muted-foreground">（ゲストユーザー利用可能 ※1）</p>
                 <p className="text-center text-muted-foreground">
                   裁縫商材の強さローテーションや設定値・現在値の確認、裁縫結果の保存が可能です。
                 </p>
@@ -110,6 +120,7 @@ export default function TopPage() {
                   <Heart className="fill-pink-500 text-pink-500" />
                 </div>
                 <h3 className="text-xl font-bold">お気に入り機能</h3>
+                <p className="text-center text-red-500 text-muted-foreground">（ログイン必要）</p>
                 <p className="text-center text-muted-foreground">
                   裁縫商材をお気に入りに登録して、簡単に裁縫作業を開始できます。
                 </p>
@@ -119,6 +130,7 @@ export default function TopPage() {
                   <Trophy className="fill-yellow-500 text-yellow-500" />
                 </div>
                 <h3 className="text-xl font-bold">ランキング機能</h3>
+                <p className="text-center text-red-500 text-muted-foreground">（ログイン必要）</p>
                 <p className="text-center text-muted-foreground">
                   このアプリを利用するユーザー内で、最近人気な裁縫商材ランキングを確認できます。
                 </p>
@@ -132,6 +144,9 @@ export default function TopPage() {
       <footer className="border-t p-6">
         <div className="container mx-auto flex flex-col gap-4 px-4 md:px-6">
           <p className="text-center text-sm leading-loose text-muted-foreground md:text-left">
+            ※1：裁縫結果の保存機能は、ログインしているユーザーのみ利用可能です。
+          </p>
+          <p className="text-center text-sm leading-loose text-muted-foreground md:text-left">
             ・このページで利用している株式会社スクウェア・エニックスを代表とする共同著作者が権利を所有する画像の転載・配布は禁止いたします。
             (C) ARMOR PROJECT/BIRD STUDIO/SQUARE ENIX All Rights Reserved.
             <br />
@@ -139,18 +154,18 @@ export default function TopPage() {
               href="https://support.jp.square-enix.com/rule.php?id=2620&la=0&tag=transmission"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-blue-500 hover:underline"
+              className="text-blue-500 hover:text-blue-800 underline"
             >
               『ドラゴンクエストX オンライン』動画・生配信・画像投稿に関するガイドライン
             </Link>
           </p>
           <Link href="https://www.dqx.jp/online/" target="_blank" rel="noopener noreferrer">
-            <p className="text-center text-sm text-blue-500 hover:underline leading-loose md:text-left">
+            <p className="text-center text-sm text-blue-500 hover:text-blue-800 underline leading-loose md:text-left">
               ・ドラゴンクエストX オンライン - 公式サイト
             </p>
           </Link>
           <Link href="https://hiroba.dqx.jp/sc/home/" target="_blank" rel="noopener noreferrer">
-            <p className="text-center text-sm text-blue-500 hover:underline leading-loose md:text-left">
+            <p className="text-center text-sm text-blue-500 hover:text-blue-800 underline leading-loose md:text-left">
               ・ドラゴンクエストX 冒険者の広場 - 公式サイト
             </p>
           </Link>

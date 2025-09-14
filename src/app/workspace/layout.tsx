@@ -1,7 +1,7 @@
 'use client';
 
 // React
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 // Next.js
 import { notFound } from 'next/navigation';
 // アイコン
@@ -25,20 +25,9 @@ export default function WorkspaceLayout({ children }: { children: React.ReactNod
   const [isAnimating, setIsAnimating] = useState<boolean>(false);
 
   // ユーザーストアから状態とアクションを取得
-  const { user, isLoading, error, fetchCurrentUser } = useUserStore();
-  const [isInitialized, setIsInitialized] = useState(false);
+  const { user, isLoading, error } = useUserStore();
 
-  // コンポーネントマウント時にユーザー情報を取得
-  useEffect(() => {
-    const initUser = async () => {
-      await fetchCurrentUser();
-      setIsInitialized(true);
-    };
-
-    initUser();
-  }, [fetchCurrentUser]); //fetchCurrentUserが変更されることはないが、eslintの警告を回避するために追加
-
-  if (!isInitialized || isLoading) return <Loading />;
+  if (isLoading) return <Loading />;
   if (error) return <Error />;
   if (!user) return notFound();
 

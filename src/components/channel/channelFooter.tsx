@@ -10,7 +10,7 @@ import { RotateCcw } from 'lucide-react';
 // Zustandストア
 import { useResultStore } from '@/store/ResultStore';
 
-export default function ChannelFooter({ channelId }: { channelId: number }) {
+export default function ChannelFooter({ channelId, isGuest }: { channelId: number; isGuest: boolean }) {
   const { result, isLoading, isUpdateLoading, isResetLoading, error, fetchResult, resetResult } = useResultStore();
 
   useEffect(() => {
@@ -33,31 +33,38 @@ export default function ChannelFooter({ channelId }: { channelId: number }) {
   if (error) return <Error />;
 
   const handleReset = (channelId: number) => {
+    if (isGuest) return;
     resetResult(channelId);
   };
 
   return (
     <footer className="border-b bg-background z-10">
-      <div className="h-14 flex items-center gap-4 px-4">
-        <div className="flex items-center gap-2">
-          <p className="text-sm">裁縫回数：{result !== null ? result.total : 0}回</p>
-          <p className="text-sm">大成功回数：{result !== null ? result.threeStar : 0}回</p>
-          <p className="text-sm text-muted-foreground">
-            大成功確率：
-            {result !== null && result.total > 0 ? ((result.threeStar / result.total) * 100).toFixed(1) : '-'}%
-          </p>
-          <Button
-            disabled={isUpdateLoading || isResetLoading}
-            variant="outline"
-            size="sm"
-            className="shadow-md"
-            onClick={() => handleReset(channelId)}
-          >
-            <RotateCcw className="h-4 w-4" />
-            裁縫回数をリセット
-          </Button>
+      {isGuest ? (
+        <div className="h-14 flex items-center justify-start bg-gray-500 px-4">
+          <p className="text-sm text-white font-medium">裁縫結果を保存するにはログインが必要です</p>
         </div>
-      </div>
+      ) : (
+        <div className="h-14 flex items-center gap-4 px-4">
+          <div className="flex items-center gap-2">
+            <p className="text-sm">裁縫回数：{result !== null ? result.total : 0}回</p>
+            <p className="text-sm">大成功回数：{result !== null ? result.threeStar : 0}回</p>
+            <p className="text-sm text-muted-foreground">
+              大成功確率：
+              {result !== null && result.total > 0 ? ((result.threeStar / result.total) * 100).toFixed(1) : '-'}%
+            </p>
+            <Button
+              disabled={isUpdateLoading || isResetLoading || isGuest}
+              variant="outline"
+              size="sm"
+              className="shadow-md"
+              onClick={() => handleReset(channelId)}
+            >
+              <RotateCcw className="h-4 w-4" />
+              裁縫回数をリセット
+            </Button>
+          </div>
+        </div>
+      )}
     </footer>
   );
 }

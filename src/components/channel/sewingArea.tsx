@@ -15,7 +15,7 @@ import { useResultStore } from '@/store/ResultStore';
 // データ型
 import { Sewing } from '@/types/armor';
 
-export default function SewingArea({ channelId }: { channelId: number }) {
+export default function SewingArea({ channelId, isGuest }: { channelId: number; isGuest: boolean }) {
   const [values, setValues] = useState<(number | null)[]>([...Array(9).fill(null)]);
   const [sewingValue, setSewingValue] = useState<Sewing | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -104,7 +104,7 @@ export default function SewingArea({ channelId }: { channelId: number }) {
   };
 
   const handleComplete = async () => {
-    await updateResult(channelId, isComplete);
+    if (!isGuest) await updateResult(channelId, isComplete); //ゲストユーザーはリザルトを保存できない
     setValues([...Array(9).fill(null)]);
   };
 

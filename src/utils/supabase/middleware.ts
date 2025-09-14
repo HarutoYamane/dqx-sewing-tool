@@ -37,16 +37,17 @@ export async function updateSession(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (
-    !user &&
-    !request.nextUrl.pathname.startsWith('/login') &&
-    !request.nextUrl.pathname.startsWith('/auth') &&
-    !request.nextUrl.pathname.startsWith('/signup') &&
-    request.nextUrl.pathname !== '/'
-  ) {
-    // no user, potentially respond by redirecting the user to the login page
+  if (!user && request.nextUrl.pathname.startsWith('/workspace/contact')) {
+    // contactページにアクセスしようとしたが、ユーザーがログインしていない場合
     const url = request.nextUrl.clone();
     url.pathname = '/login';
+    return NextResponse.redirect(url);
+  }
+
+  if (user?.role !== 'ADMIN' && request.nextUrl.pathname.startsWith('/workspace/addArmor')) {
+    // addArmorページにアクセスしようとしたが、ユーザーが管理者権限でない場合
+    const url = request.nextUrl.clone();
+    url.pathname = '/workspace';
     return NextResponse.redirect(url);
   }
 

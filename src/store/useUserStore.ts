@@ -5,6 +5,8 @@ import { UserProfile } from '@/types/workspace';
 interface UserState {
   // ユーザー情報を保持する State
   user: UserProfile | null;
+  // ゲストユーザーの判定保持する State（ログインしていない(userが空)場合はtrue）
+  isGuest: boolean;
   // ローディング状態
   isLoading: boolean;
   // エラー情報
@@ -21,6 +23,7 @@ interface UserState {
 export const useUserStore = create<UserState>((set, get) => ({
   // 初期 State
   user: null,
+  isGuest: true, //デフォルトはtrueでログインしたらfalseにする
   isLoading: false,
   error: null,
 
@@ -38,6 +41,7 @@ export const useUserStore = create<UserState>((set, get) => ({
 
       const user = (await res.json()) as UserProfile;
       set({ user, isLoading: false });
+      set({ isGuest: false }); //ユーザー情報を取得したらゲストユーザー判定をfalseにする
     } catch (error) {
       console.error('ユーザー情報の取得に失敗:', error);
       set({
@@ -47,6 +51,7 @@ export const useUserStore = create<UserState>((set, get) => ({
     }
   },
   updateUserName: async (name: string) => {
+    if (get().isGuest) return;
     try {
       set({ isLoading: true, error: null });
       const currentUser = get().user;
@@ -67,6 +72,7 @@ export const useUserStore = create<UserState>((set, get) => ({
 
       const updatedUser = (await res.json()) as UserProfile;
       set({ user: updatedUser, isLoading: false });
+      set({ isGuest: false }); //一応入れてるけど、ここで更新する必要はない
     } catch (error) {
       console.error('ユーザー名の更新に失敗:', error);
       set({
@@ -77,6 +83,6 @@ export const useUserStore = create<UserState>((set, get) => ({
   },
 
   clearUser: () => {
-    set({ user: null, error: null });
+    set({ user: null, isGuest: true, error: null });
   },
 }));

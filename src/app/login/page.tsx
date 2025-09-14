@@ -18,6 +18,8 @@ import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 // サーバーアクション
 import { login } from './actions';
+// Zustandストア
+import { useUserStore } from '@/store/useUserStore';
 
 // バリデーションスキーマ
 const formSchema = z.object({
@@ -31,6 +33,7 @@ export default function LoginPage() {
   const [error, setError] = useState<string | null>(null);
   const [isAdminUser, setIsAdminUser] = useState<boolean>(false);
   const router = useRouter();
+  const { fetchCurrentUser } = useUserStore();
 
   // フォームの設定
   const form = useForm<z.infer<typeof formSchema>>({
@@ -55,8 +58,7 @@ export default function LoginPage() {
 
       // サーバーアクションを呼び出し
       await login(formData);
-
-      // 正常に完了した場合（リダイレクトされるので通常はここには到達しない）
+      await fetchCurrentUser();
       router.push('/workspace');
     } catch (err) {
       console.error('ログインエラー:', err);

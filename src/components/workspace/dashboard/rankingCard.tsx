@@ -21,7 +21,7 @@ interface RankingItem {
   imageUrl: string;
 }
 
-export default function RankingCard() {
+export default function RankingCard({ isGuest }: { isGuest: boolean }) {
   const [rankingData, setRankingData] = useState<RankingItem[]>([]); // 人気商材ランキングのAPIから取得するデータ
   const [isRankingLoading, setIsRankingLoading] = useState(false); // 人気商材ランキングのローディングフラグ
   const [isInitialized, setIsInitialized] = useState(false); // 初期化フラグ
@@ -43,9 +43,9 @@ export default function RankingCard() {
         setIsRankingLoading(false);
       }
     };
-    fetchRanking();
+    if (!isGuest) fetchRanking(); //ゲストユーザーは人気商材ランキングを取得する必要がない
     setIsInitialized(true);
-  }, []);
+  }, [isGuest]);
 
   return (
     <Card className="col-span-1 flex flex-col max-h-[450px]">
@@ -58,7 +58,11 @@ export default function RankingCard() {
           <Trophy className="h-6 w-6  text-yellow-500" />
         </div>
       </CardHeader>
-      {isRankingLoading || !isInitialized ? (
+      {isGuest ? (
+        <CardContent className="flex-1 flex items-center justify-center bg-gray-500">
+          <p className="text-white font-medium">ログインが必要です</p>
+        </CardContent>
+      ) : isRankingLoading || !isInitialized ? (
         <CardContent className="flex-1 overflow-auto">
           <LoadingSpinner />
         </CardContent>

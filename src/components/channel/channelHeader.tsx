@@ -4,6 +4,7 @@ import Link from 'next/link';
 // React
 import { useState, useEffect, useCallback } from 'react';
 // shadcn/ui
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Separator } from '@/components/ui/separator';
 import { Button } from '@/components/ui/button';
 // 自作コンポーネント
@@ -15,25 +16,32 @@ import { Heart, Search } from 'lucide-react';
 import { Armor } from '@/types/armor';
 // Zustandストア
 import { useFavoriteStore } from '@/store/favoriteStore';
-import { useUserStore } from '@/store/useUserStore';
 // ストレージ
 import { getArmorImageUrl } from '@/utils/supabase/storage';
+import { UserProfile } from '@/types/workspace';
 
-export default function ChannelHeader({ channelId }: { channelId: number }) {
+export default function ChannelHeader({
+  channelId,
+  isGuest,
+  user,
+}: {
+  channelId: number;
+  isGuest: boolean;
+  user: UserProfile;
+}) {
   const { favorites, isLoading, isUpdateLoading, error, fetchFavorites, addFavorite, deleteFavorite } =
     useFavoriteStore();
-  const { user } = useUserStore();
   const [isInitialized, setIsInitialized] = useState(false);
 
   const initFavorites = useCallback(async () => {
     await fetchFavorites();
-    setIsInitialized(true);
   }, [fetchFavorites]);
 
   useEffect(() => {
     // 初回読み込み時のみ実行
-    initFavorites();
-  }, [initFavorites]);
+    if (!isGuest) initFavorites(); //ゲストユーザーはお気に入りを取得する必要がない
+    setIsInitialized(true);
+  }, [initFavorites, isGuest]);
 
   const [armor, setArmor] = useState<Armor | null>(null);
   const [isLoadingArmor, setIsLoadingArmor] = useState(false);
@@ -90,38 +98,47 @@ export default function ChannelHeader({ channelId }: { channelId: number }) {
             </Button>
           </Link>
 
-          <Button
-            variant="outline"
-            disabled={isLoading || isUpdateLoading} // 読込み中または更新中は押せない
-            size="sm"
-            className="shadow-md"
-            onClick={() => {
-              if (favorites.some((favorite) => favorite.armorId === armor.id)) {
-                //someの戻り値（boolean）
-                const favorite = favorites.find((f) => f.armorId === armor.id);
-                //該当するオブジェクト(Favorite型)を取得
-                if (favorite) {
-                  deleteFavorite(favorite.id); // //そのオブジェクトのIdを削除
-                }
-              } else {
-                addFavorite(armor.id, new Date());
-              }
-            }}
-          >
-            {isUpdateLoading && (
-              <div className="h-4 w-4 animate-spin rounded-full border-2 border-solid border-current border-r-transparent" />
-            )}
-            {!isUpdateLoading && (
-              <Heart
-                className={`h-4 w-4 ${
-                  favorites.some((favorite) => favorite.armorId === armor.id)
-                    ? 'text-red-500 fill-red-500'
-                    : 'text-gray-500'
-                }`}
-              />
-            )}
-            <span className="text-sm hidden md:block">お気に入り</span>
-          </Button>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="outline"
+                  disabled={isLoading || isUpdateLoading || isGuest} // 読込み中または更新中は押せない
+                  size="sm"
+                  className="shadow-md"
+                  onClick={() => {
+                    if (favorites.some((favorite) => favorite.armorId === armor.id)) {
+                      //someの戻り値（boolean）
+                      const favorite = favorites.find((f) => f.armorId === armor.id);
+                      //該当するオブジェクト(Favorite型)を取得
+                      if (favorite) {
+                        deleteFavorite(favorite.id); // //そのオブジェクトのIdを削除
+                      }
+                    } else {
+                      addFavorite(armor.id, new Date());
+                    }
+                  }}
+                >
+                  {isUpdateLoading && (
+                    <div className="h-4 w-4 animate-spin rounded-full border-2 border-solid border-current border-r-transparent" />
+                  )}
+                  {!isUpdateLoading && (
+                    <Heart
+                      className={`h-4 w-4 ${
+                        favorites.some((favorite) => favorite.armorId !== armor.id || isGuest)
+                          ? 'text-gray-500'
+                          : 'text-red-500 fill-red-500'
+                      }`}
+                    />
+                  )}
+                  <span className="text-sm hidden md:block">お気に入り</span>
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>{isGuest ? 'ログインが必要です' : 'お気に入りの追加・削除ができます'}</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         </div>
       </div>
     </header>

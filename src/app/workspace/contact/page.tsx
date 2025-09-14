@@ -17,6 +17,8 @@ import { ArrowLeft, Send, Check } from 'lucide-react';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
+// Zustandストア
+import { useUserStore } from '@/store/useUserStore';
 
 // フォームデータの型
 export interface FormData {
@@ -37,6 +39,7 @@ const formSchema = z.object({
 export default function ContactPage() {
   const [isLoading, setIsLoading] = useState<boolean>(false); //ローディングフラグ（送信中）
   const [Sent, setSent] = useState<boolean>(false); //送信完了フラグ（送信完了時にtrueになる）
+  const { isGuest } = useUserStore();
 
   // フォームの設定
   const form = useForm<FormData>({
@@ -179,7 +182,7 @@ export default function ContactPage() {
                     送信完了
                   </Button>
                 ) : (
-                  <Button type="submit" className="w-full sm:w-auto shadow-md" disabled={isLoading}>
+                  <Button type="submit" className="w-full sm:w-auto shadow-md" disabled={isLoading || isGuest}>
                     {isLoading && <LoadingSpinner />}
                     <Send className="h-4 w-4 mr-1" />
                     送信する

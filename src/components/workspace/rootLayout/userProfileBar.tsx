@@ -46,7 +46,7 @@ export default function UserProfileBar({ userProfile }: { userProfile: UserProfi
   const [logoutOpen, setLogoutOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { theme, setTheme } = useTheme();
-  const { clearUser, updateUserName } = useUserStore();
+  const { isGuest, clearUser, updateUserName } = useUserStore();
   const { clearFavorites } = useFavoriteStore();
   const { clearResult } = useResultStore();
 
@@ -57,8 +57,8 @@ export default function UserProfileBar({ userProfile }: { userProfile: UserProfi
 
   useEffect(() => {
     // ユーザー名の初期化
-    setUserName(userProfile.name);
-  }, [settingsOpen, userProfile.name]);
+    if (!isGuest) setUserName(userProfile.name);
+  }, [settingsOpen, userProfile.name, isGuest]);
 
   // ログアウト処理
   const handleLogout = async () => {
@@ -92,7 +92,7 @@ export default function UserProfileBar({ userProfile }: { userProfile: UserProfi
   // ユーザー名更新処理
   const handleUpdateUserName = async () => {
     try {
-      if (userName === userProfile.name) {
+      if (userName === userProfile.name || isGuest) {
         setSettingsOpen(false);
         return;
       }
@@ -118,15 +118,16 @@ export default function UserProfileBar({ userProfile }: { userProfile: UserProfi
   return (
     <div className="flex items-center gap-2">
       <Avatar>
-        <AvatarImage src={userProfile.imageUrl || ''} />
+        {/* ゲストユーザーの場合はアバター画像はデフォルトのアイコン */}
+        <AvatarImage src={isGuest ? '' : userProfile.imageUrl || ''} />
         <AvatarFallback>
           <User className="h-4 w-4 scale-125" />
         </AvatarFallback>
       </Avatar>
 
       <div className="flex-1 overflow-hidden">
-        <p className="text-sm font-medium leading-none">{userProfile.name}</p>
-        <p className="text-xs text-muted-foreground">{userProfile.email}</p>
+        <p className="text-sm font-medium leading-none">{isGuest ? 'ゲストユーザー' : userProfile.name}</p>
+        <p className="text-xs text-muted-foreground">{isGuest ? 'ログインされていません' : userProfile.email}</p>
       </div>
 
       {/* 環境設定ボタン */}
@@ -145,12 +146,15 @@ export default function UserProfileBar({ userProfile }: { userProfile: UserProfi
           </DialogHeader>
           <div className="space-y-8 py-2">
             <div className="space-y-2">
-              <Label htmlFor="username">ユーザー名を変更</Label>
+              <Label htmlFor="username">
+                {isGuest ? 'ユーザー名を変更（ゲストユーザー不可）' : 'ユーザー名を変更'}
+              </Label>
               <Input
                 id="username"
                 value={userName}
                 onChange={(e) => setUserName(e.target.value)}
                 placeholder="ユーザー名を入力"
+                disabled={isGuest}
               />
             </div>
             <div className="flex items-center space-x-2">
@@ -169,7 +173,7 @@ export default function UserProfileBar({ userProfile }: { userProfile: UserProfi
       {/* ログアウトボタン */}
       <AlertDialog open={logoutOpen} onOpenChange={setLogoutOpen}>
         <AlertDialogTrigger asChild>
-          <Button variant="ghost" size="icon">
+          <Button variant="ghost" size="icon" disabled={isGuest}>
             <LogOut className="h-4 w-4" />
             <span className="sr-only">ログアウト</span>
           </Button>

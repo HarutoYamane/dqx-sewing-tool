@@ -12,17 +12,19 @@ import Loading from '@/app/loading';
 import Error from '@/app/error';
 // Zustandストア
 import { useFavoriteStore } from '@/store/favoriteStore';
+import { useUserStore } from '@/store/useUserStore';
 // ストレージ
 import { getArmorImageUrl } from '@/utils/supabase/storage';
 
 export default function FavoriteList({ SheetOpenChange }: { SheetOpenChange?: (open: boolean) => void }) {
   const { favorites, isLoading, isUpdateLoading, error, fetchFavorites } = useFavoriteStore();
+  const { isGuest } = useUserStore();
   const [isInitialized, setIsInitialized] = useState(false);
 
   const initFavorites = useCallback(async () => {
-    await fetchFavorites();
+    if (!isGuest) await fetchFavorites();
     setIsInitialized(true);
-  }, [fetchFavorites]);
+  }, [fetchFavorites, isGuest]);
 
   const handleLogoClick = () => {
     if (SheetOpenChange) {
@@ -52,14 +54,14 @@ export default function FavoriteList({ SheetOpenChange }: { SheetOpenChange?: (o
     <div className="px-4 py-2">
       <div className="flex items-center justify-between">
         <h2 className="text-lg font-semibold tracking-tight">お気に入り</h2>
-        <Button variant="ghost" size="icon">
+        <Button variant="ghost" size="icon" disabled={isGuest}>
           <PlusCircle className="h-4 w-4" />
           <span className="sr-only">お気に入り 追加</span>
         </Button>
       </div>
 
       <div className="space-y-1 mt-2">
-        {favorites?.length === 0 && <p className="text-sm text-gray-500">お気に入り無し</p>}
+        {(favorites?.length === 0 || isGuest) && <p className="text-sm text-gray-500">・お気に入り無し</p>}
         {favorites?.map((favorite, index) => (
           <Button
             variant="ghost"

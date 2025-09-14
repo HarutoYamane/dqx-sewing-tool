@@ -10,8 +10,12 @@ import ChannelHeader from '@/components/channel/channelHeader';
 import SewingArea from '@/components/channel/sewingArea';
 import SewingValueArea from '@/components/channel/sewingValueArea';
 import ChannelFooter from '@/components/channel/channelFooter';
+// Zustandストア
+import { useUserStore } from '@/store/useUserStore';
+import { UserProfile } from '@/types/workspace';
 
 export default function ArmorPage() {
+  const { user, isGuest } = useUserStore();
   // URL のパスからチャンネル ID を取得
   const { channelId } = useParams<{ channelId: string }>(); //動的なchannelIdを文字列で取得
   const channelIdNumber = parseInt(channelId, 10); //channelIdを数値に変換
@@ -20,11 +24,11 @@ export default function ArmorPage() {
   return (
     <div className="flex flex-col h-full lg:h-screen">
       <div className="sticky top-0 bg-background z-50 border-b pl-3 pr-3 lg:pl-0 lg:pr-0">
-        <ChannelHeader channelId={channelIdNumber} />
+        <ChannelHeader channelId={channelIdNumber} isGuest={isGuest} user={user as UserProfile} />
       </div>
       <div className="flex flex-col lg:flex-row gap-4 flex-1 overflow-hidden p-2">
         <div className="flex-1 overflow-auto min-h-0 lg:pl-3">
-          <SewingArea channelId={channelIdNumber} />
+          <SewingArea channelId={channelIdNumber} isGuest={isGuest} />
         </div>
         <Separator orientation="horizontal" className="lg:hidden w-full" />
         <Separator orientation="vertical" className="hidden lg:block h-full" />
@@ -33,7 +37,7 @@ export default function ArmorPage() {
         </div>
       </div>
       <div className="h-14 border-t bg-background">
-        <ChannelFooter channelId={channelIdNumber} />
+        <ChannelFooter channelId={channelIdNumber} isGuest={isGuest} />
       </div>
     </div>
   );
