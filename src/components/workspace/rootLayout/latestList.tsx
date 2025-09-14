@@ -65,6 +65,7 @@ export default function LatestList({ SheetOpenChange }: { SheetOpenChange?: (ope
                 onClick={() => toggleSeries(series.id)}
                 className="w-full justify-start gap-2"
               >
+                ⚪︎
                 <Image src={getArmorImageUrl(series.imageUrl)} alt={series.name} width={24} height={24} />
                 {series.name}
                 {isOpen ? <ChevronDown className="ml-auto h-4 w-4" /> : <ChevronRight className="ml-auto h-4 w-4" />}
