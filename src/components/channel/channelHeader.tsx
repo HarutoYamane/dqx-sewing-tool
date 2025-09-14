@@ -125,7 +125,7 @@ export default function ChannelHeader({
                   {!isUpdateLoading && (
                     <Heart
                       className={`h-4 w-4 ${
-                        favorites.some((favorite) => favorite.armorId !== armor.id || isGuest)
+                        isGuest || !favorites.some((favorite) => favorite.armorId !== armor.id) //ゲストユーザーお気に入りに追加されていない場合はグレー
                           ? 'text-gray-500'
                           : 'text-red-500 fill-red-500'
                       }`}
