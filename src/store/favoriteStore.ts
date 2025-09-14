@@ -29,6 +29,10 @@ export const useFavoriteStore = create<FavoriteState>((set) => ({
   error: null,
 
   fetchFavorites: async () => {
+    const { isLoading } = useFavoriteStore.getState();
+    // 既にローディング中の場合は実行しない
+    if (isLoading) return;
+
     try {
       set({ isLoading: true, error: null });
 
