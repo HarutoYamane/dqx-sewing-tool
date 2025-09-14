@@ -1,9 +1,11 @@
 'use client';
 
 // アイコン
-import { LogOut, Settings, User } from 'lucide-react';
+import { LogOut, Settings, User, LogIn } from 'lucide-react';
 // React
 import { useState, useEffect } from 'react';
+// Next.js
+import { useRouter } from 'next/navigation';
 // Next.js（テーマ管理）
 import { useTheme } from 'next-themes';
 // shadcn/ui
@@ -40,15 +42,16 @@ import { useUserStore } from '@/store/useUserStore';
 import { useFavoriteStore } from '@/store/favoriteStore';
 import { useResultStore } from '@/store/ResultStore';
 
-export default function UserProfileBar({ userProfile }: { userProfile: UserProfile }) {
+export default function UserProfileBar({ userProfile }: { userProfile: UserProfile | undefined }) {
   const [settingsOpen, setSettingsOpen] = useState(false);
-  const [userName, setUserName] = useState(userProfile.name);
+  const [userName, setUserName] = useState(userProfile?.name);
   const [logoutOpen, setLogoutOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { theme, setTheme } = useTheme();
   const { isGuest, clearUser, updateUserName } = useUserStore();
   const { clearFavorites } = useFavoriteStore();
   const { clearResult } = useResultStore();
+  const router = useRouter();
 
   // ダークモードの切り替え
   const toggleDarkMode = () => {
@@ -57,8 +60,8 @@ export default function UserProfileBar({ userProfile }: { userProfile: UserProfi
 
   useEffect(() => {
     // ユーザー名の初期化
-    if (!isGuest) setUserName(userProfile.name);
-  }, [settingsOpen, userProfile.name, isGuest]);
+    if (!isGuest) setUserName(userProfile?.name);
+  }, [settingsOpen, userProfile?.name, isGuest]);
 
   // ログアウト処理
   const handleLogout = async () => {
@@ -91,21 +94,21 @@ export default function UserProfileBar({ userProfile }: { userProfile: UserProfi
 
   // ユーザー名更新処理
   const handleUpdateUserName = async () => {
-    const userNameTrim = userName.trim(); // ユーザー名の前後の空白を削除
+    const userNameTrim = userName?.trim(); // ユーザー名の前後の空白を削除
     try {
-      if (userNameTrim === userProfile.name || isGuest) {
+      if (userNameTrim === userProfile?.name || isGuest) {
         setSettingsOpen(false);
         return;
       }
 
       // フロントエンド側でバリデーション
-      const validationError = validateUserName(userNameTrim);
+      const validationError = validateUserName(userNameTrim || '');
       if (validationError) {
         alert(validationError); // または適切なエラー表示方法
         return;
       }
 
-      await updateUserName(userNameTrim);
+      await updateUserName(userNameTrim || '');
       setSettingsOpen(false);
     } catch (error) {
       console.error('ユーザー名更新エラー:', error);
@@ -120,15 +123,15 @@ export default function UserProfileBar({ userProfile }: { userProfile: UserProfi
     <div className="flex items-center gap-2">
       <Avatar>
         {/* ゲストユーザーの場合はアバター画像はデフォルトのアイコン */}
-        <AvatarImage src={isGuest ? '' : userProfile.imageUrl || ''} />
+        <AvatarImage src={isGuest ? '' : userProfile?.imageUrl || ''} />
         <AvatarFallback>
           <User className="h-4 w-4 scale-125" />
         </AvatarFallback>
       </Avatar>
 
       <div className="flex-1 overflow-hidden">
-        <p className="text-sm font-medium leading-none">{isGuest ? 'ゲストユーザー' : userProfile.name}</p>
-        <p className="text-xs text-muted-foreground">{isGuest ? 'ログインされていません' : userProfile.email}</p>
+        <p className="text-sm font-medium leading-none">{isGuest ? 'ゲストユーザー' : userProfile?.name}</p>
+        <p className="text-xs text-muted-foreground">{isGuest ? 'ログインしていません' : userProfile?.email}</p>
       </div>
 
       {/* 環境設定ボタン */}
@@ -174,34 +177,56 @@ export default function UserProfileBar({ userProfile }: { userProfile: UserProfi
       {/* ログアウトボタン */}
       <AlertDialog open={logoutOpen} onOpenChange={setLogoutOpen}>
         <AlertDialogTrigger asChild>
-          <Button variant="ghost" size="icon" disabled={isGuest}>
-            <LogOut className="h-4 w-4" />
-            <span className="sr-only">ログアウト</span>
+          <Button variant="ghost" size="icon">
+            {isGuest ? <LogIn className="h-4 w-4 text-blue-600" /> : <LogOut className="h-4 w-4 text-red-500" />}
+            <span className="sr-only">{isGuest ? 'ログイン' : 'ログアウト'}</span>
           </Button>
         </AlertDialogTrigger>
 
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>ログアウト</AlertDialogTitle>
-            <AlertDialogDescription>本当にログアウトしますか？</AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>キャンセル</AlertDialogCancel>
-            <AlertDialogAction disabled={isLoading} onClick={handleLogout}>
-              {isLoading && (
-                <svg className="mr-2 h-4 w-4 animate-spin" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                  <path
-                    className="opacity-75"
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                  ></path>
-                </svg>
-              )}
-              ログアウト
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
+        {isGuest ? (
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>ログイン</AlertDialogTitle>
+              <AlertDialogDescription>ログインページに移動しますか？</AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>キャンセル</AlertDialogCancel>
+              <AlertDialogAction className="bg-green-600 hover:bg-green-700" onClick={() => router.push('/login')}>
+                ログイン
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        ) : (
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>ログアウト</AlertDialogTitle>
+              <AlertDialogDescription>本当にログアウトしますか？</AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>キャンセル</AlertDialogCancel>
+              <AlertDialogAction className="bg-red-600 hover:bg-red-700" disabled={isLoading} onClick={handleLogout}>
+                {isLoading && (
+                  <svg className="mr-2 h-4 w-4 animate-spin" viewBox="0 0 24 24">
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    ></path>
+                  </svg>
+                )}
+                ログアウト
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        )}
       </AlertDialog>
     </div>
   );
