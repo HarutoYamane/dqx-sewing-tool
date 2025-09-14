@@ -77,7 +77,7 @@ export default function ChannelHeader({ armorData, isGuest }: { armorData: Armor
                   {!isUpdateLoading && (
                     <Heart
                       className={`h-4 w-4 ${
-                        isGuest || !favorites || !favorites.some((favorite) => favorite.armorId !== armorData.id) //ゲストユーザーお気に入りに追加されていない場合はグレー
+                        isGuest || !favorites || !favorites.some((favorite) => favorite.armorId === armorData.id) //ゲストユーザーお気に入りに追加されていない場合はグレー
                           ? 'text-gray-500'
                           : 'text-red-500 fill-red-500'
                       }`}
