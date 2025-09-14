@@ -91,20 +91,21 @@ export default function UserProfileBar({ userProfile }: { userProfile: UserProfi
 
   // ユーザー名更新処理
   const handleUpdateUserName = async () => {
+    const userNameTrim = userName.trim(); // ユーザー名の前後の空白を削除
     try {
-      if (userName === userProfile.name || isGuest) {
+      if (userNameTrim === userProfile.name || isGuest) {
         setSettingsOpen(false);
         return;
       }
 
       // フロントエンド側でバリデーション
-      const validationError = validateUserName(userName);
+      const validationError = validateUserName(userNameTrim);
       if (validationError) {
         alert(validationError); // または適切なエラー表示方法
         return;
       }
 
-      await updateUserName(userName);
+      await updateUserName(userNameTrim);
       setSettingsOpen(false);
     } catch (error) {
       console.error('ユーザー名更新エラー:', error);

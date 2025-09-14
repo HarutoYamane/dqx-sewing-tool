@@ -42,7 +42,7 @@ export default function SignupPage() {
     try {
       // FormData オブジェクトを作成
       const formData = new FormData();
-      formData.append('name', values.name);
+      formData.append('name', values.name.trim()); // ユーザー名の前後の空白を削除
       formData.append('email', values.email);
       formData.append('password', values.password);
 
