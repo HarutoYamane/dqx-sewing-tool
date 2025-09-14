@@ -7,7 +7,7 @@ import { z } from 'zod';
 export const dynamic = 'force-dynamic';
 
 /**
- * [GET] /api/users/me: 現在認証されているユーザーの情報を取得
+ * [GET] /api/user: 現在認証されているユーザーの情報を取得
  */
 export const GET = withAuth(async (request: NextRequest, _, user: UserProfile) => {
   // 認証済みユーザーの情報をそのまま返す
@@ -25,7 +25,7 @@ const updateProfileSchema = z.object({
 });
 
 /**
- * [PATCH] /api/users/me: 現在認証されているユーザーの情報を更新
+ * [PATCH] /api/user: 現在認証されているユーザーの情報を更新
  */
 export const PATCH = withAuth(async (request: NextRequest, _, user: UserProfile) => {
   try {
