@@ -1,14 +1,11 @@
 // 画像
 import Image from 'next/image';
 import Link from 'next/link';
-// React
-import { useState, useEffect, useCallback } from 'react';
 // shadcn/ui
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Separator } from '@/components/ui/separator';
 import { Button } from '@/components/ui/button';
 // 自作コンポーネント
-import Loading from '@/app/loading';
 import Error from '@/app/error';
 // アイコン
 import { Heart, Search } from 'lucide-react';
@@ -18,54 +15,9 @@ import { Armor } from '@/types/armor';
 import { useFavoriteStore } from '@/store/favoriteStore';
 // ストレージ
 import { getArmorImageUrl } from '@/utils/supabase/storage';
-import { UserProfile } from '@/types/workspace';
 
-export default function ChannelHeader({
-  channelId,
-  isGuest,
-  user,
-}: {
-  channelId: number;
-  isGuest: boolean;
-  user: UserProfile;
-}) {
-  const { favorites, isLoading, isUpdateLoading, error, fetchFavorites, addFavorite, deleteFavorite } =
-    useFavoriteStore();
-  const [isInitialized, setIsInitialized] = useState(false);
-
-  const initFavorites = useCallback(async () => {
-    await fetchFavorites();
-  }, [fetchFavorites]);
-
-  useEffect(() => {
-    // 初回読み込み時のみ実行
-    if (!isGuest) initFavorites(); //ゲストユーザーはお気に入りを取得する必要がない
-    setIsInitialized(true);
-  }, [initFavorites, isGuest]);
-
-  const [armor, setArmor] = useState<Armor | null>(null);
-  const [isLoadingArmor, setIsLoadingArmor] = useState(false);
-
-  useEffect(() => {
-    const fetchArmor = async () => {
-      try {
-        setIsLoadingArmor(true);
-        const response = await fetch(`/api/Armor/Channel/Armor?channelId=${channelId}`);
-        const data = await response.json();
-        setArmor(data);
-      } catch (error) {
-        console.error('防具取得エラー:', error);
-      } finally {
-        setIsLoadingArmor(false);
-      }
-    };
-    fetchArmor();
-  }, [channelId]);
-
-  // ローディング状態
-  if (!isInitialized || isLoading || isLoadingArmor || !armor || !favorites || !user) {
-    return <Loading />;
-  }
+export default function ChannelHeader({ armorData, isGuest }: { armorData: Armor; isGuest: boolean }) {
+  const { favorites, isLoading, isUpdateLoading, error, addFavorite, deleteFavorite } = useFavoriteStore();
 
   // エラー状態
   if (error) {
@@ -73,20 +25,20 @@ export default function ChannelHeader({
   }
 
   let ClothDescription = '';
-  if (armor?.sewing.clothType === 'REBIRTH') ClothDescription = '布特性：再生布（4回毎に、1マスが12~16戻る）';
-  else if (armor?.sewing.clothType === 'RAINBOW')
+  if (armorData?.sewing.clothType === 'REBIRTH') ClothDescription = '布特性：再生布（4回毎に、1マスが12~16戻る）';
+  else if (armorData?.sewing.clothType === 'RAINBOW')
     ClothDescription = '布特性：虹布（2回毎に、集中力1.5倍・会心率上昇・集中力半減効果が交互に発生）';
-  else if (armor?.sewing.clothType === 'HEART')
+  else if (armorData?.sewing.clothType === 'HEART')
     ClothDescription = '布特性：会心布（4回毎に、1マスが会心率大幅上昇・縫い数値2倍になる）';
-  else if (armor?.sewing.clothType === 'NORMAL') ClothDescription = '布特性：通常（特性効果無し）';
+  else if (armorData?.sewing.clothType === 'NORMAL') ClothDescription = '布特性：通常（特性効果無し）';
   else ClothDescription = '説明文の取得に失敗しました。';
 
   return (
     <header className="sticky top-0 border-b bg-background z-50">
       <div className="h-14 flex items-center gap-4 px-4">
         <div className="flex items-center gap-2">
-          <Image src={getArmorImageUrl(armor.imageUrl)} alt={armor.name} width={32} height={32} />
-          <h1 className="font-semibold">{armor.name}</h1>
+          <Image src={getArmorImageUrl(armorData.imageUrl)} alt={armorData.name} width={32} height={32} />
+          <h1 className="font-semibold">{armorData.name}</h1>
         </div>
         <Separator orientation="vertical" className="h-6 hidden md:block" />
         <p className="text-sm text-muted-foreground hidden md:block">{ClothDescription}</p>
@@ -107,15 +59,15 @@ export default function ChannelHeader({
                   size="sm"
                   className="shadow-md"
                   onClick={() => {
-                    if (favorites.some((favorite) => favorite.armorId === armor.id)) {
+                    if (favorites && favorites.some((favorite) => favorite.armorId === armorData.id)) {
                       //someの戻り値（boolean）
-                      const favorite = favorites.find((f) => f.armorId === armor.id);
+                      const favorite = favorites.find((f) => f.armorId === armorData.id);
                       //該当するオブジェクト(Favorite型)を取得
                       if (favorite) {
                         deleteFavorite(favorite.id); // //そのオブジェクトのIdを削除
                       }
                     } else {
-                      addFavorite(armor.id, new Date());
+                      addFavorite(armorData.id, new Date());
                     }
                   }}
                 >
@@ -125,7 +77,7 @@ export default function ChannelHeader({
                   {!isUpdateLoading && (
                     <Heart
                       className={`h-4 w-4 ${
-                        isGuest || !favorites.some((favorite) => favorite.armorId !== armor.id) //ゲストユーザーお気に入りに追加されていない場合はグレー
+                        isGuest || !favorites || !favorites.some((favorite) => favorite.armorId !== armorData.id) //ゲストユーザーお気に入りに追加されていない場合はグレー
                           ? 'text-gray-500'
                           : 'text-red-500 fill-red-500'
                       }`}
