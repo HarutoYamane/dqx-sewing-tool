@@ -16,11 +16,7 @@ export async function GET(request: NextRequest) {
       id: parseInt(ChannelId),
     },
     include: {
-      sewing: {
-        select: {
-          clothType: true,
-        },
-      },
+      sewing: true,
     },
   });
   return NextResponse.json(armor);
