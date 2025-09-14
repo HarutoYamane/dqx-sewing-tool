@@ -9,6 +9,8 @@ interface UserState {
   isGuest: boolean;
   // ローディング状態
   isLoading: boolean;
+  // 認証状態の初期化が完了したかどうか
+  isAuthInitialized: boolean;
   // エラー情報
   error: string | null;
   // 現在ログイン中のユーザー情報を取得する Action
@@ -17,6 +19,8 @@ interface UserState {
   updateUserName: (name: string) => Promise<void>;
   // ユーザー情報をクリアする Action
   clearUser: () => void;
+  // 認証初期化完了をマークする Action
+  setAuthInitialized: () => void;
 }
 
 // Zustand を使って UserState ストアを作成
@@ -25,6 +29,7 @@ export const useUserStore = create<UserState>((set, get) => ({
   user: null,
   isGuest: true, //デフォルトはtrueでログインしたらfalseにする
   isLoading: false,
+  isAuthInitialized: false, // 認証・ユーザー情報の初期化が完了していない
   error: null,
 
   fetchCurrentUser: async () => {
@@ -40,8 +45,7 @@ export const useUserStore = create<UserState>((set, get) => ({
       }
 
       const user = (await res.json()) as UserProfile;
-      set({ user, isLoading: false });
-      set({ isGuest: false }); //ユーザー情報を取得したらゲストユーザー判定をfalseにする
+      set({ user, isLoading: false, isGuest: false }); //ユーザー情報を取得したらゲストユーザー判定をfalseにする
     } catch (error) {
       console.error('ユーザー情報の取得に失敗:', error);
       set({
@@ -83,6 +87,10 @@ export const useUserStore = create<UserState>((set, get) => ({
   },
 
   clearUser: () => {
-    set({ user: null, isGuest: true, error: null });
+    set({ user: null, isGuest: true, error: null, isAuthInitialized: true });
+  },
+
+  setAuthInitialized: () => {
+    set({ isAuthInitialized: true });
   },
 }));
