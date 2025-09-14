@@ -69,12 +69,13 @@ export default function UserProfileBar({ userProfile }: { userProfile: UserProfi
       setIsLoading(true);
       // サーバー側でのログアウト処理
       await logout();
-      // クライアント側のストア状態をクリア
+
+      // 手動でストアをクリア（UserInitializerのイベントリスナーに依存しない）
       clearUser();
       clearFavorites();
       clearResult();
-      // ページリロードでリダイレクト（確実な方法）
-      window.location.href = '/';
+
+      router.push('/');
     } catch (error) {
       console.error('ログアウトエラー:', error);
       setIsLoading(false);
