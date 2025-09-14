@@ -1,5 +1,7 @@
 import type { Metadata } from 'next';
 import { ThemeProvider } from '@/components/themeProvider';
+import UserInitializer from '@/components/auth/UserInitializer';
+import AuthLoadingScreen from '@/components/auth/AuthLoadingScreen';
 import '@/app/globals.css';
 
 export const metadata: Metadata = {
@@ -49,6 +51,8 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     <html lang="ja" suppressHydrationWarning>
       <body>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <UserInitializer />
+          <AuthLoadingScreen />
           {children}
         </ThemeProvider>
       </body>
