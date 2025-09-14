@@ -28,6 +28,10 @@ export const useResultStore = create<ResultState>((set) => ({
   isLoading: false,
   error: null,
   fetchResult: async (channelId: number) => {
+    const { isLoading } = useResultStore.getState();
+    // 既にローディング中の場合は実行しない
+    if (isLoading) return;
+
     try {
       set({ isLoading: true, error: null });
       const response = await fetch(`/api/Armor/Channel/Result?channelId=${channelId}`);
