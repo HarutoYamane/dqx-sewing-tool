@@ -57,6 +57,9 @@ export default function StatsCard({ user, isGuest }: { user: UserProfile | undef
         setIsSewingStatsLoading(true);
         const res = await fetch('/api/user/sewingStats', {
           method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
           body: JSON.stringify({
             user: user,
           }),
@@ -72,11 +75,16 @@ export default function StatsCard({ user, isGuest }: { user: UserProfile | undef
         console.error('ユーザーの裁縫統計データの取得に失敗しました:', error);
       } finally {
         setIsSewingStatsLoading(false);
+        setIsInitialized(true);
       }
     };
-    if (!isGuest && user) fetchSewingStats(); //ゲストユーザーではなく、ユーザーが存在する場合は裁縫統計データを取得
-    setIsInitialized(true);
-  }, [user, isGuest]);
+
+    if (!isGuest && user) {
+      fetchSewingStats(); //ゲストユーザーではなく、ユーザーが存在する場合は裁縫統計データを取得
+    } else {
+      setIsInitialized(true);
+    }
+  }, []);
 
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
