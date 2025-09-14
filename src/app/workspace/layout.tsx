@@ -2,8 +2,6 @@
 
 // React
 import { useState } from 'react';
-// Next.js
-import { notFound } from 'next/navigation';
 // アイコン
 import { Menu } from 'lucide-react';
 // shadcn/ui
@@ -29,7 +27,6 @@ export default function WorkspaceLayout({ children }: { children: React.ReactNod
 
   if (isLoading) return <Loading />;
   if (error) return <Error />;
-  if (!user) return notFound();
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -77,7 +74,7 @@ export default function WorkspaceLayout({ children }: { children: React.ReactNod
             </div>
             <Separator />
             <div className="p-4">
-              <UserProfileBar userProfile={user} />
+              <UserProfileBar userProfile={user || undefined} />
             </div>
           </SheetContent>
         </Sheet>
@@ -97,7 +94,7 @@ export default function WorkspaceLayout({ children }: { children: React.ReactNod
             <FavoriteList />
           </div>
           <div className="border-t bg-background p-4">
-            <UserProfileBar userProfile={user} />
+            <UserProfileBar userProfile={user || undefined} />
           </div>
         </aside>
 
