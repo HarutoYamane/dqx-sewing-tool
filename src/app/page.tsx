@@ -3,6 +3,7 @@
 // Next.js
 import Link from 'next/link';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 // アイコン
 import { ArrowRight, ThumbsUp, Heart, Trophy } from 'lucide-react';
 // shadcn/ui
@@ -11,6 +12,7 @@ import { useUserStore } from '@/store/useUserStore';
 
 export default function TopPage() {
   const { clearUser } = useUserStore();
+  const router = useRouter();
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -69,16 +71,17 @@ export default function TopPage() {
                   </p>
                 </div>
                 <div className="flex flex-col gap-2 min-[400px]:flex-row">
-                  <Link href="/workspace">
-                    <Button
-                      size="lg"
-                      className="gap-1.5 bg-green-500 hover:bg-green-600 animate-heartbeat"
-                      onClick={clearUser}
-                    >
-                      ゲストユーザーで始める（アカウント不要）
-                      <ArrowRight className="h-4 w-4" />
-                    </Button>
-                  </Link>
+                  <Button
+                    size="lg"
+                    className="gap-1.5 bg-green-500 hover:bg-green-600 animate-heartbeat"
+                    onClick={() => {
+                      clearUser();
+                      router.push('/workspace');
+                    }}
+                  >
+                    ゲストユーザーで始める（アカウント不要）
+                    <ArrowRight className="h-4 w-4" />
+                  </Button>
                 </div>
               </div>
               <div className="flex items-center justify-center">
@@ -144,7 +147,7 @@ export default function TopPage() {
       <footer className="border-t p-6">
         <div className="container mx-auto flex flex-col gap-4 px-4 md:px-6">
           <p className="text-center text-sm leading-loose text-muted-foreground md:text-left">
-            ※1：裁縫結果の保存機能は、ログインしているユーザーのみ利用可能です。
+            ※1 裁縫結果の保存機能はログインしているユーザーのみ利用可能です。
           </p>
           <p className="text-center text-sm leading-loose text-muted-foreground md:text-left">
             ・このページで利用している株式会社スクウェア・エニックスを代表とする共同著作者が権利を所有する画像の転載・配布は禁止いたします。
