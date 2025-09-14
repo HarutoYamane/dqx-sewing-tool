@@ -18,7 +18,7 @@ interface Topics {
 
 // アイコンマッピングは utils/iconMapper.ts で管理
 
-export default function TopicsCard({ user }: { user: UserProfile }) {
+export default function TopicsCard({ user }: { user: UserProfile | undefined }) {
   const [topics, setTopics] = useState<Topics[]>([]); // トピックスデータ
   const [isTopicsLoading, setIsTopicsLoading] = useState(false); // トピックスデータのローディングフラグ
   const [isInitialized, setIsInitialized] = useState(false); // 初期化フラグ

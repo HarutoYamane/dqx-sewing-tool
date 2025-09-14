@@ -43,7 +43,7 @@ interface LatestPlayed {
   };
 }
 
-export default function StatsCard({ user, isGuest }: { user: UserProfile; isGuest: boolean }) {
+export default function StatsCard({ user, isGuest }: { user: UserProfile | undefined; isGuest: boolean }) {
   const [totalSewingCount, setTotalSewingCount] = useState<TotalSewingCount>(0); // ユーザーの裁縫合計回数データ
   const [maxSuccessRate, setMaxSuccessRate] = useState<MaxSuccessRate | null>(null); // ユーザーの最も大成功確率が高い商材
   const [latestPlayed, setLatestPlayed] = useState<LatestPlayed | null>(null); // ユーザーの最も最近プレイした商材
@@ -74,7 +74,7 @@ export default function StatsCard({ user, isGuest }: { user: UserProfile; isGues
         setIsSewingStatsLoading(false);
       }
     };
-    if (!isGuest || !user) fetchSewingStats(); //ゲストユーザーは裁縫統計データを取得する必要がない、ユーザーが存在しない場合は裁縫統計データを取得する必要がない
+    if (!isGuest && user) fetchSewingStats(); //ゲストユーザーではなく、ユーザーが存在する場合は裁縫統計データを取得
     setIsInitialized(true);
   }, [user, isGuest]);
 
@@ -86,8 +86,8 @@ export default function StatsCard({ user, isGuest }: { user: UserProfile; isGues
           <Hash className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         {isGuest ? (
-          <CardContent className="flex-1 flex items-center justify-center bg-gray-500">
-            <p className="text-white font-medium">ログインが必要です</p>
+          <CardContent className="flex-1 flex items-center justify-start pl-6">
+            <p className="font-medium text-muted-foreground">ログインが必要です</p>
           </CardContent>
         ) : isSewingStatsLoading || !isInitialized ? (
           <CardContent className="flex-1 overflow-auto">
@@ -107,8 +107,8 @@ export default function StatsCard({ user, isGuest }: { user: UserProfile; isGues
           <ThumbsUp className="h-4 w-4  text-green-500" />
         </CardHeader>
         {isGuest ? (
-          <CardContent className="flex-1 flex items-center justify-center bg-gray-500">
-            <p className="text-white font-medium">ログインが必要です</p>
+          <CardContent className="flex-1 flex items-center justify-start pl-6">
+            <p className="font-medium text-muted-foreground">ログインが必要です</p>
           </CardContent>
         ) : isSewingStatsLoading || !isInitialized ? (
           <CardContent className="flex-1 overflow-auto">
@@ -147,8 +147,8 @@ export default function StatsCard({ user, isGuest }: { user: UserProfile; isGues
           <Activity className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         {isGuest ? (
-          <CardContent className="flex-1 flex items-center justify-center bg-gray-500">
-            <p className="text-white font-medium">ログインが必要です</p>
+          <CardContent className="flex-1 flex items-center justify-start pl-6">
+            <p className="font-medium text-muted-foreground">ログインが必要です</p>
           </CardContent>
         ) : isSewingStatsLoading || !isInitialized ? (
           <CardContent className="flex-1 overflow-auto">

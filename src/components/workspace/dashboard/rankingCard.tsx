@@ -59,8 +59,8 @@ export default function RankingCard({ isGuest }: { isGuest: boolean }) {
         </div>
       </CardHeader>
       {isGuest ? (
-        <CardContent className="flex-1 flex items-center justify-center bg-gray-500">
-          <p className="text-white font-medium">ログインが必要です</p>
+        <CardContent className="flex-1 flex items-center justify-start pl-6">
+          <p className=" font-medium text-muted-foreground">ログインが必要です</p>
         </CardContent>
       ) : isRankingLoading || !isInitialized ? (
         <CardContent className="flex-1 overflow-auto">
