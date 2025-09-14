@@ -33,7 +33,7 @@ export default function WorkSpacePage() {
           )}
           <Link href="/workspace/search">
             <Button variant="outline" size="default" className="shadow-md border-2 border-yellow-400 animate-heartbeat">
-              <Search className="mr-2 h-4 w-4" />
+              <Search className="mr-2 h-4 w-4 text-orange-500" />
               <p className="text-lg">商材を選ぶ</p>
             </Button>
           </Link>
@@ -64,10 +64,10 @@ export default function WorkSpacePage() {
         </div>
       </div>
 
-      {user && <StatsCard user={user} isGuest={isGuest} />}
+      <StatsCard user={user || undefined} isGuest={isGuest} />
 
       <div className="grid gap-4 md:grid-cols-2">
-        {user && <TopicsCard user={user} />}
+        <TopicsCard user={user || undefined} />
         <RankingCard isGuest={isGuest} />
       </div>
     </div>
