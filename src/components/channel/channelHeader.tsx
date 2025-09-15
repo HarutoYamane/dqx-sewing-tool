@@ -24,24 +24,27 @@ export default function ChannelHeader({ armorData, isGuest }: { armorData: Armor
     return <Error />;
   }
 
-  let ClothDescription = '';
-  if (armorData?.sewing.clothType === 'REBIRTH') ClothDescription = '布特性：再生布（4回毎に、1マスが12~16戻る）';
+  let ClothDescription: string = '';
+  if (armorData?.sewing.clothType === 'REBIRTH') ClothDescription = '再生布（4回毎に、1マスが12~16戻る）';
   else if (armorData?.sewing.clothType === 'RAINBOW')
-    ClothDescription = '布特性：虹布（2回毎に、集中力1.5倍・会心率上昇・集中力半減効果が交互に発生）';
+    ClothDescription = '虹布（2回毎に、集中力1.5倍・会心率上昇・集中力半減効果が交互に発生）';
   else if (armorData?.sewing.clothType === 'HEART')
-    ClothDescription = '布特性：会心布（4回毎に、1マスが会心率大幅上昇・縫い数値2倍になる）';
-  else if (armorData?.sewing.clothType === 'NORMAL') ClothDescription = '布特性：通常（特性効果無し）';
+    ClothDescription = '会心布（4回毎に、1マスが会心率大幅上昇・縫い数値2倍になる）';
+  else if (armorData?.sewing.clothType === 'NORMAL') ClothDescription = '通常（特性効果無し）';
   else ClothDescription = '説明文の取得に失敗しました。';
 
   return (
-    <header className="sticky top-0 border-b bg-background z-50">
-      <div className="h-14 flex items-center gap-4 px-4">
+    <header className="sticky top-0 border-b bg-background z-40">
+      <div className="h-14 flex items-center gap-4 px-1 md:px-4">
         <div className="flex items-center gap-2">
           <Image src={getArmorImageUrl(armorData.imageUrl)} alt={armorData.name} width={32} height={32} />
-          <h1 className="font-semibold">{armorData.name}</h1>
+          <h1 className="text-sm md:text-base font-semibold">{armorData.name}</h1>
         </div>
         <Separator orientation="vertical" className="h-6 hidden md:block" />
-        <p className="text-sm text-muted-foreground hidden md:block">{ClothDescription}</p>
+        <p className="text-sm text-muted-foreground hidden md:block">
+          布特性：{ClothDescription.split('（')[0]}
+          <span className="hidden xl:inline">（{ClothDescription.split('（')[1]}</span>
+        </p>
         <div className="ml-auto flex items-center gap-3">
           <Link href="/workspace/search">
             <Button variant="outline" size="sm" className="shadow-md">
