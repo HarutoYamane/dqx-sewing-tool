@@ -70,7 +70,7 @@ export default function ArmorPage() {
         </div>
         <Separator orientation="horizontal" className="xl:hidden w-full" />
         <Separator orientation="vertical" className="hidden xl:block h-full" />
-        <div className="flex-1 xl:overflow-auto xl:min-h-0 pl-2 md:px-4 xl:px-0">
+        <div className="flex-1 xl:overflow-auto xl:min-h-0 px-3 md:px-4 xl:px-0">
           <SewingValueArea />
         </div>
       </div>
