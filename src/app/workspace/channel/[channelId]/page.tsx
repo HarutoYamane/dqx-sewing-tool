@@ -26,16 +26,20 @@ export default function ArmorPage() {
   const [armorData, setArmorData] = useState<Armor | null>(null);
   const [sewingData, setSewingData] = useState<Sewing | null>(null);
   const [isInitialized, setIsInitialized] = useState(false);
+
   // URL のパスからチャンネル ID を取得
   const { channelId } = useParams<{ channelId: string }>(); //動的なchannelIdを文字列で取得
   const channelIdNumber = parseInt(channelId, 10); //channelIdを数値に変換
-  if (isNaN(channelIdNumber)) return notFound();
 
   const initFavorites = useCallback(async () => {
     await fetchFavorites();
   }, [fetchFavorites]);
 
   useEffect(() => {
+    if (isNaN(channelIdNumber)) {
+      notFound();
+      return;
+    }
     const fetchArmor = async () => {
       try {
         setIsLoading(true);
@@ -52,7 +56,7 @@ export default function ArmorPage() {
     fetchArmor();
     if (!isGuest) initFavorites(); //ゲストユーザーはお気に入りを取得する必要がない
     setIsInitialized(true);
-  }, [channelId, initFavorites, isGuest]);
+  }, [channelId, initFavorites, isGuest]); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (isLoading || !armorData || !sewingData || !isInitialized) return <Loading />;
 
