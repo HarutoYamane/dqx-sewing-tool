@@ -109,12 +109,13 @@ export default function SearchPage() {
                 <Image src={getArmorImageUrl(armorSeries.imageUrl)} alt={armorSeries.name} width={24} height={24} />
                 <div>{armorSeries.name}</div>
               </div>
+              <div className="text-sm pr-3">Lv: {armorSeries.lv}</div>
             </AccordionTrigger>
             <AccordionContent>
               {armorSeries.armors?.map((armor) => (
                 <div
                   key={armor.id}
-                  className="flex flex-row items-center ml-6 space-y-1 border-l-2 border-gray-200 gap-2 p-2"
+                  className="flex flex-row items-center ml-7 space-y-1 border-l-2 border-gray-200 gap-2 p-2 pl-4"
                 >
                   <Image src={getArmorImageUrl(armor.imageUrl)} alt={armor.name} width={20} height={20} />
                   <Link href={`/workspace/channel/${armor.id}`}>
