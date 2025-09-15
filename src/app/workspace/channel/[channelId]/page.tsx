@@ -38,7 +38,6 @@ export default function ArmorPage() {
   useEffect(() => {
     if (isNaN(channelIdNumber)) {
       notFound();
-      return;
     }
     const fetchArmor = async () => {
       try {
