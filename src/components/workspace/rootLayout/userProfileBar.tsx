@@ -131,8 +131,10 @@ export default function UserProfileBar({ userProfile }: { userProfile: UserProfi
       </Avatar>
 
       <div className="flex-1 overflow-hidden">
-        <p className="text-sm font-medium leading-none">{isGuest ? 'ゲストユーザー' : userProfile?.name}</p>
-        <p className="text-xs text-muted-foreground">{isGuest ? 'ログインしていません' : userProfile?.email}</p>
+        <p className="text-sm font-medium leading-none truncate">{isGuest ? 'ゲストユーザー' : userProfile?.name}</p>
+        <p className="text-xs text-muted-foreground truncate">
+          {isGuest ? 'ログインしていません' : userProfile?.email}
+        </p>
       </div>
 
       {/* 環境設定ボタン */}
