@@ -84,7 +84,7 @@ export default function StatsCard({ user, isGuest }: { user: UserProfile | undef
     } else {
       setIsInitialized(true);
     }
-  }, []);
+  }, [isGuest, user]);
 
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
