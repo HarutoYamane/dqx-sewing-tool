@@ -1,36 +1,68 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# DQX - 裁縫職人ツール
 
-## Getting Started
+![App Logo](public/images/Icons/AppLogo.png)
 
-First, run the development server:
+ドラゴンクエスト X オンライン（DQX）の裁縫職人向け Web アプリケーションです。ゲーム内の裁縫作業を効率化し、最適な縫製値を計算・管理できるツールを提供します。
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 🌟 主な機能
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- **裁縫値計算**: 各防具の縫製値を効率的に計算
+- **フィルタリング**: 強度（弱い・普通・強い・最強）や縫製モード（通常・しつけ縫い）で絞り込み
+- **ユーザー管理**: アカウント登録・ログイン機能
+- **ゲストモード**: アカウント不要で基本的な機能を利用可能
+- **レスポンシブデザイン**: モバイル・デスクトップ対応
+- **ダークモード**: テーマ切り替え対応（β 版）
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🛠️ 技術スタック
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### フロントエンド
 
-## Learn More
+- **Next.js 14** - React フレームワーク
+- **TypeScript** - 型安全性
+- **Tailwind CSS** - スタイリング
+- **shadcn/ui** - UI コンポーネント
+- **Radix UI** - アクセシブルな UI プリミティブ
 
-To learn more about Next.js, take a look at the following resources:
+### バックエンド・データベース
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- **Supabase** - 認証・データベース
+- **Prisma** - ORM
+- **PostgreSQL** - データベース
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### 状態管理・その他
 
-## Deploy on Vercel
+- **Zustand** - 軽量状態管理
+- **React Hook Form** - フォーム管理
+- **Zod** - バリデーション
+- **Lucide React** - アイコン
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 📱 使用方法
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### ゲストモード
+
+1. トップページの「ゲストユーザーで始める」ボタンをクリック
+2. アカウント作成不要で基本的な機能を利用可能
+
+### ユーザー登録
+
+1. 「新規登録」ボタンからアカウント作成
+2. ログイン後、より多くの機能を利用可能
+
+### 基本的な使い方
+
+1. **ダッシュボード**: 自身の統計情報やランキングを確認
+2. **商材を選ぶ**: 裁縫対象の防具を検索・選択
+3. **裁縫値計算**: 選択した防具の最適な縫製値を計算
+4. **強度フィルタリング**: 強度やしつけ縫いモードで絞り込みが可能
+
+## 📞 サポート・お問い合わせ
+
+- **不具合報告・改善要望**: アプリ内の「不具合報告・改善要望」機能をご利用ください
+
+## 🎮 ドラゴンクエスト X オンラインについて
+
+このツールはドラゴンクエスト X オンラインの裁縫職人を支援するための非公式ツールです。公式ツールではありません。
+
+---
+
+**注意**: このアプリケーションは商用利用を想定していません。
