@@ -78,7 +78,7 @@ export default function LatestList({ SheetOpenChange }: { SheetOpenChange?: (ope
                 }`}
               >
                 {seriesArmors && seriesArmors.length > 0 && (
-                  <div className="ml-6 space-y-1 border-l-2 border-gray-200 pl-4 py-2">
+                  <div className="ml-6 space-y-1 border-l-2 border-gray-200 pl-1 py-2">
                     {seriesArmors.map((armor) => (
                       <Link
                         key={armor.id}
