@@ -84,7 +84,7 @@ export default function WorkspaceLayout({ children }: { children: React.ReactNod
       {/* デスクトップレイアウト */}
       <div className="flex-1 lg:flex">
         {/* サイドバー (デスクトップのみ表示) */}
-        <aside className="hidden border-r bg-background lg:flex lg:flex-col lg:w-[290px] lg:fixed lg:left-0 lg:top-0 lg:h-screen lg:z-40">
+        <aside className="hidden border-r bg-background lg:flex lg:flex-col lg:w-[280px] lg:fixed lg:left-0 lg:top-0 lg:h-screen lg:z-40">
           <div className="flex h-14 items-center border-b px-6">
             <AppLogo />
           </div>
