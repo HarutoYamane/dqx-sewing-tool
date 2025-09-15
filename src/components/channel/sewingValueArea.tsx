@@ -10,8 +10,18 @@ export default function SewingArea() {
   const { strengthFilter, addStrengthFilter, removeStrengthFilter } = useStrengthFilterStore();
   const { bastingMode, setBastingMode } = useBastingModeStore();
 
+  // 数値の桁数に応じて区切り文字を変更する関数（最後の数値は区切り文字をつけない）
+  const formatNumbers = (numbers: number[]) => {
+    return numbers
+      .map((num, index) => {
+        const numStr = num.toString();
+        return numStr.length === 1 && numbers.length !== index + 1 ? `${numStr} 　` : `${numStr}　`;
+      })
+      .join('');
+  };
+
   return (
-    <div className="space-y-4 pt-3">
+    <div className="space-y-4">
       <div className="sticky top-0 bg-background z-10 pb-2 flex items-center justify-start gap-2">
         <Button
           variant={strengthFilter.includes('弱い') ? 'default' : 'outline'}
@@ -83,55 +93,55 @@ export default function SewingArea() {
       <Accordion type="multiple" defaultValue={sewingValues.map((v) => v.name)} className="w-full">
         {sewingValues.map((value) => (
           <AccordionItem key={value.name} value={value.name}>
-            <AccordionTrigger className="text-left">{value.name}</AccordionTrigger>
+            <AccordionTrigger className="text-left text-sm">{value.name}</AccordionTrigger>
             <AccordionContent>
-              <div className="space-y-2 text-sm">
+              <div className="space-y-2 text-xs sm:text-base">
                 {strengthFilter.includes('弱い') && !bastingMode && (
                   <div className="flex justify-start items-center gap-4">
                     <span className="text-blue-600">弱い :</span>
-                    <span>{value.normalValue.弱い.join(', ')}</span>
+                    <span className="border-b border-gray-400">{formatNumbers(value.normalValue.弱い)}</span>
                   </div>
                 )}
                 {strengthFilter.includes('普通') && !bastingMode && (
                   <div className="flex justify-start items-center gap-4">
                     <span className="text-green-600">普通 :</span>
-                    <span>{value.normalValue.普通.join(', ')}</span>
+                    <span className="border-b border-gray-400">{formatNumbers(value.normalValue.普通)}</span>
                   </div>
                 )}
                 {strengthFilter.includes('強い') && !bastingMode && (
                   <div className="flex justify-start items-center gap-4">
                     <span className="text-yellow-600">強い :</span>
-                    <span>{value.normalValue.強い.join(', ')}</span>
+                    <span className="border-b border-gray-400">{formatNumbers(value.normalValue.強い)}</span>
                   </div>
                 )}
                 {strengthFilter.includes('最強') && !bastingMode && (
                   <div className="flex justify-start items-center gap-4">
                     <span className="text-red-600">最強 :</span>
-                    <span>{value.normalValue.最強.join(', ')}</span>
+                    <span className="border-b border-gray-400">{formatNumbers(value.normalValue.最強)}</span>
                   </div>
                 )}
                 {strengthFilter.includes('弱い') && bastingMode && (
                   <div className="flex justify-start items-center gap-4">
                     <span className="text-blue-600">弱い (しつけ) :</span>
-                    <span>{value.bastingValue.弱い.join(', ')}</span>
+                    <span className="border-b border-gray-400">{formatNumbers(value.bastingValue.弱い)}</span>
                   </div>
                 )}
                 {strengthFilter.includes('普通') && bastingMode && (
                   <div className="flex justify-start items-center gap-4">
                     <span className="text-green-600">普通 (しつけ) :</span>
-                    <span>{value.bastingValue.普通.join(', ')}</span>
+                    <span className="border-b border-gray-400">{formatNumbers(value.bastingValue.普通)}</span>
                   </div>
                 )}
                 {strengthFilter.includes('強い') && bastingMode && (
                   <div className="flex justify-start items-center gap-4">
                     <span className="text-yellow-600">強い (しつけ) :</span>
-                    <span>{value.bastingValue.強い.join(', ')}</span>
+                    <span className="border-b border-gray-400">{formatNumbers(value.bastingValue.強い)}</span>
                   </div>
                 )}
                 {strengthFilter.includes('最強') && bastingMode && (
                   <div className="flex justify-start items-center gap-4">
                     <span className="text-red-600">最強 (しつけ) :</span>
-                    <span>{value.bastingValue.最強.join(', ')}</span>
+                    <span className="border-b border-gray-400">{formatNumbers(value.bastingValue.最強)}</span>
                   </div>
                 )}
               </div>

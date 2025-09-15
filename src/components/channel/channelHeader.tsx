@@ -38,10 +38,10 @@ export default function ChannelHeader({ armorData, isGuest }: { armorData: Armor
       <div className="h-14 flex items-center gap-4 px-1 md:px-4">
         <div className="flex items-center gap-2">
           <Image src={getArmorImageUrl(armorData.imageUrl)} alt={armorData.name} width={32} height={32} />
-          <h1 className="text-sm md:text-base font-semibold">{armorData.name}</h1>
+          <h1 className="text-xs sm:text-base font-semibold">{armorData.name}</h1>
         </div>
-        <Separator orientation="vertical" className="h-6 hidden md:block" />
-        <p className="text-sm text-muted-foreground hidden md:block">
+        <Separator orientation="vertical" className="h-6 hidden sm:block" />
+        <p className="text-sm text-muted-foreground hidden sm:block">
           布特性：{ClothDescription.split('（')[0]}
           <span className="hidden xl:inline">（{ClothDescription.split('（')[1]}</span>
         </p>

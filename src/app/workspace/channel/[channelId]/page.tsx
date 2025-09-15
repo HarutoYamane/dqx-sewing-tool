@@ -60,17 +60,17 @@ export default function ArmorPage() {
   if (isLoading || !armorData || !sewingData || !isInitialized) return <Loading />;
 
   return (
-    <div className="flex flex-col h-full lg:h-screen">
-      <div className="sticky top-0 bg-background z-50 border-b pl-3 pr-3 lg:pl-0 lg:pr-0">
+    <div className="flex flex-col h-full xl:h-screen">
+      <div className="sticky top-0 bg-background z-10 border-b px-2">
         <ChannelHeader armorData={armorData} isGuest={isGuest} />
       </div>
-      <div className="flex flex-col lg:flex-row gap-4 flex-1 overflow-hidden p-2">
-        <div className="flex-1 overflow-auto min-h-0 lg:pl-3">
+      <div className="flex flex-col xl:flex-row gap-4 flex-1 xl:overflow-hidden py-4">
+        <div className="flex-1 xl:overflow-auto xl:min-h-0 px-2 md:px-4">
           <SewingArea sewingData={sewingData} parts={armorData.parts} channelId={channelIdNumber} isGuest={isGuest} />
         </div>
-        <Separator orientation="horizontal" className="lg:hidden w-full" />
-        <Separator orientation="vertical" className="hidden lg:block h-full" />
-        <div className="flex-1 overflow-auto min-h-0">
+        <Separator orientation="horizontal" className="xl:hidden w-full" />
+        <Separator orientation="vertical" className="hidden xl:block h-full" />
+        <div className="flex-1 xl:overflow-auto xl:min-h-0 pl-2 md:px-4 xl:px-0">
           <SewingValueArea />
         </div>
       </div>
