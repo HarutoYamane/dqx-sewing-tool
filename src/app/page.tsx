@@ -17,39 +17,35 @@ export default function TopPage() {
   return (
     <div className="flex min-h-screen flex-col">
       {/* ヘッダー */}
-      <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container flex h-16 items-center justify-between mx-auto px-4 md:px-6">
+      <header className="sticky top-0 z-50 w-full border-b-2 border-yellow-500 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <div className="flex h-16 items-center justify-between px-3 sm:px-5 md:px-10">
           <div className="flex items-center gap-2 font-bold">
             <Image src="/images/Icons/AppLogo.png" alt="DQX - 裁縫職人ツール" width={32} height={32} />
-            <span className="text-sm md:text-base whitespace-nowrap before:content-[''] before:md:content-['DQX_-_']">
+            <span className="text-sm md:text-base whitespace-nowrap before:content-[''] before:sm:content-['DQX_-_']">
               裁縫職人ツール
             </span>
           </div>
           <div className="flex items-center gap-4">
-            <div className="hidden md:block">
+            <div className="hidden sm:block">
               <Link
                 href="https://x.com/Hoppe_1559"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-2"
               >
-                <svg
-                  className="h-5 w-5 fill-current text-gray-600 hover:text-gray-800 transition-colors"
-                  viewBox="0 0 24 24"
-                  aria-label="X (旧Twitter)"
-                >
+                <svg className="h-5 w-5 fill-current transition-colors" viewBox="0 0 24 24" aria-label="X (旧Twitter)">
                   <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
                 </svg>
-                <span className="text-sm text-gray-600 hover:text-gray-800 hover:underline">(管理人アカウント)</span>
+                <span className="text-sm hover:underline">(管理人アカウント)</span>
               </Link>
             </div>
             <Link href="/login">
-              <Button variant="outline" className="shadow-md">
+              <Button variant="outline" className="shadow-md text-xs sm:text-sm">
                 ログイン
               </Button>
             </Link>
             <Link href="/signup">
-              <Button className="bg-green-500 hover:bg-green-600">新規登録</Button>
+              <Button className="text-xs sm:text-sm bg-green-500 hover:bg-green-600">新規登録</Button>
             </Link>
           </div>
         </div>
@@ -73,7 +69,7 @@ export default function TopPage() {
                 <div className="flex flex-col gap-2 min-[400px]:flex-row">
                   <Button
                     size="lg"
-                    className="gap-1.5 bg-green-500 hover:bg-green-600 animate-heartbeat"
+                    className="gap-1.5 text-xs md:text-base bg-green-500 hover:bg-green-600 animate-heartbeat"
                     onClick={() => {
                       clearUser();
                       router.push('/workspace');
