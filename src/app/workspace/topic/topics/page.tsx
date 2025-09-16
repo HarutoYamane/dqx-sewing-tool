@@ -1,5 +1,6 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 // lucide-reactアイコン
@@ -53,6 +54,7 @@ interface TopicFormData {
 }
 
 export default function TopicsPage() {
+  const router = useRouter();
   const { user } = useUserStore();
   const [topics, setTopics] = useState<Topic[]>([]); // トピックの一覧
   const [page, setPage] = useState<number>(1); // 現在のページ
@@ -193,12 +195,15 @@ export default function TopicsPage() {
                 <p className="text-lg">トピックを作成</p>
               </Button>
             )}
-            <Link href="/workspace" className="w-full md:w-auto">
-              <Button variant="outline" size="default" className="w-full md:w-auto shadow-md">
-                <Home className="mr-2 h-4 w-4" />
-                <p className="text-lg">ダッシュボードに戻る</p>
-              </Button>
-            </Link>
+            <Button
+              variant="outline"
+              size="default"
+              className="w-full md:w-auto shadow-md"
+              onClick={() => router.push('/workspace')}
+            >
+              <Home className="mr-2 h-4 w-4" />
+              <p className="text-lg">ダッシュボードに戻る</p>
+            </Button>
           </div>
         </div>
         <div className="flex flex-col md:flex-row md:items-center justify-between p-4 gap-2">
@@ -280,11 +285,9 @@ export default function TopicsPage() {
                   <CardContent>
                     <p className="text-muted-foreground line-clamp-2">{topic.content}</p>
                     <div className="mt-4 flex flex-row justify-between">
-                      <Link href={`/workspace/topic/${topic.id}`}>
-                        <Button variant="outline" size="sm">
-                          詳細を見る
-                        </Button>
-                      </Link>
+                      <Button variant="outline" size="sm" onClick={() => router.push(`/workspace/topic/${topic.id}`)}>
+                        詳細を見る
+                      </Button>
                       {user?.role === 'ADMIN' && (
                         <div className="flex flex-row gap-2">
                           <Button
