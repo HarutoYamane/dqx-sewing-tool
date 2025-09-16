@@ -16,6 +16,8 @@ import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 // サーバーアクション
 import { signup } from '@/app/signup/actions';
+// Zustandストア
+import { useUserStore } from '@/store/useUserStore';
 
 // バリデーションスキーマ
 const formSchema = z.object({
@@ -25,6 +27,7 @@ const formSchema = z.object({
 });
 
 export default function SignupPage() {
+  const { fetchCurrentUser } = useUserStore();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
@@ -48,8 +51,7 @@ export default function SignupPage() {
 
       // サーバーアクションを呼び出し
       await signup(formData);
-
-      // 正常に完了した場合 （リダイレクトされるので通常はここには到達しない）
+      await fetchCurrentUser();
       router.push('/workspace');
     } catch (err) {
       console.error('登録エラー:', err);
