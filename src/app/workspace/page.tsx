@@ -1,7 +1,7 @@
 'use client';
 
 // Next.js
-import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 // アイコン
 import { MessageSquare, Search, Sword } from 'lucide-react';
 // shadcn/ui
@@ -16,6 +16,7 @@ import { useUserStore } from '@/store/useUserStore';
 
 export default function WorkSpacePage() {
   const { user, isGuest } = useUserStore();
+  const router = useRouter();
 
   return (
     <div className="flex-1 space-y-4 p-4 md:p-8 pt-6">
@@ -24,29 +25,33 @@ export default function WorkSpacePage() {
         <h2 className="text-3xl font-bold tracking-tight">ダッシュボード</h2>
         <div className="flex flex-col md:flex-row md:items-center gap-4">
           {user?.role === 'ADMIN' && (
-            <Link href="/workspace/addArmor">
-              <Button variant="default" size="sm" className="bg-green-500 hover:bg-green-600">
-                <Sword className=" h-4 w-4 fill-white" />
-                <p className="text-lg">防具を追加する</p>
-              </Button>
-            </Link>
-          )}
-          <Link href="/workspace/search">
-            <Button variant="outline" size="default" className="shadow-md border-2 border-yellow-400 animate-heartbeat">
-              <Search className="mr-2 h-4 w-4 text-orange-500" />
-              <p className="text-lg">商材を選ぶ</p>
+            <Button
+              variant="default"
+              size="sm"
+              className="bg-green-500 hover:bg-green-600 onclick"
+              onClick={() => router.push('/workspace/addArmor')}
+            >
+              <Sword className=" h-4 w-4 fill-white" />
+              <p className="text-lg">防具を追加する</p>
             </Button>
-          </Link>
+          )}
+          <Button
+            variant="outline"
+            size="default"
+            className="shadow-md border-2 border-yellow-400 animate-heartbeat onclick"
+            onClick={() => router.push('/workspace/search')}
+          >
+            <Search className="mr-2 h-4 w-4 text-orange-500" />
+            <p className="text-lg">商材を選ぶ</p>
+          </Button>
           {isGuest ? (
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <Link href="/workspace/contact">
-                    <Button size="sm" className="shadow-md" disabled={isGuest}>
-                      <MessageSquare className="mr-2 h-4 w-4" />
-                      <p>不具合報告・改善要望</p>
-                    </Button>
-                  </Link>
+                  <Button size="sm" className="shadow-md" disabled={isGuest}>
+                    <MessageSquare className="mr-2 h-4 w-4" />
+                    <p>不具合報告・改善要望</p>
+                  </Button>
                 </TooltipTrigger>
                 <TooltipContent>
                   <p>ログインが必要です</p>
@@ -54,12 +59,10 @@ export default function WorkSpacePage() {
               </Tooltip>
             </TooltipProvider>
           ) : (
-            <Link href="/workspace/contact">
-              <Button size="sm" className="shadow-md">
-                <MessageSquare className="mr-2 h-4 w-4" />
-                <p>不具合報告・改善要望</p>
-              </Button>
-            </Link>
+            <Button size="sm" className="shadow-md" onClick={() => router.push('/workspace/contact')}>
+              <MessageSquare className="mr-2 h-4 w-4" />
+              <p>不具合報告・改善要望</p>
+            </Button>
           )}
         </div>
       </div>
