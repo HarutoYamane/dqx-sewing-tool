@@ -1,3 +1,6 @@
+'use client';
+
+import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { Sword } from 'lucide-react';
@@ -22,6 +25,7 @@ export default function TopicsCard({ user }: { user: UserProfile | undefined }) 
   const [topics, setTopics] = useState<Topics[]>([]); // トピックスデータ
   const [isTopicsLoading, setIsTopicsLoading] = useState(false); // トピックスデータのローディングフラグ
   const [isInitialized, setIsInitialized] = useState(false); // 初期化フラグ
+  const router = useRouter();
 
   // 初回マウント時にユーザーのトピックスデータを取得
   useEffect(() => {
@@ -52,18 +56,23 @@ export default function TopicsCard({ user }: { user: UserProfile | undefined }) 
             <CardDescription>更新・変更情報の一覧</CardDescription>
           </div>
           {user?.role === 'ADMIN' ? (
-            <Link href="/workspace/topic/topics">
-              <Button variant="default" size="sm" className="bg-green-500 hover:bg-green-600">
-                <Sword className=" h-4 w-4 fill-white" />
-                管理画面へ
-              </Button>
-            </Link>
+            <Button
+              size="sm"
+              className="bg-green-500 hover:bg-green-600"
+              onClick={() => router.push('/workspace/topic/topics')}
+            >
+              <Sword className=" h-4 w-4 fill-white" />
+              管理画面へ
+            </Button>
           ) : (
-            <Link href="/workspace/topic/topics">
-              <Button variant="outline" size="sm" className="shadow-md">
-                すべて見る
-              </Button>
-            </Link>
+            <Button
+              variant="outline"
+              size="sm"
+              className="shadow-md"
+              onClick={() => router.push('/workspace/topic/topics')}
+            >
+              すべて見る
+            </Button>
           )}
         </div>
       </CardHeader>
