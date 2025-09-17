@@ -34,22 +34,18 @@ export async function updateSession(request: NextRequest) {
   // IMPORTANT: DO NOT REMOVE auth.getUser()
 
   const {
-    data: { user },
-  } = await supabase.auth.getUser();
+    data: { user: authUser },
+  } = await supabase.auth.getUser(); //現在認証（ログイン）しているユーザーのauthId情報を取得
 
-  if (!user && request.nextUrl.pathname.startsWith('/workspace/contact')) {
-    // contactページにアクセスしようとしたが、ユーザーがログインしていない場合
+  if (!authUser && request.nextUrl.pathname.startsWith('/workspace/contact')) {
+    // contactページにアクセスしようとしたが、ユーザーが未認証の場合
     const url = request.nextUrl.clone();
     url.pathname = '/login';
     return NextResponse.redirect(url);
   }
 
-  if (user?.role !== 'ADMIN' && request.nextUrl.pathname.startsWith('/workspace/addArmor')) {
-    // addArmorページにアクセスしようとしたが、ユーザーが管理者権限でない場合
-    const url = request.nextUrl.clone();
-    url.pathname = '/workspace';
-    return NextResponse.redirect(url);
-  }
+  // 注意: ミドルウェアではPrismaクライアントが使用できないため、
+  // 管理者権限チェックはページコンポーネント側で行う
 
   // IMPORTANT: You *must* return the supabaseResponse object as it is.
   // If you're creating a new response object with NextResponse.next() make sure to:
