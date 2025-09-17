@@ -181,7 +181,7 @@ export default function UserProfileBar({ userProfile }: { userProfile: UserProfi
       <AlertDialog open={logoutOpen} onOpenChange={setLogoutOpen}>
         <AlertDialogTrigger asChild>
           <Button variant="ghost" size="icon">
-            {isGuest ? <LogIn className="h-4 w-4 text-blue-600" /> : <LogOut className="h-4 w-4 text-red-500" />}
+            {isGuest ? <LogIn className="h-4 w-4 text-green-700" /> : <LogOut className="h-4 w-4 text-red-500" />}
             <span className="sr-only">{isGuest ? 'ログイン' : 'ログアウト'}</span>
           </Button>
         </AlertDialogTrigger>

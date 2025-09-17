@@ -34,8 +34,9 @@ export default function ChannelHeader({ armorData, isGuest }: { armorData: Armor
   else ClothDescription = '説明文の取得に失敗しました。';
 
   return (
-    <header className="sticky top-0 border-b bg-background z-40">
-      <div className="h-14 flex items-center gap-4 px-1 md:px-4">
+    <header>
+      <div className="h-[55px] flex items-center gap-4 px-1 md:px-4">
+        {/* AppLogoの高さに合わせる（なぜか1pxずれるため55pxにしている） */}
         <div className="flex items-center gap-2">
           <Image src={getArmorImageUrl(armorData.imageUrl)} alt={armorData.name} width={32} height={32} />
           <h1 className="text-xs sm:text-base font-semibold">{armorData.name}</h1>

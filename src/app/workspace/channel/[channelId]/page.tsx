@@ -61,7 +61,7 @@ export default function ArmorPage() {
 
   return (
     <div className="flex flex-col h-full xl:h-screen">
-      <div className="sticky top-0 bg-background z-10 border-b px-2">
+      <div className="sticky top-0 bg-background border-b z-40 px-2">
         <ChannelHeader armorData={armorData} isGuest={isGuest} />
       </div>
       <div className="flex flex-col xl:flex-row gap-4 flex-1 xl:overflow-hidden py-4">
@@ -74,7 +74,7 @@ export default function ArmorPage() {
           <SewingValueArea />
         </div>
       </div>
-      <div className="h-14 border-t bg-background">
+      <div>
         <ChannelFooter channelId={channelIdNumber} isGuest={isGuest} />
       </div>
     </div>

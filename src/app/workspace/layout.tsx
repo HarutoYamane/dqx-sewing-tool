@@ -93,13 +93,13 @@ export default function WorkspaceLayout({ children }: { children: React.ReactNod
             <Separator className="my-2" />
             <FavoriteList />
           </div>
-          <div className="border-t bg-background p-4">
+          <div className="border-t bg-background px-4 py-3">
             <UserProfileBar userProfile={user || undefined} />
           </div>
         </aside>
 
         {/* メインコンテンツ */}
-        <main className="flex flex-col flex-1 lg:ml-[290px]">{children}</main>
+        <main className="flex flex-col flex-1 lg:ml-[280px]">{children}</main>
       </div>
     </div>
   );

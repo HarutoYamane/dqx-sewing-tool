@@ -51,9 +51,10 @@ export default function ChannelFooter({ channelId, isGuest }: { channelId: numbe
   };
 
   return (
-    <footer className="border-b bg-background z-10">
+    <footer className="border-t bg-background z-10">
       {isGuest ? (
-        <div className="flex items-center justify-start px-4">
+        <div className="h-16 flex items-center justify-start px-4">
+          {/* ユーザープロフィールバーの高さに合わせる */}
           <CircleAlert className="h-4 w-4 mr-2 text-red-500" />
           <p className="text-sm font-medium">
             裁縫結果を保存するには
@@ -64,13 +65,13 @@ export default function ChannelFooter({ channelId, isGuest }: { channelId: numbe
           </p>
         </div>
       ) : (
-        <div className="h-20 md:h-14 flex items-center md:gap-4 px-4">
+        <div className="h-20 md:h-16 flex items-center md:gap-4 px-4">
           <div className="flex flex-col md:flex-row md:items-center gap-2">
             <div className="flex items-center gap-2">
               <p className="text-sm">裁縫回数：{result !== null ? result.total : 0}回</p>
               <p className="text-sm">大成功回数：{result !== null ? result.threeStar : 0}回</p>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-4">
               <p className="text-sm text-muted-foreground">
                 大成功確率：
                 {result !== null && result.total > 0 ? ((result.threeStar / result.total) * 100).toFixed(1) : '-'}%
