@@ -1,7 +1,5 @@
 'use client';
 
-import { useState } from 'react';
-import { ArmorSeriesData, ArmorData, ClothTypes } from './types';
 import { ArmorParts } from '@/types/armor';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select';
@@ -10,7 +8,11 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { useUserStore } from '@/store/useUserStore';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
 
 const needFieldsIndex: { parts: ArmorParts; index: number[] }[] = [
   {
@@ -35,146 +37,45 @@ const needFieldsIndex: { parts: ArmorParts; index: number[] }[] = [
   },
 ];
 
+// Zodスキーマの定義
+const armorFormSchema = z.object({
+  armorSeriesData: z.object({
+    name: z.string().min(1, 'シリーズ名を入力してください'),
+    lv: z.number().min(1, 'シリーズレベルは1以上を入力してください'),
+    imageUrl: z.string().min(1, 'シリーズ画像URLを入力してください'),
+  }),
+  armorData: z.array(
+    z.object({
+      name: z.string().min(1, '防具名を入力してください'),
+      parts: z.enum(['HEAD', 'BODY_UPPER', 'BODY_LOWER', 'ARMS', 'LEGS']),
+      clothType: z.enum(['NORMAL', 'REBIRTH', 'RAINBOW', 'HEART']),
+      strength: z
+        .array(z.enum(['WEAK', 'NORMAL', 'STRONGER', 'STRONGEST', 'UNKNOWN']))
+        .min(1, '強さローテーションを入力してください'),
+      settingValue: z.array(z.number()).length(9),
+      imageUrl: z.string().min(1, '防具画像URLを入力してください'),
+    })
+  ),
+  armorActive: z.object({
+    HEAD: z.boolean(),
+    BODY_UPPER: z.boolean(),
+    BODY_LOWER: z.boolean(),
+    ARMS: z.boolean(),
+    LEGS: z.boolean(),
+  }),
+});
+
+type ArmorFormData = z.infer<typeof armorFormSchema>;
+
 export default function SystemAdminPage() {
   const { user } = useUserStore();
-  const [armorSeriesData, setArmorSeriesData] = useState<ArmorSeriesData>({ name: '', lv: 0, imageUrl: '' });
-  const [armorData, setArmorData] = useState<ArmorData[]>([
-    {
-      name: '',
-      parts: 'HEAD',
-      clothType: 'NORMAL',
-      strength: [],
-      settingValue: [0, 0, 0, 0, 0, 0, 0, 0, 0],
-      imageUrl: '',
-    },
-    {
-      name: '',
-      parts: 'BODY_UPPER',
-      clothType: 'NORMAL',
-      strength: [],
-      settingValue: [0, 0, 0, 0, 0, 0, 0, 0, 0],
-      imageUrl: '',
-    },
-    {
-      name: '',
-      parts: 'BODY_LOWER',
-      clothType: 'NORMAL',
-      strength: [],
-      settingValue: [0, 0, 0, 0, 0, 0, 0, 0, 0],
-      imageUrl: '',
-    },
-    {
-      name: '',
-      parts: 'ARMS',
-      clothType: 'NORMAL',
-      strength: [],
-      settingValue: [0, 0, 0, 0, 0, 0, 0, 0, 0],
-      imageUrl: '',
-    },
-    {
-      name: '',
-      parts: 'LEGS',
-      clothType: 'NORMAL',
-      strength: [],
-      settingValue: [0, 0, 0, 0, 0, 0, 0, 0, 0],
-      imageUrl: '',
-    },
-  ]);
 
-  const handleStrengthChange = (value: string) => {
-    setArmorData((prev) => prev.map((a) => ({ ...a, strength: value.split(',') as Strengths[] })));
-  };
-
-  const handleStrengthButtonClick = (strength: Strengths) => {
-    const currentStrength = armorData[0]?.strength || [];
-    const newStrength = [...currentStrength, strength];
-    setArmorData((prev) => prev.map((a) => ({ ...a, strength: newStrength })));
-  };
-
-  const handleStrengthResetButtonClick = () => {
-    setArmorData((prev) => prev.map((a) => ({ ...a, strength: [] })));
-  };
-
-  const handleSettingValueChange = (parts: ArmorParts, index: number, value: number) => {
-    setArmorData((prev) =>
-      prev.map((a) =>
-        a.parts === parts ? { ...a, settingValue: a.settingValue.map((v, i) => (i === index ? value : v)) } : a
-      )
-    );
-  };
-
-  const [armorActive, setArmorActive] = useState<Record<string, boolean>>({
-    HEAD: true,
-    BODY_UPPER: true,
-    BODY_LOWER: true,
-    ARMS: true,
-    LEGS: true,
-  });
-
-  // バリデーション関数
-  const validateData = () => {
-    const errors: string[] = [];
-
-    // シリーズデータのバリデーション
-    if (!armorSeriesData.name.trim()) {
-      errors.push('シリーズ名を入力してください');
-    }
-    if (armorSeriesData.lv <= 0) {
-      errors.push('シリーズレベルは1以上を入力してください');
-    }
-    if (!armorSeriesData.imageUrl.trim()) {
-      errors.push('シリーズ画像URLを入力してください');
-    }
-
-    // 防具データのバリデーション
-    const activeArmors = armorData.filter((armor) => armorActive[armor.parts]);
-    for (const armor of activeArmors) {
-      if (!armor.name.trim()) {
-        errors.push(`${armor.parts}の防具名を入力してください`);
-      }
-      if (!armor.imageUrl.trim()) {
-        errors.push(`${armor.parts}の防具画像URLを入力してください`);
-      }
-      if (armor.strength.length === 0) {
-        errors.push('強さローテーションを入力してください');
-      }
-    }
-
-    return errors;
-  };
-
-  // データ送信関数
-  const handleSubmit = async () => {
-    const errors = validateData();
-    if (errors.length > 0) {
-      alert('入力エラー:\n' + errors.join('\n'));
-      return;
-    }
-    if (user?.role !== 'ADMIN') {
-      alert('管理者権限が必要です');
-      return;
-    }
-
-    try {
-      const response = await fetch('/api/systemAdmin', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          armorSeriesData,
-          armorData: armorData.filter((armor) => armorActive[armor.parts]), //active（必要）な部位のみ送信
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error('データの送信に失敗しました');
-      }
-
-      alert('データが正常に送信されました');
-      // フォームをリセット
-      setArmorSeriesData({ name: '', lv: 0, imageUrl: '' });
-      setArmorData([
+  // react-hook-formの設定
+  const form = useForm<ArmorFormData>({
+    resolver: zodResolver(armorFormSchema),
+    defaultValues: {
+      armorSeriesData: { name: '', lv: 0, imageUrl: '' },
+      armorData: [
         {
           name: '',
           parts: 'HEAD',
@@ -215,214 +116,322 @@ export default function SystemAdminPage() {
           settingValue: [0, 0, 0, 0, 0, 0, 0, 0, 0],
           imageUrl: '',
         },
-      ]);
+      ],
+      armorActive: {
+        HEAD: true,
+        BODY_UPPER: true,
+        BODY_LOWER: true,
+        ARMS: true,
+        LEGS: true,
+      },
+    },
+  });
+
+  const handleStrengthButtonClick = (strength: Strengths) => {
+    const currentStrength = form.getValues('armorData.0.strength') || [];
+    const newStrength = [...currentStrength, strength];
+    form.setValue('armorData.0.strength', newStrength);
+    // 他の部位にも同じ強さを設定
+    form.getValues('armorData').forEach((_, index) => {
+      form.setValue(`armorData.${index}.strength`, newStrength);
+    });
+  };
+
+  const handleStrengthResetButtonClick = () => {
+    form.getValues('armorData').forEach((_, index) => {
+      form.setValue(`armorData.${index}.strength`, []);
+    });
+  };
+
+  // データ送信関数
+  const onSubmit = async (data: ArmorFormData) => {
+    if (user?.role !== 'ADMIN') {
+      alert('管理者権限が必要です');
+      return;
+    }
+
+    try {
+      const response = await fetch('/api/systemAdmin', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          armorSeriesData: data.armorSeriesData,
+          armorData: data.armorData.filter((armor) => data.armorActive[armor.parts]), //active（必要）な部位のみ送信
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`${data.armorSeriesData.name}のデータの送信に失敗しました`);
+      }
+
+      alert(`${data.armorSeriesData.name}のデータが正常に送信されました`);
+      // フォームをリセット
+      form.reset();
     } catch (error) {
       console.error('Error:', error);
-      alert('データの送信中にエラーが発生しました');
+      alert(`${data.armorSeriesData.name}のデータ送信中にエラーが発生しました`);
     }
   };
 
   return (
     <div className="space-y-4 p-6">
-      <Card>
-        <CardHeader>
-          <CardTitle>防具シリーズ情報</CardTitle>
-          <CardDescription>新しい防具シリーズの情報を入力してください</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Label htmlFor="seriesName">シリーズ名</Label>
-          <Input
-            id="seriesName"
-            type="text"
-            value={armorSeriesData.name}
-            onChange={(e) => setArmorSeriesData((prev) => ({ ...prev, name: e.target.value }))}
-          />
-          <Label htmlFor="seriesLv">シリーズレベル</Label>
-          <Input
-            id="seriesLv"
-            type="number"
-            value={armorSeriesData.lv ?? ''}
-            onChange={(e) => setArmorSeriesData((prev) => ({ ...prev, lv: parseInt(e.target.value) || 0 }))}
-          />
-          <Label htmlFor="seriesImageUrl">シリーズ画像URL</Label>
-          <Input
-            id="seriesImageUrl"
-            type="text"
-            value={armorSeriesData.imageUrl}
-            onChange={(e) => setArmorSeriesData((prev) => ({ ...prev, imageUrl: e.target.value }))}
-          />
-          <Label htmlFor="seriesStrength">強さローテーション</Label>
-          <div className="flex flex-row gap-2">
-            <Button
-              className="bg-blue-500 hover:bg-blue-600"
-              onClick={() => handleStrengthButtonClick('WEAK')}
-              type="button"
-            >
-              弱い
-            </Button>
-            <Button
-              className="bg-green-500 hover:bg-green-600"
-              onClick={() => handleStrengthButtonClick('NORMAL')}
-              type="button"
-            >
-              普通
-            </Button>
-            <Button
-              className="bg-yellow-500 hover:bg-yellow-600"
-              onClick={() => handleStrengthButtonClick('STRONGER')}
-              type="button"
-            >
-              強い
-            </Button>
-            <Button
-              className="bg-red-500 hover:bg-red-600"
-              onClick={() => handleStrengthButtonClick('STRONGEST')}
-              type="button"
-            >
-              最強
-            </Button>
-            <Button
-              className="bg-gray-500 hover:bg-gray-600"
-              onClick={() => handleStrengthButtonClick('UNKNOWN')}
-              type="button"
-            >
-              ？
-            </Button>
-            <Button
-              className="bg-gray-500 hover:bg-gray-600"
-              onClick={() => handleStrengthResetButtonClick()}
-              type="button"
-            >
-              リセット
-            </Button>
-          </div>
-          <Input
-            id="seriesStrength"
-            type="text"
-            readOnly={true}
-            value={armorData[0]?.strength?.join(',') || ''}
-            onChange={(e) => handleStrengthChange(e.target.value)}
-            placeholder="例: STRONGEST,STRONGER,NORMAL"
-          />
-          <Label>防具部位選択</Label>
-          <div className="flex flex-row gap-2">
-            {Object.entries(armorActive).map(([part, active]) => (
-              <div key={part} className="flex flex-col items-center gap-1">
-                <Label htmlFor={part}>
-                  {part === 'HEAD'
-                    ? '頭'
-                    : part === 'BODY_UPPER'
-                    ? '体上'
-                    : part === 'BODY_LOWER'
-                    ? '体下'
-                    : part === 'ARMS'
-                    ? '腕'
-                    : '足'}
-                </Label>
-                <Checkbox
-                  checked={active}
-                  id={part}
-                  onCheckedChange={(checked) => setArmorActive((prev) => ({ ...prev, [part]: !!checked }))}
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>防具シリーズ情報</CardTitle>
+              <CardDescription>新しい防具シリーズの情報を入力してください</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <FormField
+                control={form.control}
+                name="armorSeriesData.name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>シリーズ名</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="armorSeriesData.lv"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>シリーズレベル</FormLabel>
+                    <FormControl>
+                      <Input type="number" {...field} onChange={(e) => field.onChange(parseInt(e.target.value) || 0)} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="armorSeriesData.imageUrl"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>シリーズ画像URL</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <div className="space-y-2">
+                <Label>強さローテーション</Label>
+                <div className="flex flex-row gap-2">
+                  <Button
+                    className="bg-blue-500 hover:bg-blue-600"
+                    onClick={() => handleStrengthButtonClick('WEAK')}
+                    type="button"
+                  >
+                    弱い
+                  </Button>
+                  <Button
+                    className="bg-green-500 hover:bg-green-600"
+                    onClick={() => handleStrengthButtonClick('NORMAL')}
+                    type="button"
+                  >
+                    普通
+                  </Button>
+                  <Button
+                    className="bg-yellow-500 hover:bg-yellow-600"
+                    onClick={() => handleStrengthButtonClick('STRONGER')}
+                    type="button"
+                  >
+                    強い
+                  </Button>
+                  <Button
+                    className="bg-red-500 hover:bg-red-600"
+                    onClick={() => handleStrengthButtonClick('STRONGEST')}
+                    type="button"
+                  >
+                    最強
+                  </Button>
+                  <Button
+                    className="bg-gray-500 hover:bg-gray-600"
+                    onClick={() => handleStrengthButtonClick('UNKNOWN')}
+                    type="button"
+                  >
+                    ？
+                  </Button>
+                  <Button
+                    className="bg-gray-500 hover:bg-gray-600"
+                    onClick={() => handleStrengthResetButtonClick()}
+                    type="button"
+                  >
+                    リセット
+                  </Button>
+                </div>
+                <FormField
+                  control={form.control}
+                  name="armorData.0.strength"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Input
+                          readOnly={true}
+                          value={field.value?.join(',') || ''}
+                          placeholder="例: STRONGEST,STRONGER,NORMAL"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
                 />
               </div>
-            ))}
+              <div className="space-y-2">
+                <Label>防具部位選択</Label>
+                <div className="flex flex-row gap-2">
+                  {(['HEAD', 'BODY_UPPER', 'BODY_LOWER', 'ARMS', 'LEGS'] as const).map((part) => (
+                    <div key={part} className="flex flex-col items-center gap-1">
+                      <Label htmlFor={part}>
+                        {part === 'HEAD'
+                          ? '頭'
+                          : part === 'BODY_UPPER'
+                          ? '体上'
+                          : part === 'BODY_LOWER'
+                          ? '体下'
+                          : part === 'ARMS'
+                          ? '腕'
+                          : '足'}
+                      </Label>
+                      <FormField
+                        control={form.control}
+                        name={`armorActive.${part}`}
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormControl>
+                              <Checkbox checked={field.value} onCheckedChange={field.onChange} id={part} />
+                            </FormControl>
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <div className="grid grid-cols-2 gap-4">
+            {form.watch('armorData').map(
+              (armor, armorIndex) =>
+                form.watch(`armorActive.${armor.parts}`) && (
+                  <Card key={armor.parts}>
+                    <CardHeader>
+                      <CardTitle>
+                        {armor.parts === 'HEAD'
+                          ? '頭'
+                          : armor.parts === 'BODY_UPPER'
+                          ? '体上'
+                          : armor.parts === 'BODY_LOWER'
+                          ? '体下'
+                          : armor.parts === 'ARMS'
+                          ? '腕'
+                          : '足'}
+                        の防具情報
+                      </CardTitle>
+                      <CardDescription>新しい防具の情報を入力してください</CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <FormField
+                        control={form.control}
+                        name={`armorData.${armorIndex}.name`}
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>防具名</FormLabel>
+                            <FormControl>
+                              <Input {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name={`armorData.${armorIndex}.clothType`}
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>布特性</FormLabel>
+                            <Select onValueChange={field.onChange} value={field.value}>
+                              <FormControl>
+                                <SelectTrigger>
+                                  <SelectValue placeholder="布特性を選択" />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                <SelectItem value="NORMAL">通常</SelectItem>
+                                <SelectItem value="REBIRTH">再生布</SelectItem>
+                                <SelectItem value="RAINBOW">虹布</SelectItem>
+                                <SelectItem value="HEART">会心布</SelectItem>
+                              </SelectContent>
+                            </Select>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name={`armorData.${armorIndex}.imageUrl`}
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>防具画像URL</FormLabel>
+                            <FormControl>
+                              <Input {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <div className="space-y-2">
+                        <Label>裁縫設定値</Label>
+                        <div className="grid grid-cols-3 gap-2">
+                          {armor.settingValue.map((value, index) => (
+                            <FormField
+                              key={index}
+                              control={form.control}
+                              name={`armorData.${armorIndex}.settingValue.${index}`}
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormControl>
+                                    <Input
+                                      type="number"
+                                      {...field}
+                                      onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
+                                      disabled={
+                                        !needFieldsIndex
+                                          .find((item) => item.parts === armor.parts)
+                                          ?.index.includes(index)
+                                      }
+                                      placeholder="0"
+                                    />
+                                  </FormControl>
+                                </FormItem>
+                              )}
+                            />
+                          ))}
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                )
+            )}
           </div>
           <div className="mt-6">
-            <Button onClick={handleSubmit} className="w-full">
+            <Button type="submit" className="w-full">
               データを送信
             </Button>
           </div>
-        </CardContent>
-      </Card>
-
-      <div className="grid grid-cols-2 gap-4">
-        {armorData.map(
-          (armor) =>
-            armorActive[armor.parts] && (
-              <Card key={armor.parts}>
-                <CardHeader>
-                  <CardTitle>
-                    {armor.parts === 'HEAD'
-                      ? '頭'
-                      : armor.parts === 'BODY_UPPER'
-                      ? '体上'
-                      : armor.parts === 'BODY_LOWER'
-                      ? '体下'
-                      : armor.parts === 'ARMS'
-                      ? '腕'
-                      : '足'}
-                    の防具情報
-                  </CardTitle>
-                  <CardDescription>新しい防具の情報を入力してください</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <Label htmlFor={`armorName-${armor.parts}`}>防具名</Label>
-                  <Input
-                    id={`armorName-${armor.parts}`}
-                    type="text"
-                    value={armor.name}
-                    onChange={(e) =>
-                      setArmorData((prev) =>
-                        prev.map((a) => (a.parts === armor.parts ? { ...a, name: e.target.value } : a))
-                      )
-                    }
-                  />
-                  <Select
-                    value={armor.clothType}
-                    onValueChange={(value) =>
-                      setArmorData((prev) =>
-                        prev.map((a) => (a.parts === armor.parts ? { ...a, clothType: value as ClothTypes } : a))
-                      )
-                    }
-                  >
-                    <Label id={`armorClothType-label-${armor.parts}`}>布特性</Label>
-                    <SelectTrigger
-                      id={`armorClothType-${armor.parts}`}
-                      aria-labelledby={`armorClothType-label-${armor.parts}`}
-                    >
-                      <SelectValue placeholder="布特性を選択" /> {/* 空にできないので基本機能しない */}
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="NORMAL">通常</SelectItem>
-                      <SelectItem value="REBIRTH">再生布</SelectItem>
-                      <SelectItem value="RAINBOW">虹布</SelectItem>
-                      <SelectItem value="HEART">会心布</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <Label htmlFor={`armorImageUrl-${armor.parts}`}>防具画像URL</Label>
-                  <Input
-                    id={`armorImageUrl-${armor.parts}`}
-                    type="text"
-                    value={armor.imageUrl}
-                    onChange={(e) =>
-                      setArmorData((prev) =>
-                        prev.map((a) => (a.parts === armor.parts ? { ...a, imageUrl: e.target.value } : a))
-                      )
-                    }
-                  />
-                  <Label>裁縫設定値</Label>
-                  <div className="grid grid-cols-3 gap-2">
-                    {armor.settingValue.map((value, index) => (
-                      <div key={index}>
-                        <Label htmlFor={`armorSettingValue-${armor.parts}-${index}`} className="sr-only">
-                          設定値 {index + 1}
-                        </Label>
-                        <Input
-                          id={`armorSettingValue-${armor.parts}-${index}`}
-                          type="number"
-                          value={value ?? ''}
-                          onChange={(e) => handleSettingValueChange(armor.parts, index, parseInt(e.target.value) || 0)} //部位毎にそれぞれの設定値を変更
-                          disabled={!needFieldsIndex.find((item) => item.parts === armor.parts)?.index.includes(index)} //部位毎に使わないマスは無効化
-                          placeholder="0"
-                        />
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            )
-        )}
-      </div>
+        </form>
+      </Form>
     </div>
   );
 }
