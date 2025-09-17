@@ -32,7 +32,7 @@ export async function POST(req: NextRequest) {
 
     const latestPlayed = await prisma.result.findFirst({
       where: { userId: user.id },
-      orderBy: { createdAt: 'desc' },
+      orderBy: { updatedAt: 'desc' },
       include: {
         armor: {
           select: {
