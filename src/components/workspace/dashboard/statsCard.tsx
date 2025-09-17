@@ -143,7 +143,7 @@ export default function StatsCard({ user, isGuest }: { user: UserProfile | undef
                 </p>
               </>
             ) : (
-              <div className="text-2xl font-bold text-muted-foreground pl-6">データなし</div>
+              <div className="text-2xl font-bold text-muted-foreground pt-2">データなし</div>
             )}
           </CardContent>
         )}
@@ -183,7 +183,7 @@ export default function StatsCard({ user, isGuest }: { user: UserProfile | undef
                 </p>
               </>
             ) : (
-              <div className="text-2xl font-bold text-muted-foreground pl-6">データなし</div>
+              <div className="text-2xl font-bold text-muted-foreground pt-2">データなし</div>
             )}
           </CardContent>
         )}
