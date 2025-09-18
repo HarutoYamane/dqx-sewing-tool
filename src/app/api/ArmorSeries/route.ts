@@ -33,6 +33,13 @@ export async function GET(request: NextRequest) {
           orderBy: [
             { parts: 'asc' }, // 頭・体上・体下・腕・足の順番
           ],
+          include: {
+            sewing: {
+              select: {
+                clothType: true,
+              },
+            },
+          },
         },
       },
       take: limit,
