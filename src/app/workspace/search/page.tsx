@@ -58,12 +58,11 @@ export default function SearchPage() {
 
   if (!totalLoaded || isLoading) return <Loading />;
 
-  // 布特性を日本語に変換
-  const ClothTypeDescription: { [key in ClothType]: string } = {
-    REBIRTH: '再生布',
-    RAINBOW: '虹布',
-    HEART: '会心布',
-    NORMAL: '通常',
+  const clothConfig: Record<ClothType, { name: string; color: string }> = {
+    REBIRTH: { name: '再生布', color: 'text-green-600' },
+    RAINBOW: { name: '虹布', color: 'text-pink-500' },
+    HEART: { name: '会心布', color: 'text-orange-500' },
+    NORMAL: { name: '通常', color: 'text-gray-500' },
   };
 
   return (
@@ -122,18 +121,22 @@ export default function SearchPage() {
               <div className="text-sm pr-3">Lv: {armorSeries.lv}</div>
             </AccordionTrigger>
             <AccordionContent>
-              {armorSeries.armors?.map((armor) => (
-                <div
-                  key={armor.id}
-                  className="flex flex-row items-center ml-7 space-y-1 border-l-2 border-gray-200 gap-2 p-2 pl-4"
-                >
-                  <Image src={getArmorImageUrl(armor.imageUrl)} alt={armor.name} width={20} height={20} />
-                  <Link href={`/workspace/channel/${armor.id}`} className="hover:underline">
-                    <span className="text-sm">{armor.name}</span>
-                    <span className="text-xs">（{ClothTypeDescription[armor.sewing.clothType]}）</span> {/* 布特性 */}
-                  </Link>
-                </div>
-              ))}
+              {armorSeries.armors?.map((armor) => {
+                return (
+                  <div
+                    key={armor.id}
+                    className="flex flex-row items-center ml-7 space-y-1 border-l-2 border-gray-200 gap-2 p-2 pl-4"
+                  >
+                    <Image src={getArmorImageUrl(armor.imageUrl)} alt={armor.name} width={20} height={20} />
+                    <Link href={`/workspace/channel/${armor.id}`} className="hover:underline">
+                      <span className="text-sm">{armor.name}</span>
+                      <span className={`text-xs ${clothConfig[armor.sewing.clothType].color}`}>
+                        （{clothConfig[armor.sewing.clothType].name}）
+                      </span>
+                    </Link>
+                  </div>
+                );
+              })}
             </AccordionContent>
           </AccordionItem>
         </Accordion>
