@@ -27,8 +27,8 @@ export async function GET() {
 
     // ランキングと防具情報を結合
     const result = rankingData.map((item) => ({
-      armorId: item.armorId,
-      count: item._count.armorId,
+      armorId: item.armorId, // 防具のID
+      count: item._count.armorId, // 防具の作成数（プレイしたユーザー数）
       armorName: armors.find((armor) => armor.id === item.armorId)?.name || 'Unknown', //あり得ないが一応記述
       imageUrl: armors.find((armor) => armor.id === item.armorId)?.imageUrl || '', //あり得ないが一応記述
     }));
