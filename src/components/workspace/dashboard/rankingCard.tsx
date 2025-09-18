@@ -73,19 +73,24 @@ export default function RankingCard({ isGuest }: { isGuest: boolean }) {
           ) : (
             <div className="space-y-4">
               {rankingData.map((armor, index) => (
-                <div key={armor.armorId} className="flex items-center">
-                  <div className={`mr-4 flex h-9 w-9 items-center justify-center rounded-full ${RankingColor(index)}`}>
-                    <span className="font-medium text-primary">{index + 1}</span>
-                  </div>
-                  <div className="space-y-1 flex-1">
+                <div key={armor.armorId} className="flex flex-row items-center justify-between">
+                  <div className="flex flex-row items-center xl:gap-1">
+                    <span
+                      className={` text-sm sm:text-base text-primary mr-3 sm:mr-4 flex h-7 w-7 sm:h-9 sm:w-9 items-center justify-center rounded-full ${RankingColor(
+                        index
+                      )}`}
+                    >
+                      {index + 1}
+                    </span>
                     <Link
                       href={`/workspace/channel/${armor.armorId}`}
-                      className="flex flex-row gap-3 items-center font-medium hover:underline"
+                      className="flex flex-row gap-3 items-center text-xs sm:text-sm hover:underline"
                     >
                       <Image src={getArmorImageUrl(armor.imageUrl)} alt={armor.armorName} width={32} height={32} />
                       {armor.armorName}
                     </Link>
                   </div>
+                  <p className="text-xs">（{armor.count}人）</p>
                 </div>
               ))}
             </div>
