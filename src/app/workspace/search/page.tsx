@@ -12,6 +12,8 @@ import Link from 'next/link';
 import { Home, ChevronLeft, ChevronRight } from 'lucide-react';
 // ストレージ
 import { getArmorImageUrl } from '@/utils/supabase/storage';
+// 型
+import { ClothType } from '@/types/armor';
 
 export default function SearchPage() {
   const [armorSeries, setArmorSeries] = useState<ArmorSeries[]>([]);
@@ -56,6 +58,14 @@ export default function SearchPage() {
 
   if (!totalLoaded || isLoading) return <Loading />;
 
+  // 布特性を日本語に変換
+  const ClothTypeDescription: { [key in ClothType]: string } = {
+    REBIRTH: '再生布',
+    RAINBOW: '虹布',
+    HEART: '会心布',
+    NORMAL: '通常',
+  };
+
   return (
     <div className="flex flex-col h-full">
       <header className="sticky top-0 border-b bg-background z-50">
@@ -63,8 +73,8 @@ export default function SearchPage() {
           <h2 className=" text-2xl font-bold">防具検索</h2>
           <Link href="/workspace">
             <Button variant="outline" size="default" className="shadow-md">
-              <Home className="mr-2 h-4 w-4" />
-              <p className="text-lg">ダッシュボードに戻る</p>
+              <Home className="h-4 w-4" />
+              <p className="text-base md:text-lg">ダッシュボードに戻る</p>
             </Button>
           </Link>
         </div>
@@ -78,7 +88,7 @@ export default function SearchPage() {
               disabled={page === 1}
             >
               <ChevronLeft className="h-4 w-4" />
-              <p className="text-lg">前のページ</p>
+              <p className="text-base md:text-lg">前のページ</p>
             </Button>
             <Button
               variant="outline"
@@ -88,7 +98,7 @@ export default function SearchPage() {
               disabled={page === Math.ceil(total / 15)}
             >
               <ChevronRight className="h-4 w-4" />
-              <p className="text-lg">次のページ</p>
+              <p className="text-base md:text-lg">次のページ</p>
             </Button>
           </div>
           <div className="flex flex-col md:items-end gap-2 pl-3">
@@ -118,8 +128,9 @@ export default function SearchPage() {
                   className="flex flex-row items-center ml-7 space-y-1 border-l-2 border-gray-200 gap-2 p-2 pl-4"
                 >
                   <Image src={getArmorImageUrl(armor.imageUrl)} alt={armor.name} width={20} height={20} />
-                  <Link href={`/workspace/channel/${armor.id}`}>
-                    <div className="text-sm hover:underline">{armor.name}</div>
+                  <Link href={`/workspace/channel/${armor.id}`} className="hover:underline">
+                    <span className="text-sm">{armor.name}</span>
+                    <span className="text-xs">（{ClothTypeDescription[armor.sewing.clothType]}）</span> {/* 布特性 */}
                   </Link>
                 </div>
               ))}
