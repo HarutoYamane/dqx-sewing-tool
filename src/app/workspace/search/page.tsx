@@ -59,9 +59,9 @@ export default function SearchPage() {
   if (!totalLoaded || isLoading) return <Loading />;
 
   const clothConfig: Record<ClothType, { name: string; color: string }> = {
-    REBIRTH: { name: '再生布', color: 'text-green-600' },
-    RAINBOW: { name: '虹布', color: 'text-pink-500' },
-    HEART: { name: '会心布', color: 'text-orange-500' },
+    REBIRTH: { name: '再生布', color: 'text-green-700' },
+    RAINBOW: { name: '虹布', color: 'text-pink-600' },
+    HEART: { name: '会心布', color: 'text-orange-700' },
     NORMAL: { name: '通常', color: 'text-gray-500' },
   };
 
