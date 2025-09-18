@@ -201,8 +201,8 @@ export default function TopicsPage() {
               className="w-full md:w-auto shadow-md"
               onClick={() => router.push('/workspace')}
             >
-              <Home className="mr-2 h-4 w-4" />
-              <p className="text-lg">ダッシュボードに戻る</p>
+              <Home className="h-4 w-4" />
+              <p className="text-base md:text-lg">ダッシュボードに戻る</p>
             </Button>
           </div>
         </div>
@@ -216,7 +216,7 @@ export default function TopicsPage() {
               disabled={page === 1}
             >
               <ChevronLeft className="h-4 w-4" />
-              <p className="text-lg">前のページ</p>
+              <p className="text-base md:text-lg">前のページ</p>
             </Button>
             <Button
               variant="outline"
